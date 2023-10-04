@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class SignUp extends JDialog {
-    private Color c1 = new Color(245, 110, 86);
-    private Color c2 = new Color(238, 227, 203);
+    private Color c1 = new Color(255, 240, 227);
+    private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
     private Font f2 = new Font("SUITE", Font.BOLD, 10);
@@ -57,6 +57,7 @@ public class SignUp extends JDialog {
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
+        panel.setBackground(c3);
         setContentPane(panel);
 
         // 아이디 입력 필드
@@ -233,10 +234,10 @@ public class SignUp extends JDialog {
             return false;
         }
         String passwordStr = String.valueOf(password);
-        if (passwordStr.isBlank() || passwordStr.length() < 9 ||
+        if (passwordStr.isBlank() || passwordStr.length() < 8 ||
                 !passwordStr.matches(".*[a-zA-Z].*") || // 영어 포함
                 !passwordStr.matches(".*\\d.*") ||      // 숫자 포함
-                !passwordStr.matches(".*[@#$%^&+=].*")) { // 특수문자 포함
+                !passwordStr.matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
             showErrorDialog("비밀번호는 영어, 숫자, 특수문자를 포함하고 8글자 이상이어야 합니다.");
             return false;
         }
