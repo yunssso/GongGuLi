@@ -79,13 +79,13 @@ public class Login extends JFrame {
         passwordText.setFont(f2);
 
         // 로그인 버튼
-        JButton loginButton = new RoundedButton("로그인");
+        JButton loginButton = new RoundedButtonS("로그인");
         loginButton.setBounds(910, 365, 100, 70);
         panel.add(loginButton);
         loginButton.setFont(f1);
 
         // 회원가입 버튼
-        JButton registerButton = new RoundedButton("회원가입");
+        JButton registerButton = new RoundedButtonS("회원가입");
         registerButton.setBounds(700, 445, 200, 30);
         panel.add(registerButton);
         registerButton.setFont(f1);
@@ -233,7 +233,7 @@ class FindUsernameDialog extends JDialog {
         phoneNumberText.setFont(f2);
 
         // 아이디 찾기 버튼
-        JButton findIdButton = new RoundedButton("아이디찾기");
+        JButton findIdButton = new RoundedButtonS("아이디찾기");
         findIdButton.setBounds(30, 220, 150, 30);
         panel.add(findIdButton);
         findIdButton.setFont(f1);
@@ -330,7 +330,7 @@ class FindPasswordDialog extends JDialog {
         phoneNumberText.setFont(f2);
 
         //비밀번호 찾기 버튼
-        JButton FindpwButton = new RoundedButton("비밀번호 찾기");
+        JButton FindpwButton = new RoundedButtonS("비밀번호 찾기");
         FindpwButton.setBounds(30, 220, 150, 30);
         panel.add(FindpwButton);
         FindpwButton.setFont(f1);

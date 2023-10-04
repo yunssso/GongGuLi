@@ -136,7 +136,7 @@ public class SignUp extends JDialog {
         panel.add(residenceList);
 
         // 회원가입 버튼
-        JButton signUpButton = new RoundedButton("회원가입");
+        JButton signUpButton = new RoundedButtonS("회원가입");
         signUpButton.setBounds(638, 535, 200, 30);
         panel.add(signUpButton);
         signUpButton.setFont(f1);
