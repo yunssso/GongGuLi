@@ -7,17 +7,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class LogIn extends JFrame {
-    UserDAO userDAO = new UserDAO();
 
-    private Color c1 = new Color(245, 110, 86);
+    private Color c1 = new Color(255, 240, 227);
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
-    private Font f2 = new Font("SUITE", Font.BOLD, 10);
+    private Font f2 = new Font("SUITE", Font.BOLD, 9);
 
     private JTextField idText;
     private JPasswordField passwordText;
 
+    UserDAO userDAO = new UserDAO();
     public LogIn() {
         setLoginFrame();
         setLeftPanel();
@@ -37,7 +37,7 @@ public class LogIn extends JFrame {
         leftPanel.setBounds(0, 0, 560, 700);
         leftPanel.setBackground(c1);
 
-        ImageIcon imageIcon = new ImageIcon("img/찐공구리.png");
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\user\\Desktop\\찐공구리.png");
         Image image = imageIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(image);
 
@@ -99,9 +99,9 @@ public class LogIn extends JFrame {
         JButton idSearchButton = new JButton("아이디 찾기");
         idSearchButton.setBounds(700, 485, 100, 30);
         idSearchButton.setFont(f2);
-        idSearchButton.setOpaque(false); //버튼 색 투명하게 설정
-        idSearchButton.setContentAreaFilled(false); //바튼 내용 영역 채움
-        idSearchButton.setBorderPainted(false); //버튼 테두리 안그림
+        idSearchButton.setOpaque(false);
+        idSearchButton.setContentAreaFilled(false);
+        idSearchButton.setBorderPainted(false);
         panel.add(idSearchButton);
 
         JLabel verticalLineLabel = new JLabel("|");
@@ -145,6 +145,7 @@ public class LogIn extends JFrame {
                 new SignUp();
             }
         });
+
         // 아이디 찾기 버튼 클릭 시
         idSearchButton.addActionListener(new ActionListener() {
             @Override
@@ -153,6 +154,7 @@ public class LogIn extends JFrame {
                 new FindUsernameDialog(LogIn.this);
             }
         });
+
         // 비밀번호 찾기 버튼 클릭 시
         pwSearchButton.addActionListener(new ActionListener() {
             @Override
@@ -183,12 +185,4 @@ public class LogIn extends JFrame {
     private void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
     }
-
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                new LogIn().setVisible(true);
-//            }
-//        });
-//    }
 }
