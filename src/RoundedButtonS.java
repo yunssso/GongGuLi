@@ -1,28 +1,28 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RoundedButton extends JButton {
-    public RoundedButton() {
+public class RoundedButtonS extends JButton {  // 소정이 라운드 버튼
+    public RoundedButtonS() {
         super();
         decorate();
     }
 
-    public RoundedButton(String text) {
+    public RoundedButtonS(String text) {
         super(text);
         decorate();
     }
 
-    public RoundedButton(Action action) {
+    public RoundedButtonS(Action action) {
         super(action);
         decorate();
     }
 
-    public RoundedButton(Icon icon) {
+    public RoundedButtonS(Icon icon) {
         super(icon);
         decorate();
     }
 
-    public RoundedButton(String text, Icon icon) {
+    public RoundedButtonS(String text, Icon icon) {
         super(text, icon);
         decorate();
     }
