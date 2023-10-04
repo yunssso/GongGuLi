@@ -1,7 +1,9 @@
+package front;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class ImagePanel extends JPanel {  // 패널에 배경 넣기
+public class ImagePanel extends JPanel {
     private Image img;
 
     public ImagePanel(Image img) {
