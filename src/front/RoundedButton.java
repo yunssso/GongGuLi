@@ -1,28 +1,30 @@
+package front;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class RoundedButtonS extends JButton {  // 소정이 라운드 버튼
-    public RoundedButtonS() {
+public class RoundedButton extends JButton {
+    public RoundedButton() {
         super();
         decorate();
     }
 
-    public RoundedButtonS(String text) {
+    public RoundedButton(String text) {
         super(text);
         decorate();
     }
 
-    public RoundedButtonS(Action action) {
+    public RoundedButton(Action action) {
         super(action);
         decorate();
     }
 
-    public RoundedButtonS(Icon icon) {
+    public RoundedButton(Icon icon) {
         super(icon);
         decorate();
     }
 
-    public RoundedButtonS(String text, Icon icon) {
+    public RoundedButton(String text, Icon icon) {
         super(text, icon);
         decorate();
     }
@@ -34,8 +36,8 @@ public class RoundedButtonS extends JButton {  // 소정이 라운드 버튼
 
     @Override
     protected void paintComponent(Graphics g) {
-        Color c = new Color(254,217,183); //배경색 결정
-        Color o = new Color(240, 113, 103); //글자색 결정
+        Color c = Color.WHITE; //배경색 결정
+        Color o = new Color(240, 112, 103); //글자색 결정
         int width = getWidth();
         int height = getHeight();
         Graphics2D graphics = (Graphics2D) g;

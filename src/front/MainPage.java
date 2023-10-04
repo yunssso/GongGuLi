@@ -1,25 +1,19 @@
-/*
 package front;
 
-import back.board.BoardDAO;
-import back.board.BoardDTO;
-import back.member.MemberDTO;
-*/
+import back.BoardDAO;
+import back.BoardDTO;
+import back.UserDTO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class MainPage extends JFrame{
-    /*
+    UserDTO userDTO = null;
     BoardDAO boardDAO = new BoardDAO();
-    MemberDTO memberDTO = new MemberDTO();
-     */
     FrontSetting fs = new FrontSetting();
 
-    /*
-    public MainPage(MemberDTO memberDTO) {  // 생성자
-        this.memberDTO = memberDTO;
+    public MainPage() {  // 생성자
         setListFrame();
         setLeftPanel();
         setCenterPanel();
@@ -27,9 +21,8 @@ public class MainPage extends JFrame{
 
         setVisible(true);
     }
-     */
-
-    public MainPage() {  // 생성자
+    public MainPage(UserDTO userDTO) {  // 생성자
+        this.userDTO = userDTO;
         setListFrame();
         setLeftPanel();
         setCenterPanel();
@@ -62,12 +55,12 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                MyPage mp = new MyPage();
+                MyPage mp = new MyPage(userDTO);
                 mp.setMyPage();
             }
         });
 
-        RoundedButtonY chattingListBtn = new RoundedButtonY("채팅 목록");  // 채팅 목록 버튼
+        RoundedButton chattingListBtn = new RoundedButton("채팅 목록");  // 채팅 목록 버튼
         chattingListBtn.setBounds(120, 35, 130, 40);
         chattingListBtn.setFont(fs.f16);
 
@@ -132,7 +125,7 @@ public class MainPage extends JFrame{
         });
 
         // 게시글 출력
-        JTable postTable = new JTable(fs.mainPageDB, fs.mainPageHeader) {  // 셀 내용 수정 불가 설정
+        JTable postTable = new JTable(boardDAO.selectAll(), fs.mainPageHeader) {  // 셀 내용 수정 불가 설정
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -147,7 +140,10 @@ public class MainPage extends JFrame{
                 if(e.getClickCount() == 2) {
                     int selectRow = postTable.getSelectedRow();
                     int selectColumn = postTable.getSelectedColumn();
-                    readMorePost(postTable, selectRow, selectColumn);
+                    System.out.println(selectRow);
+                    System.out.println(selectColumn);
+                    BoardDTO boardDTO = boardDAO.readMorePost(selectRow);
+                    readMorePost(postTable, boardDTO);
                 }
             }
         });
@@ -156,7 +152,7 @@ public class MainPage extends JFrame{
         listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         listScrollPane.setBounds(50, 110, 680, 470);
 
-        RoundedButtonY newPostBtn = new RoundedButtonY("새 글");  // 새 글 작성 버튼
+        RoundedButton newPostBtn = new RoundedButton("새 글");  // 새 글 작성 버튼
         newPostBtn.setBounds(638, 600, 90, 40);
         newPostBtn.setFont(fs.f16);
 
@@ -213,10 +209,10 @@ public class MainPage extends JFrame{
         chattingListFrame.setVisible(true);
     }
 
-    public void readMorePost(JTable t, int selectRow, int selectColumn) {  // 테이블 값 더블 클릭 시 자세히보기
-        System.out.println(t.getValueAt(selectRow, 2));
+    public void readMorePost(JTable t, BoardDTO boardDTO) {  // 테이블 값 더블 클릭 시 자세히보기
+        System.out.println(boardDTO.getTitle());
 
-        JFrame readMoreFrame = new JFrame((String)t.getValueAt(selectRow, 2));  // 자세히보기 팝업창 프레임
+        JFrame readMoreFrame = new JFrame(boardDTO.getTitle());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);
 
@@ -228,24 +224,24 @@ public class MainPage extends JFrame{
         logoLabel.setFont(fs.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + (String) t.getValueAt(selectRow, 2));
+        JTextArea titleArea = new JTextArea(" 제목: " + boardDTO.getTitle());
         titleArea.setBounds(20, 80, 445, 35);
         titleArea.setFont(fs.f18);
         titleArea.setEditable(false);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + (String) t.getValueAt(selectRow, 0) +
-                "\n 글쓴이: " + (String) t.getValueAt(selectRow, 3));
+        JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
+                "\n 글쓴이: " + boardDTO.getWriter());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + (String) t.getValueAt(selectRow, 1) +
-                "\n현황: " + (String) t.getValueAt(selectRow, 4));
+        JTextArea infoArea2 = new JTextArea("카테고리: " + boardDTO.getCategory() +
+                "\n현황: " + boardDTO.getPeopleNum());
         infoArea2.setBounds(250, 125, 215, 55);
         infoArea2.setFont(fs.f18);
         infoArea2.setEditable(false);
 
-        JTextArea contentArea = new JTextArea(" 내용");
+        JTextArea contentArea = new JTextArea(" " + boardDTO.getContent());
         contentArea.setBounds(20, 210, 445, 250);
         contentArea.setFont(fs.f18);
         contentArea.setEditable(false);
@@ -255,7 +251,7 @@ public class MainPage extends JFrame{
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
-        RoundedButtonY joinChatBtn = new RoundedButtonY("채팅 참여");
+        RoundedButton joinChatBtn = new RoundedButton("채팅 참여");
         joinChatBtn.setBounds(190, 480, 110, 50);
         joinChatBtn.setFont(fs.fb16);
 
@@ -330,7 +326,7 @@ public class MainPage extends JFrame{
         contentScroll.setBounds(20, 185, 445, 250);
         contentScroll.setBorder(null);
 
-        RoundedButtonY postBtn = new RoundedButtonY("올리기");  // 올리기 버튼
+        RoundedButton postBtn = new RoundedButton("올리기");  // 올리기 버튼
         postBtn.setBounds(200, 480, 90, 50);
         postBtn.setFont(fs.fb16);
 
@@ -345,8 +341,10 @@ public class MainPage extends JFrame{
 
                 if(postingErrorCheck(title, region, category, peopleNum, content)) { // 오류 검출 후 DB 넘기기
                     System.out.println("글 올리기: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");
-                    //BoardDTO boardDTO = new BoardDTO(title, region, category, memberDTO.getNickname(), peopleNum, content);
-                    //boardDAO.postingNew(boardDTO);
+
+                    BoardDTO boardDTO = new BoardDTO(title, region, category, userDTO.getNickName(), peopleNum, content);
+                    boardDAO.posting(boardDTO);
+
                     newPostFrame.dispose();
                     setSuccessPopUpFrame();
                 }
@@ -407,7 +405,7 @@ public class MainPage extends JFrame{
         successLabel.setFont(fs.fb16);
         successLabel.setBounds(100, 35, 200, 40);
 
-        RoundedButtonY okBtn = new RoundedButtonY("확인");
+        RoundedButton okBtn = new RoundedButton("확인");
         okBtn.setFont(fs.fb16);
         okBtn.setBounds(105, 95, 80, 30);
 
@@ -416,7 +414,7 @@ public class MainPage extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
                 dispose();
-                new MainPage(/*memberDTO*/);
+                new MainPage(userDTO);
             }
         });
 
@@ -424,9 +422,5 @@ public class MainPage extends JFrame{
         c.add(okBtn);
 
         notifyFrame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new MainPage();
     }
 }

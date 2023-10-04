@@ -1,3 +1,7 @@
+package front;
+
+import back.UserDTO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,9 +10,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class MyPage extends JFrame {
+    UserDTO userDTO = null;
     FrontSetting fs = new FrontSetting();
 
     public MyPage() {  // 생성자
+        setLeftPanel();
+        setCenterPanel();
+        setRightPanel();
+    }
+
+    public MyPage(UserDTO userDTO) {  // 생성자
+        this.userDTO = userDTO;
         setLeftPanel();
         setCenterPanel();
         setRightPanel();
@@ -38,17 +50,17 @@ public class MyPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                MainPage lf = new MainPage();
+                MainPage lf = new MainPage(userDTO);
                 lf.setListFrame();
             }
         });
 
-        JLabel nickNameLabel = new JLabel(fs.soDDuck[1] + " 님");  // 닉네임 라벨
+        JLabel nickNameLabel = new JLabel(userDTO.getNickName() + " 님");  // 닉네임 라벨
         nickNameLabel.setFont(fs.fb20);
         nickNameLabel.setForeground(fs.c3);
         nickNameLabel.setBounds(100, 30, 150, 50);
 
-        RoundedButtonY modifyInfoBtn = new RoundedButtonY("정보 수정");
+        RoundedButton modifyInfoBtn = new RoundedButton("정보 수정");
         modifyInfoBtn.setBounds(35, 350, 100, 30);
         modifyInfoBtn.setFont(fs.f16);
 
@@ -226,11 +238,11 @@ public class MyPage extends JFrame {
         ImagePanel whitePanel = new ImagePanel(new ImageIcon("img/modifyUserInfoPanel.png").getImage());
         whitePanel.setBounds(35, 80, 310, 280);
 
-        JLabel userNameLabel = new JLabel("이름                    " + fs.soDDuck[0]);
+        JLabel userNameLabel = new JLabel("이름                    " + userDTO.getName());
         userNameLabel.setBounds(30, 20, 300, 30);
         userNameLabel.setFont(fs.f16);
 
-        JLabel userIDLabel = new JLabel("아이디                 " + fs.soDDuck[2]);
+        JLabel userIDLabel = new JLabel("아이디                 " + userDTO.getUserId());
         userIDLabel.setBounds(30, 50, 300, 30);
         userIDLabel.setFont(fs.f16);
 
@@ -238,7 +250,7 @@ public class MyPage extends JFrame {
         userNickNameLabel.setBounds(30, 80, 120, 30);
         userNickNameLabel.setFont(fs.f16);
 
-        JTextField userNickNameField = new JTextField(fs.soDDuck[1]);
+        JTextField userNickNameField = new JTextField(userDTO.getNickName());
         userNickNameField.setBounds(157, 80, 130, 30);
 
         JLabel userPWLabel = new JLabel("비밀번호" );
@@ -262,20 +274,20 @@ public class MyPage extends JFrame {
         userRegionLabel.setFont(fs.f16);
 
         JComboBox userRegionBtn = new JComboBox(fs.regionArr);
-        userRegionBtn.setSelectedItem(fs.soDDuck[4]);
+        userRegionBtn.setSelectedItem(userDTO.getRegion());
         userRegionBtn.setBounds(157, 170, 95, 30);
         userRegionBtn.setFont(fs.f16);
 
         // 휴대폰 번호랑 생년월일이 정보 수정에 꼭 있어야할까
-        JLabel userPhoneNumberLabel = new JLabel("휴대폰 번호         " + fs.soDDuck[5]);
+        JLabel userPhoneNumberLabel = new JLabel("휴대폰 번호         " + userDTO.getPhoneNum());
         userPhoneNumberLabel.setBounds(30, 200, 300,  30);
         userPhoneNumberLabel.setFont(fs.f16);
 
-        JLabel userBirthLabel = new JLabel("생년월일             " + fs.soDDuck[6]);
+        JLabel userBirthLabel = new JLabel("생년월일             " + userDTO.getBirth());
         userBirthLabel.setBounds(30, 230, 300, 30);
         userBirthLabel.setFont(fs.f16);
 
-        RoundedButtonY modifyUserInfoBtn = new RoundedButtonY("수정하기");
+        RoundedButton modifyUserInfoBtn = new RoundedButton("수정하기");
         modifyUserInfoBtn.setBounds(143, 385, 100, 40);
         modifyUserInfoBtn.setFont(fs.fb16);
 
@@ -356,7 +368,7 @@ public class MyPage extends JFrame {
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
-        RoundedButtonY modifyPostBtn = new RoundedButtonY("수정하기");
+        RoundedButton modifyPostBtn = new RoundedButton("수정하기");
         modifyPostBtn.setBounds(190, 480, 110, 50);
         modifyPostBtn.setFont(fs.fb16);
 
@@ -448,7 +460,6 @@ public class MyPage extends JFrame {
         readMoreFrame.setVisible(true);
     }
 
-
     // get메소드로 title 등 매개변수를 받아 JTextField의 기본 텍스트로 선정하기
     private void modifyMyPost() {  // 글 수정하기
         JFrame modifyFrame = new JFrame("수정하기");   // 수정 프레임
@@ -509,7 +520,7 @@ public class MyPage extends JFrame {
         contentScroll.setBounds(20, 185, 445, 250);
         contentScroll.setBorder(null);
 
-        RoundedButtonY modifyBtn = new RoundedButtonY("올리기");  // 수정 버튼
+        RoundedButton modifyBtn = new RoundedButton("올리기");  // 수정 버튼
         modifyBtn.setBounds(200, 480, 90, 50);
         modifyBtn.setFont(fs.fb16);
 
@@ -570,7 +581,6 @@ public class MyPage extends JFrame {
         else return false;
     }
 
-
     private void setSuccessPopUpFrame() {  // 수정 완료 팝업
         JFrame notifyFrame = new JFrame();
         notifyFrame.setSize(300, 200);
@@ -585,7 +595,7 @@ public class MyPage extends JFrame {
         successLabel.setFont(fs.fb16);
         successLabel.setBounds(110, 35, 200, 40);
 
-        RoundedButtonY okBtn = new RoundedButtonY("확인");
+        RoundedButton okBtn = new RoundedButton("확인");
         okBtn.setFont(fs.fb16);
         okBtn.setBounds(105, 95, 80, 30);
 
@@ -594,7 +604,7 @@ public class MyPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
                 // dispose(); 메인프레임이랑 똑같은디 왜 걍 꺼지냐 ㅋㅋ;
-                new MyPage();
+                new MyPage(userDTO);
             }
         });
 
@@ -603,5 +613,4 @@ public class MyPage extends JFrame {
 
         notifyFrame.setVisible(true);
     }
-
 }
