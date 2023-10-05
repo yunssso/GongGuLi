@@ -247,7 +247,7 @@ public class MainPage extends JFrame{
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: +변수");
+        JLabel viewCountLabel = new JLabel("조회수: " + boardDTO.getView());
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
@@ -342,7 +342,14 @@ public class MainPage extends JFrame{
                 if(postingErrorCheck(title, region, category, peopleNum, content)) { // 오류 검출 후 DB 넘기기
                     System.out.println("글 올리기: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");
 
-                    BoardDTO boardDTO = new BoardDTO(title, region, category, userDTO.getNickName(), peopleNum, content);
+                    BoardDTO boardDTO = new BoardDTO();
+                    boardDTO.setTitle(title);
+                    boardDTO.setRegion(region);
+                    boardDTO.setCategory(category);
+                    boardDTO.setWriter(userDTO.getNickName());
+                    boardDTO.setPeopleNum(peopleNum);
+                    boardDTO.setContent(content);
+
                     boardDAO.posting(boardDTO);
 
                     newPostFrame.dispose();

@@ -9,15 +9,10 @@ public class BoardDTO {
     private String peopleNum;
     private String content;
     private String postingTime;
+    private int view;
 
-    public BoardDTO(String title, String region, String category, String writer, String peopleNum, String content) {
+    public BoardDTO() {
         super();
-        this.title = title;
-        this.region = region;
-        this.category = category;
-        this.writer = writer;
-        this.peopleNum = peopleNum;
-        this.content = content;
     }
 
     public int getBoardId() {
@@ -82,5 +77,12 @@ public class BoardDTO {
 
     public void setPostingTime(String postingTime) {
         this.postingTime = postingTime;
+    }
+
+    public int getView() {
+        return view;
+    }
+    public void setView(int view) {
+        this.view = view;
     }
 }
