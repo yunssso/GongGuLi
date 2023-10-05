@@ -207,11 +207,17 @@ public class MyPage extends JFrame {
         userInfoPanel.setBackground(Color.white);
         userInfoPanel.setBounds(25, 150, 210, 190);
 
-        for (int i = 0; i < 7; i++) {
+        String[] userInfo = new String[5];
+
+        userInfo[0] = userDTO.getName();
+        userInfo[1] = userDTO.getUserId();
+        userInfo[2] = userDTO.getRegion();
+        userInfo[3] = userDTO.getPhoneNum();
+        userInfo[4] = userDTO.getBirth();
+
+        for (int i = 0; i < userInfo.length; i++) {
             int size = i;
-            if (i==1 || i==3) i++;  // 비밀번호 표시 x
-            else if (i>1) size--; if (i>3) size--;
-            JLabel info = new JLabel(fs.userInfoHeader[i] + ": " + fs.soDDuck[i]);
+            JLabel info = new JLabel(fs.userInfoHeader[i] + ": " + userInfo[i]);
             info.setFont(fs.fb14);
             info.setForeground(fs.c3);
             info.setBounds(15, 20+(30*size), 240, 20);
