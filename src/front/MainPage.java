@@ -230,7 +230,7 @@ public class MainPage extends JFrame{
         titleArea.setEditable(false);
 
         JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 글쓴이: " + boardDTO.getWriter());
+                "\n 글쓴이: " + boardDTO.getNickName());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
@@ -346,7 +346,7 @@ public class MainPage extends JFrame{
                     boardDTO.setTitle(title);
                     boardDTO.setRegion(region);
                     boardDTO.setCategory(category);
-                    boardDTO.setWriter(userDTO.getNickName());
+                    boardDTO.setNickName(userDTO.getNickName());
                     boardDTO.setPeopleNum(peopleNum);
                     boardDTO.setContent(content);
 

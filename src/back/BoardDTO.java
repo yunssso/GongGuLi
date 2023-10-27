@@ -5,7 +5,7 @@ public class BoardDTO {
     private String title;
     private String region;
     private String category;
-    private String writer;
+    private String nickName;
     private String peopleNum;
     private String content;
     private String postingTime;
@@ -47,12 +47,12 @@ public class BoardDTO {
         this.category = category;
     }
 
-    public String getWriter() {
-        return writer;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPeopleNum() {

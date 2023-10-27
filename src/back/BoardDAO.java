@@ -25,7 +25,7 @@ public class BoardDAO {
                 boardDTO.setTitle(rs.getString("title"));
                 boardDTO.setRegion(rs.getString("region"));
                 boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setWriter(rs.getString("writer"));
+                boardDTO.setNickName(rs.getString("nickName"));
                 boardDTO.setPeopleNum(rs.getString("peopleNum"));
                 boardDTO.setContent(rs.getString("content"));
 
@@ -44,7 +44,7 @@ public class BoardDAO {
 
         for (int i = 0; i < list.size(); i++) {
             BoardDTO dto = list.get(i);
-            data[i] = new String[]{dto.getRegion(), dto.getCategory(), dto.getTitle(), dto.getWriter(), dto.getPeopleNum()};
+            data[i] = new String[]{dto.getRegion(), dto.getCategory(), dto.getTitle(), dto.getNickName(), dto.getPeopleNum()};
         }
         System.out.println("2차원 배열로 변환 완료.");
 
@@ -65,7 +65,7 @@ public class BoardDAO {
                 boardDTO.setTitle(rs.getString("title"));
                 boardDTO.setRegion(rs.getString("region"));
                 boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setWriter(rs.getString("writer"));
+                boardDTO.setNickName(rs.getString("nickName"));
                 boardDTO.setPeopleNum(rs.getString("peopleNum"));
                 boardDTO.setContent(rs.getString("content"));
                 boardDTO.setView(rs.getInt("view") + 1);
@@ -76,7 +76,7 @@ public class BoardDAO {
             pt.setString(1, boardDTO.getTitle());
             pt.setString(2, boardDTO.getRegion());
             pt.setString(3, boardDTO.getCategory());
-            pt.setString(4, boardDTO.getWriter());
+            pt.setString(4, boardDTO.getNickName());
             pt.setString(5, boardDTO.getPeopleNum());
             pt.setString(6, boardDTO.getContent());
             pt.execute();
@@ -104,7 +104,7 @@ public class BoardDAO {
 
     public void posting(BoardDTO boardDTO) {
         conn = DBConnector.getConnection();
-        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, writer, view) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, nickName, view) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(insertSQL);
             pt.setString(1, boardDTO.getTitle());
@@ -112,7 +112,7 @@ public class BoardDAO {
             pt.setString(3, boardDTO.getCategory());
             pt.setString(4, boardDTO.getPeopleNum());
             pt.setString(5, boardDTO.getContent());
-            pt.setString(6, boardDTO.getWriter());
+            pt.setString(6, boardDTO.getNickName());
             pt.setInt(7, 0);
 
             if (!pt.execute()) {
