@@ -1,4 +1,4 @@
-package back;
+package back.user;
 
 public class UserDTO {
     private String nickName;

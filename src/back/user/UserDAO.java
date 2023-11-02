@@ -1,4 +1,4 @@
-package back;
+package back.user;
 
 import database.DBConnector;
 import front.MainPage;

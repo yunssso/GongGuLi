@@ -1,4 +1,4 @@
-package back;
+package back.board;
 
 import database.DBConnector;
 

@@ -1,8 +1,8 @@
 package front;
 
-import back.BoardDAO;
-import back.BoardDTO;
-import back.UserDTO;
+import back.board.BoardDAO;
+import back.board.BoardDTO;
+import back.user.UserDTO;
 
 import javax.swing.*;
 import java.awt.*;

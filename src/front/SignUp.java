@@ -1,7 +1,7 @@
 package front;
 
-import back.UserDAO;
-import back.UserDTO;
+import back.user.UserDAO;
+import back.user.UserDTO;
 
 import javax.swing.*;
 import java.awt.*;
