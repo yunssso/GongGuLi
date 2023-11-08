@@ -1,7 +1,7 @@
 package front;
 
-import back.UserDAO;
-import back.UserDTO;
+import back.user.UserDAO;
+import back.user.UserDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -151,25 +151,34 @@ public class SignUp extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {
-                    String username = idText.getText();
+                    String userId = idText.getText();
                     char[] password = passwordText.getPassword();
                     char[] passwordCheck = pwCheckText.getPassword();
                     String name = nameText.getText();
                     String birth = birthText.getText();
-                    String phoneNumber = phoneNumberText.getText();
+                    String phoneNum = phoneNumberText.getText();
                     String nickName = nickNameText.getText();
-                    String residence = (String) residenceList.getSelectedItem();
+                    String region = (String) residenceList.getSelectedItem();
 
-                    System.out.println("아이디: " + username);
+                    System.out.println("아이디: " + userId);
                     System.out.println("비밀번호: " + new String(password));
                     System.out.println("비밀번호 확인: " + new String(passwordCheck));
                     System.out.println("이름: " + name);
                     System.out.println("닉네임: " + nickName);
                     System.out.println("생년월일: " + birth);
-                    System.out.println("휴대폰 번호: " + phoneNumber);
-                    System.out.println("거주 지역: " + residence);
+                    System.out.println("휴대폰 번호: " + phoneNum);
+                    System.out.println("거주 지역: " + region);
 
-                    UserDTO userDTO = new UserDTO(nickName, name, username, new String(password), residence, phoneNumber, birth);
+                    UserDTO userDTO = new UserDTO();
+
+                    userDTO.setNickName(nickName);
+                    userDTO.setName(name);
+                    userDTO.setUserId(userId);
+                    userDTO.setPassword(new String(password));
+                    userDTO.setRegion(region);
+                    userDTO.setPhoneNum(phoneNum);
+                    userDTO.setBirth(birth);
+
                     UserDAO userDAO = new UserDAO();
                     userDAO.signUp(userDTO);
                     new LogIn();

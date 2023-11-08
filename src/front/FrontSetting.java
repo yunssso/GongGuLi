@@ -30,7 +30,7 @@ public class FrontSetting extends JFrame{
     String myPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "1/4"},
             {"충청남도", "OTT", "얏호", "3/4"}};
 
-    String userInfoHeader[] = {"이름", "닉네임", "아이디", "비밀번호", "지역", "휴대폰 번호", "생년월일"};
+    String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
     String soDDuck[] = {"윤소정", "윤소떡소떡", "sodduck0", "sodduckpass01!", "충청남도", "01036207566", "031122"};
     //  이름 닉네임 아이디 비밀번호 지역 폰번호 생일
     int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯

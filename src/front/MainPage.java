@@ -1,8 +1,8 @@
 package front;
 
-import back.BoardDAO;
-import back.BoardDTO;
-import back.UserDTO;
+import back.board.BoardDAO;
+import back.board.BoardDTO;
+import back.user.UserDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -230,7 +230,7 @@ public class MainPage extends JFrame{
         titleArea.setEditable(false);
 
         JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 글쓴이: " + boardDTO.getWriter());
+                "\n 글쓴이: " + boardDTO.getNickName());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
@@ -247,7 +247,7 @@ public class MainPage extends JFrame{
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: +변수");
+        JLabel viewCountLabel = new JLabel("조회수: " + boardDTO.getView());
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
@@ -342,7 +342,14 @@ public class MainPage extends JFrame{
                 if(postingErrorCheck(title, region, category, peopleNum, content)) { // 오류 검출 후 DB 넘기기
                     System.out.println("글 올리기: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");
 
-                    BoardDTO boardDTO = new BoardDTO(title, region, category, userDTO.getNickName(), peopleNum, content);
+                    BoardDTO boardDTO = new BoardDTO();
+                    boardDTO.setTitle(title);
+                    boardDTO.setRegion(region);
+                    boardDTO.setCategory(category);
+                    boardDTO.setNickName(userDTO.getNickName());
+                    boardDTO.setPeopleNum(peopleNum);
+                    boardDTO.setContent(content);
+
                     boardDAO.posting(boardDTO);
 
                     newPostFrame.dispose();

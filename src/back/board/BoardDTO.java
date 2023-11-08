@@ -1,23 +1,18 @@
-package back;
+package back.board;
 
 public class BoardDTO {
     private int boardId;
     private String title;
     private String region;
     private String category;
-    private String writer;
+    private String nickName;
     private String peopleNum;
     private String content;
     private String postingTime;
+    private int view;
 
-    public BoardDTO(String title, String region, String category, String writer, String peopleNum, String content) {
+    public BoardDTO() {
         super();
-        this.title = title;
-        this.region = region;
-        this.category = category;
-        this.writer = writer;
-        this.peopleNum = peopleNum;
-        this.content = content;
     }
 
     public int getBoardId() {
@@ -52,12 +47,12 @@ public class BoardDTO {
         this.category = category;
     }
 
-    public String getWriter() {
-        return writer;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPeopleNum() {
@@ -82,5 +77,12 @@ public class BoardDTO {
 
     public void setPostingTime(String postingTime) {
         this.postingTime = postingTime;
+    }
+
+    public int getView() {
+        return view;
+    }
+    public void setView(int view) {
+        this.view = view;
     }
 }

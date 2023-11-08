@@ -1,4 +1,4 @@
-package back;
+package back.user;
 
 import database.DBConnector;
 import front.MainPage;
@@ -48,7 +48,16 @@ public class UserDAO {
             pt.setString(1, inpId);
             rs = pt.executeQuery();
             if (rs.next()) {
-                UserDTO userDTO = new UserDTO(rs.getString("nickName"), rs.getString("name"), rs.getString("userId"), rs.getString("password"), rs.getString("region"), rs.getString("phoneNum"), rs.getString("birth"));
+                UserDTO userDTO = new UserDTO();
+
+                userDTO.setNickName(rs.getString("nickName"));
+                userDTO.setName(rs.getString("name"));
+                userDTO.setUserId(rs.getString("userId"));
+                userDTO.setPassword(rs.getString("password"));
+                userDTO.setRegion(rs.getString("region"));
+                userDTO.setPhoneNum(rs.getString("phoneNum"));
+                userDTO.setBirth(rs.getString("birth"));
+
                 new MainPage(userDTO);
             }
 
@@ -86,7 +95,6 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-
 
     public void modifyUserInfo() {
 

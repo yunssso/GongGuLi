@@ -1,4 +1,4 @@
-package back;
+package back.user;
 
 public class UserDTO {
     private String nickName;
@@ -9,15 +9,8 @@ public class UserDTO {
     private String phoneNum;
     private String birth;
 
-    public UserDTO(String nickName, String name, String userId, String password, String region, String phoneNum, String birth) {
+    public UserDTO() {
         super();
-        this.nickName = nickName;
-        this.name = name;
-        this.userId = userId;
-        this.password = password;
-        this.region = region;
-        this.phoneNum = phoneNum;
-        this.birth = birth;
     }
 
     public String getNickName() {
