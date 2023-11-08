@@ -55,7 +55,7 @@ public class BoardDAO {
         selectRow++;
         BoardDTO boardDTO = new BoardDTO();
         String selectSQL = "SELECT * FROM boardView WHERE num = ?";
-        String updateSQL = "UPDATE board SET view = view + 1 WHERE title = ? AND region = ? AND category = ? AND writer = ? AND peopleNum = ? AND content = ?";
+        String updateSQL = "UPDATE board SET view = view + 1 WHERE title = ? AND region = ? AND category = ? AND nickName = ? AND peopleNum = ? AND content = ?";
         try {
             conn = DBConnector.getConnection();
             pt = conn.prepareStatement(selectSQL);
