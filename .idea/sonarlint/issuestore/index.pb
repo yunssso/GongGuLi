@@ -11,9 +11,21 @@ K
 src/front/FrontSetting.java,2/e/2ed22c60d51aa91cd3724fb11690eba6b7c6f171
 =
 src/Main.java,9/2/924f089edb4af5ee45c8a9d1129cd28e2b368138
-E
-src/back/UserDTO.java,2/1/21e84889b7084db9a27df76caa0f0c0d118b5a40
 M
 src/database/DBConnector.java,5/6/562f3f889ae4b2341b4c0c1276fcf7c27ac2a990
-F
-src/back/BoardDTO.java,4/2/42396f66a1d6c21a3173a560f3de9dc21c378e73
+L
+src/back/board/BoardDAO.java,a/c/ac575f8796681ab1971de7047f795c2a3421a964
+L
+src/back/board/BoardDTO.java,6/2/62028ed22f4e2efa9a9bcb7a71f51458e098d3f0
+D
+src/front/LogIn.java,c/d/cd82829c81f49a617a26909b51f3787c95361e93
+G
+src/front/MainPage.java,4/3/43cca80802fa9a0e62d19b1fd766949b91a7f853
+E
+src/front/MyPage.java,0/2/023375320bcc9bfe290d4b2c55ae5c96099f1681
+E
+src/front/SignUp.java,0/c/0cfc029c011b6093a1cdcbfe3d480db47631d760
+J
+src/back/user/UserDAO.java,7/4/749e66387a3cb928308ee0520df77d183379e4cc
+J
+src/back/user/UserDTO.java,0/c/0c012b11bbdf5ff294d1e5b4ff65af0c8ed692a4
