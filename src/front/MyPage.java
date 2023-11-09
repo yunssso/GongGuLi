@@ -1,5 +1,6 @@
 package front;
 
+import back.user.UserDAO;
 import back.user.UserDTO;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.awt.event.MouseEvent;
 
 public class MyPage extends JFrame {
     UserDTO userDTO = null;
+    UserDAO userDAO = new UserDAO();
     FrontSetting fs = new FrontSetting();
 
     public MyPage() {  // 생성자
@@ -239,7 +241,7 @@ public class MyPage extends JFrame {
         JLabel modifyUserInfoLabel = new JLabel("정보 수정");
         modifyUserInfoLabel.setForeground(fs.c3);
         modifyUserInfoLabel.setFont(fs.fb20);
-        modifyUserInfoLabel.setBounds(148, 30, 100, 30);
+        modifyUserInfoLabel.setBounds(158, 30, 100, 30);
 
         ImagePanel whitePanel = new ImagePanel(new ImageIcon("img/modifyUserInfoPanel.png").getImage());
         whitePanel.setBounds(35, 80, 310, 280);
@@ -308,6 +310,9 @@ public class MyPage extends JFrame {
                 else if(userRegionBtn.getSelectedItem().equals(" --")) fs.showErrorDialog("지역을 선택해주세요.");
                 else if (userNickNameField.getText().isBlank()) fs.showErrorDialog("닉네임을 입력해주세요.");
                 else checkModify = true;
+                if (userDAO.nickNameCheck(userNickNameField.getText())) {
+                    // 닉네임 변경 가능.
+                }
                 if (checkModify) {
                     System.out.println("수정하기");
 

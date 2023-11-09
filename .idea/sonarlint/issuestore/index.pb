@@ -11,5 +11,3 @@ L
 src/back/board/BoardDTO.java,6/2/62028ed22f4e2efa9a9bcb7a71f51458e098d3f0
 D
 src/front/LogIn.java,c/d/cd82829c81f49a617a26909b51f3787c95361e93
-J
-src/back/user/UserDTO.java,0/c/0c012b11bbdf5ff294d1e5b4ff65af0c8ed692a4

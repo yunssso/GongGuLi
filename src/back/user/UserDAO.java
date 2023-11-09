@@ -99,4 +99,26 @@ public class UserDAO {
     public void modifyUserInfo() {
 
     }
+
+    public boolean nickNameCheck(String inp_nickName) {
+        boolean nickNameCheck = false;
+        conn = DBConnector.getConnection();
+        String existssql = "SELECT exists(select nickName from user where nickName = ?) as cnt;";
+        try {
+            pt = conn.prepareStatement(existssql);
+            pt.setString(1, inp_nickName);
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                int cnt = rs.getInt("cnt");
+                System.out.println(cnt);
+                if (cnt == 0) {
+                    nickNameCheck = true;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("nickNameCheck Error");
+        }
+
+        return nickNameCheck;
+    }
 }
