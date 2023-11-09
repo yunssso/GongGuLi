@@ -12,6 +12,32 @@ public class UserDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
+    public void signUp(UserDTO userDTO) {
+        conn = DBConnector.getConnection();
+        String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            pt = conn.prepareStatement(signInSQL);
+
+            pt.setString(1, userDTO.getNickName());
+            pt.setString(2, userDTO.getName());
+            pt.setString(3, userDTO.getUserId());
+            pt.setString(4, userDTO.getPassword());
+            pt.setString(5, userDTO.getRegion());
+            pt.setString(6, userDTO.getPhoneNum());
+            pt.setString(7, userDTO.getBirth());
+
+            if (!pt.execute()) {
+                System.out.println("회원가입 완료.");
+            }
+
+            pt.close();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("회원가입 실패.");
+            e.printStackTrace();
+        }
+    }
+
     public int logInCheck(String inpId, String inpPassword) {
         int a;
         conn = DBConnector.getConnection();
@@ -70,43 +96,17 @@ public class UserDAO {
         }
     }
 
-    public void signUp(UserDTO userDTO) {
-        conn = DBConnector.getConnection();
-        String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try {
-            pt = conn.prepareStatement(signInSQL);
-
-            pt.setString(1, userDTO.getNickName());
-            pt.setString(2, userDTO.getName());
-            pt.setString(3, userDTO.getUserId());
-            pt.setString(4, userDTO.getPassword());
-            pt.setString(5, userDTO.getRegion());
-            pt.setString(6, userDTO.getPhoneNum());
-            pt.setString(7, userDTO.getBirth());
-
-            if (!pt.execute()) {
-                System.out.println("회원가입 완료.");
-            }
-
-            pt.close();
-            conn.close();
-        } catch (Exception e) {
-            System.out.println("회원가입 실패.");
-            e.printStackTrace();
-        }
-    }
-
     public void modifyUserInfo() {
 
     }
 
-    public boolean nickNameCheck(String inp_nickName) {
+    public boolean nickNameCheck(String inpNickName) {
         boolean nickNameCheck = false;
         conn = DBConnector.getConnection();
         String existssql = "SELECT exists(select nickName from user where nickName = ?) as cnt;";
         try {
             pt = conn.prepareStatement(existssql);
-            pt.setString(1, inp_nickName);
+            pt.setString(1, inpNickName);
             rs = pt.executeQuery();
             if (rs.next()) {
                 int cnt = rs.getInt("cnt");
@@ -120,5 +120,27 @@ public class UserDAO {
         }
 
         return nickNameCheck;
+    }
+
+    public String findID(String inpName, String inpBirth, String inpPhoneNum) {
+        String userID = "";
+        conn = DBConnector.getConnection();
+        String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
+        try {
+            pt = conn.prepareStatement(selectsql);
+            pt.setString(1, inpName);
+            pt.setString(2, inpBirth);
+            pt.setString(3, inpPhoneNum);
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                userID = rs.getString(1);
+            } else {
+                System.out.println("정보가 존재하지 않음.");
+            }
+        } catch (Exception e) {
+            System.out.println("findID Error");
+        }
+
+        return userID;
     }
 }

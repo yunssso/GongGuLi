@@ -151,7 +151,7 @@ public class LogIn extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 아이디 찾기 창을 띄우기
-                new FindUsernameDialog(LogIn.this);
+                new FindUserID(LogIn.this);
             }
         });
 
@@ -160,7 +160,7 @@ public class LogIn extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 비밀번호 찾기 창을 띄우기
-                new FindPasswordDialog(LogIn.this);
+                new FindPassword(LogIn.this);
             }
         });
     }
