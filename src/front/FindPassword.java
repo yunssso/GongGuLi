@@ -1,11 +1,15 @@
 package front;
 
+import back.user.UserDAO;
+import back.user.UserDTO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class FindPassword extends JDialog {
+    UserDAO userDAO = new UserDAO();
     private JTextField nameText;
     private JTextField idText;
     private JTextField birthText;
@@ -76,9 +80,17 @@ class FindPassword extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {
-                    String name = nameText.getText();
-                    String birth = birthText.getText();
-                    String phoneNumber = phoneNumberText.getText();
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setName(nameText.getText());
+                    userDTO.setUserId(idText.getText());
+                    userDTO.setBirth(birthText.getText());
+                    userDTO.setPhoneNum(phoneNumberText.getText());
+                    if (userDAO.findPassword(userDTO)) {
+                        String password = userDTO.getPassword();
+                        System.out.println(password);
+                    } else {
+                        System.out.println("데이터가 존재하지 않습니다.");
+                    }
                 }
             }
         });
