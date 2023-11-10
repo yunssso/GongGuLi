@@ -23,3 +23,5 @@ S
 -.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
 M
 src/front/RoundedButtonR.java,e/1/e191af942811d4ebdff03160979d48e619c6da9f
+E
+src/front/MyPage.java,0/2/023375320bcc9bfe290d4b2c55ae5c96099f1681
