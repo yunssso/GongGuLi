@@ -1,7 +1,5 @@
 package front;
 
-import back.board.BoardDAO;
-import back.board.BoardDTO;
 import back.user.UserDAO;
 import back.user.UserDTO;
 
@@ -15,10 +13,15 @@ import java.awt.event.MouseEvent;
 public class MyPage extends JFrame {
     UserDTO userDTO = null;
     UserDAO userDAO = new UserDAO();
-    BoardDAO boardDAO = new BoardDAO();
     FrontSetting fs = new FrontSetting();
 
     boolean checkNickDup = false;
+
+    public MyPage() {  // 생성자
+        setLeftPanel();
+        setCenterPanel();
+        setRightPanel();
+    }
 
     public MyPage(UserDTO userDTO) {  // 생성자
         this.userDTO = userDTO;
@@ -82,6 +85,13 @@ public class MyPage extends JFrame {
         logoutBtn.addActionListener(new ActionListener() {  // 로그아웃 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
+                int answer = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+                    System.out.println("로그아웃");
+                    new LogIn();
+                    dispose();
+                } else System.out.println("노 로그아웃");
+
                 // 로그인 화면으로
             }
         });
@@ -96,6 +106,20 @@ public class MyPage extends JFrame {
         deleteIdBtn.addActionListener(new ActionListener() {  // 회원탈퇴 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
+                int answer = JOptionPane.showConfirmDialog(null, "회원탈퇴 하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+
+                }
+
+                String password = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
+                System.out.println("비밀번호: " + password);
+
+                if (password.equals(userDTO.getPassword())) {
+                    System.out.println("회원탈퇴");
+                    new LogIn();
+                    dispose();
+                } else System.out.println("노 회원탈퇴");
+
                 // 로그인 화면으로 + 회원 삭제
             }
         });
@@ -136,7 +160,7 @@ public class MyPage extends JFrame {
         myPostingPanel.setBounds(30, 120, 340, 500);
         myPostingPanel.setBackground(Color.WHITE);
 
-        JTable myPostingTable = new JTable(boardDAO.printMyBoard(userDTO), fs.myPageHeader) { // 셀 내용 수정 불가
+        JTable myPostingTable = new JTable(fs.myPageDB, fs.myPageHeader) { // 셀 내용 수정 불가
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -154,8 +178,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myPostingTable.getSelectedRow();
-                    BoardDTO boardDTO = boardDAO.readMoreMyPost(selectRow);
-                    readMoreMyPost(myPostingTable, selectRow, boardDTO);
+                    int selectColumn = myPostingTable.getSelectedColumn();
+                    readMoreMyPost(myPostingTable, selectRow, selectColumn);
                 }
             }
         });
@@ -221,7 +245,7 @@ public class MyPage extends JFrame {
             JLabel info = new JLabel(fs.userInfoHeader[i] + ": " + userInfo[i]);
             info.setFont(fs.fb14);
             info.setForeground(fs.c3);
-            info.setBounds(15, 25+(30*size), 240, 20);
+            info.setBounds(20, 25+(30*size), 240, 20);
             userInfoPanel.add(info);
         }
 
@@ -386,7 +410,7 @@ public class MyPage extends JFrame {
         c.add(modifyUserInfoBtn);
     }
 
-    public void readMoreMyPost(JTable t, int selectRow, BoardDTO boardDTO) {  // 테이블 값 더블 클릭 시 자세히보기
+    public void readMoreMyPost(JTable t, int selectRow, int selectColumn) {  // 테이블 값 더블 클릭 시 자세히보기
         System.out.println(t.getValueAt(selectRow, 2));
 
         JFrame readMoreFrame = new JFrame((String)t.getValueAt(selectRow, 2));  // 자세히보기 팝업창 프레임
@@ -401,29 +425,29 @@ public class MyPage extends JFrame {
         logoLabel.setFont(fs.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardDTO.getTitle());
+        JTextArea titleArea = new JTextArea(" 제목: " + (String) t.getValueAt(selectRow, 2));
         titleArea.setBounds(20, 80, 445, 35);
         titleArea.setFont(fs.f18);
         titleArea.setEditable(false);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 현황: " + boardDTO.getPeopleNum());
+        JTextArea infoArea1 = new JTextArea(" 지역: " + (String) t.getValueAt(selectRow, 0) +
+                "\n 현황: " + (String) t.getValueAt(selectRow, 3));
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardDTO.getCategory());
+        JTextArea infoArea2 = new JTextArea("카테고리: " + (String) t.getValueAt(selectRow, 1));
         infoArea2.setBounds(250, 125, 215, 55);
         infoArea2.setFont(fs.f18);
         infoArea2.setEditable(false);
 
-        JTextArea contentArea = new JTextArea(boardDTO.getContent());
+        JTextArea contentArea = new JTextArea(" 내용");
         contentArea.setBounds(20, 210, 445, 250);
         contentArea.setFont(fs.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: "+ boardDTO.getView());
+        JLabel viewCountLabel = new JLabel("조회수: +변수");
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
@@ -450,7 +474,10 @@ public class MyPage extends JFrame {
         deletePostBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("삭제");
+                int answer = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+                    System.out.println("삭제");
+                } else System.out.println("삭제 안함");
             }
         });
 
