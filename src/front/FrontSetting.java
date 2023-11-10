@@ -68,6 +68,10 @@ public class FrontSetting extends JFrame{
     }
 
     public void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showCompleteDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "", JOptionPane.INFORMATION_MESSAGE);
     }
 }
