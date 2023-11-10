@@ -21,3 +21,5 @@ S
 #.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
 ]
 -.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
+M
+src/front/RoundedButtonR.java,e/1/e191af942811d4ebdff03160979d48e619c6da9f
