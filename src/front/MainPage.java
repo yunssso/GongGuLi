@@ -44,7 +44,7 @@ public class MainPage extends JFrame{
         leftPanel.setBackground(fs.mainColor);
 
         ImagePanel logoImg = new ImagePanel(new ImageIcon("img/logo2.png").getImage());
-        logoImg.setBounds(50, 500, 200, 100);
+        logoImg.setBounds(50, 430, 200, 200);
 
         ImageIcon profileImgIcon = new ImageIcon("img/profile2.png");
         JButton profileBtn = new JButton(profileImgIcon);  // 유저 프로필 버튼
@@ -128,7 +128,7 @@ public class MainPage extends JFrame{
         searchBtn.setBorder(null);
         searchBtn.setBounds(702, 40, 30, 30 );
 
-        String searchFilter[] = {"지역", "카테고리", "제목", "작성자"};
+        String searchFilter[] =  {"제목", "작성자"};
         JComboBox searchFilterBox = new JComboBox(searchFilter);
         searchFilterBox.setBounds(460, 40, 80, 30);
 
