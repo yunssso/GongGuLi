@@ -122,25 +122,42 @@ public class UserDAO {
         return nickNameCheck;
     }
 
-    public String findID(String inpName, String inpBirth, String inpPhoneNum) {
-        String userID = "";
+    public boolean findID(UserDTO userDTO) {
         conn = DBConnector.getConnection();
         String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
         try {
             pt = conn.prepareStatement(selectsql);
-            pt.setString(1, inpName);
-            pt.setString(2, inpBirth);
-            pt.setString(3, inpPhoneNum);
+            pt.setString(1, userDTO.getName());
+            pt.setString(2, userDTO.getBirth());
+            pt.setString(3, userDTO.getPhoneNum());
             rs = pt.executeQuery();
             if (rs.next()) {
-                userID = rs.getString(1);
-            } else {
-                System.out.println("정보가 존재하지 않음.");
+                userDTO.setUserId(rs.getString(1));
+                return true;
             }
         } catch (Exception e) {
-            System.out.println("findID Error");
+            System.out.println("FindID Error");
         }
+        return false;
+    }
 
-        return userID;
+    public boolean findPassword(UserDTO userDTO) {
+        conn = DBConnector.getConnection();
+        String selectsql = "select password from user where name = ? and userID = ? and birth = ? and phoneNum= ?;";
+        try {
+            pt = conn.prepareStatement(selectsql);
+            pt.setString(1, userDTO.getName());
+            pt.setString(2, userDTO.getUserId());
+            pt.setString(3, userDTO.getBirth());
+            pt.setString(4, userDTO.getPhoneNum());
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                userDTO.setPassword(rs.getString(1));
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("FindPassword Error");
+        }
+        return false;
     }
 }
