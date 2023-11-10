@@ -182,6 +182,7 @@ public class SignUp extends JDialog {
                     UserDAO userDAO = new UserDAO();
                     userDAO.signUp(userDTO);
                     new LogIn();
+                    dispose();
                 }
             }
         });

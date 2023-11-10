@@ -13,11 +13,28 @@ public class BoardDAO {
     Connection conn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
-    public String[][] selectAll() {
+
+    // arraylist에 역순으로 담은 뒤, 2차원 배열로 저장 및 전달
+    public String[][] printBoard(String region, String category) {
+        System.out.println(region + " " + category);
+        // 역순으로 리스트에 담기
         List<BoardDTO> list = new ArrayList<>();
         conn = DBConnector.getConnection();
-        String selectSQL = "SELECT * FROM board ORDER BY postingTime DESC"; // 역순으로 리스트에 담기
         try {
+            String selectSQL = "";
+            if (region.equals(" --") && !category.equals(" --")) {
+                selectSQL = "SELECT * FROM board WHERE category = ? ORDER BY postingTime DESC ;";
+                pt.setString(1, category);
+            } else if (!region.equals(" --") && category.equals(" --")) {
+                selectSQL = "SELECT * FROM board WHERE region = ? ORDER BY postingTime DESC ;";
+                pt.setString(1, region);
+            } else if (!region.equals(" --") && !category.equals(" --")) {
+                selectSQL = "SELECT * FROM board WHERE region = ? WHERE category = ? ORDER BY postingTime DESC ;";
+                pt.setString(1, region);
+                pt.setString(2, category);
+            } else {
+                selectSQL = "SELECT * FROM board ORDER BY postingTime DESC";
+            }
             pt = conn.prepareStatement(selectSQL);
             rs = pt.executeQuery();
             while (rs.next()) {
@@ -43,8 +60,8 @@ public class BoardDAO {
         String[][] data = new String[list.size()][];    // ArrayList에 저장한 데이터들 2차원 배열로 변환해주기.
 
         for (int i = 0; i < list.size(); i++) {
-            BoardDTO dto = list.get(i);
-            data[i] = new String[]{dto.getRegion(), dto.getCategory(), dto.getTitle(), dto.getNickName(), dto.getPeopleNum()};
+            BoardDTO boardDTO = list.get(i);
+            data[i] = new String[]{boardDTO.getRegion(), boardDTO.getCategory(), boardDTO.getTitle(), boardDTO.getNickName(), boardDTO.getPeopleNum()};
         }
         System.out.println("2차원 배열로 변환 완료.");
 
