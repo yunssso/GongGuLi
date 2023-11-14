@@ -1,6 +1,6 @@
-package back.server;
+package back.Server;
 
-import back.server.handler.AccountHandler;
+import back.Server.Handler.AccountHandler;
 
 import java.net.ServerSocket;
 import java.net.Socket;
