@@ -1,9 +1,6 @@
 package front;
 
-import back.Server.Dto.FindUserIdDto;
-import back.Server.Dto.SignUpDto;
-import back.user.UserDAO;
-import back.user.UserDTO;
+import back.dto.FindUserIdDto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,6 +89,8 @@ class FindUserId extends JDialog {
 
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
+
+                    
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

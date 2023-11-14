@@ -1,9 +1,7 @@
 package front;
 
-import back.Server.*;
-import back.Server.Dto.SignUpDto;
-import back.board.*;
-import back.user.*;
+import back.dto.ResponseDto;
+import back.dto.SignUpDto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -158,8 +156,8 @@ public class SignUp extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 try {
                     String userId = idText.getText();
-                    char[] password = passwordText.getPassword();
-                    char[] passwordCheck = pwCheckText.getPassword();
+                    String password = String.valueOf(passwordText.getPassword()) ;
+                    String passwordCheck = String.valueOf(pwCheckText.getPassword());
                     String name = nameText.getText();
                     String birth = birthText.getText();
                     String phoneNum = phoneNumberText.getText();
@@ -183,15 +181,13 @@ public class SignUp extends JDialog{
                     oos.writeObject(SignUpInfo);
 
                     //Status + 메세지 형식으로 서버에서 응답 받도록 구성, HttpStatus를 기반으로 구성
-                    String response = (String) ois.readObject();
+                    ResponseDto response = (ResponseDto) ois.readObject();
 
-                    if (response.contains("201 CREATED")) { //회원가입 성공
-                        System.out.println(response.replaceAll("201 CREATED ", ""));
+                    if (response.responseCode() == 200) { //회원가입 성공
+                        System.out.println(response.message());
                         new LogIn();
-                    } else if (response.contains("409 CONFLICT")) { //아이디 중복, 이메일 중복
-                        System.out.println(response.replaceAll("409 CONFLICT ", ""));
-                    } else if (response.contains("400 BAD_REQUEST")) { //아이디, 비밀번호, 이메일, 이름 형식 오류
-                        System.out.println(response.replaceAll("400 BAD_REQUEST ", ""));
+                    } else if (response.responseCode() >= 201 && response.responseCode() <= 213) { //회원가입 실패
+                        System.out.println(response.message());
                     }
 
                     oos.close();

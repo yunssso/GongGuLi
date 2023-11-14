@@ -1,6 +1,7 @@
-package back.board;
+package back.dao;
 
-import back.user.UserDTO;
+import back.BoardDTO;
+import back.UserDTO;
 import database.DBConnector;
 
 import java.sql.Connection;
