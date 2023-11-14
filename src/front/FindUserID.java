@@ -102,16 +102,6 @@ class FindUserId extends JDialog {
         setVisible(true);
     }
 
-    private boolean validateInput() {
-        
-        if (name.isEmpty() || birth.isEmpty() || phoneNumber.isEmpty()) {
-            showErrorDialog("모든 항목을 입력하세요.");
-            return false;
-        }
-
-        return true;
-    }
-
     private void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
     }
