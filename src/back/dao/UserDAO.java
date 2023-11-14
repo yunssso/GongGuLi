@@ -1,5 +1,7 @@
-package back.user;
+package back.dao;
 
+import back.dto.SignUpDto;
+import back.UserDTO;
 import database.DBConnector;
 import front.MainPage;
 
@@ -12,19 +14,19 @@ public class UserDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-    public void signUp(UserDTO userDTO) {
+    public void signUp(SignUpDto signUpInfo) {
         conn = DBConnector.getConnection();
         String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(signInSQL);
 
-            pt.setString(1, userDTO.getNickName());
-            pt.setString(2, userDTO.getName());
-            pt.setString(3, userDTO.getUserId());
-            pt.setString(4, userDTO.getPassword());
-            pt.setString(5, userDTO.getRegion());
-            pt.setString(6, userDTO.getPhoneNum());
-            pt.setString(7, userDTO.getBirth());
+            pt.setString(1, signUpInfo.nickName());
+            pt.setString(2, signUpInfo.name());
+            pt.setString(3, signUpInfo.userId());
+            pt.setString(4, signUpInfo.password());
+            pt.setString(5, signUpInfo.region());
+            pt.setString(6, signUpInfo.phoneNumber());
+            pt.setString(7, signUpInfo.birth());
 
             if (!pt.execute()) {
                 System.out.println("회원가입 완료.");

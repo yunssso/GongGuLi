@@ -1,6 +1,6 @@
 package front;
 
-import back.user.UserDAO;
+import back.dao.UserDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,7 +156,7 @@ public class LogIn extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 아이디 찾기 창을 띄우기
-                new FindUserID(LogIn.this);
+                new FindUserId(LogIn.this);
             }
         });
 

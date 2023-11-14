@@ -1,4 +1,4 @@
-package back.board;
+package back;
 
 public class BoardDTO {
     private int boardId;
