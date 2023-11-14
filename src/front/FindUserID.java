@@ -1,5 +1,7 @@
 package front;
 
+import back.Server.Dto.FindUserIdDto;
+import back.Server.Dto.SignUpDto;
 import back.user.UserDAO;
 import back.user.UserDTO;
 
@@ -7,16 +9,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
-class FindUserID extends JDialog {
-    UserDAO userDAO = new UserDAO();
+class FindUserId extends JDialog {
     private JTextField nameText;
     private JTextField birthText;
     private JTextField phoneNumberText;
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
     private Font f2 = new Font("SUITE", Font.BOLD, 9);
 
-    public FindUserID(JFrame parentFrame) {
+    private Socket clientSocket = null;
+
+    public FindUserId(JFrame parentFrame) {
         setTitle("아이디 찾기");
         setSize(400, 300);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -67,19 +75,27 @@ class FindUserID extends JDialog {
         findIdButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (validateInput()) {
-                    UserDTO userDTO = new UserDTO();
-                    userDTO.setName(nameText.getText());
-                    userDTO.setBirth(birthText.getText());
-                    userDTO.setPhoneNum(phoneNumberText.getText());
-                    if (userDAO.findID(userDTO)) {
-                        String userId = userDTO.getUserId(); // 아이디 찾기 성공
-                        System.out.println(userId);
-                    } else {
-                        // 데이터가 존재하지 않음.
-                        System.out.println("데이터가 존재하지 않습니다.");
-                    }
+                try {
+                    String name = nameText.getText().trim();
+                    String birth = birthText.getText().trim();
+                    String phoneNumber = phoneNumberText.getText().trim();
+
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1025);
+
+                    //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+                    FindUserIdDto FindUserIdInfo = new FindUserIdDto(name, birth, phoneNumber);
+                    
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
+                
             }
         });
         add(panel);
@@ -87,10 +103,7 @@ class FindUserID extends JDialog {
     }
 
     private boolean validateInput() {
-        String name = nameText.getText().trim();
-        String birth = birthText.getText().trim();
-        String phoneNumber = phoneNumberText.getText().trim();
-
+        
         if (name.isEmpty() || birth.isEmpty() || phoneNumber.isEmpty()) {
             showErrorDialog("모든 항목을 입력하세요.");
             return false;
