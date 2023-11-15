@@ -1,5 +1,8 @@
 package back.dao;
 
+import back.dto.FindUserIdDto;
+import back.dto.FindUserPasswordDto;
+import back.dto.LoginDto;
 import back.dto.SignUpDto;
 import back.UserDTO;
 import database.DBConnector;
@@ -40,16 +43,16 @@ public class UserDAO {
         }
     }
 
-    public int logInCheck(String inpId, String inpPassword) {
+    public int logInCheck(LoginDto loginDto) {
         int a;
         conn = DBConnector.getConnection();
         String checkSQL = "SELECT password FROM user WHERE userId = ?";
         try {
             pt = conn.prepareStatement(checkSQL);
-            pt.setString(1, inpId);
+            pt.setString(1, loginDto.userId());
             rs = pt.executeQuery();
             if (rs.next()) {
-                if (rs.getString(1).equals(inpPassword)) {
+                if (rs.getString(1).equals(loginDto.password())) {
                     a = 1;   // 로그인 성공
                 } else {
                     a = 0;   // 비밀번호 불일치
@@ -124,17 +127,17 @@ public class UserDAO {
         return nickNameCheck;
     }
 
-    public boolean findID(UserDTO userDTO) {
+    public boolean findID(FindUserIdDto findUserIdInfo) {
         conn = DBConnector.getConnection();
         String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
         try {
             pt = conn.prepareStatement(selectsql);
-            pt.setString(1, userDTO.getName());
-            pt.setString(2, userDTO.getBirth());
-            pt.setString(3, userDTO.getPhoneNum());
+            pt.setString(1, findUserIdInfo.name());
+            pt.setString(2, findUserIdInfo.birth());
+            pt.setString(3, findUserIdInfo.phoneNumber());
             rs = pt.executeQuery();
             if (rs.next()) {
-                userDTO.setUserId(rs.getString(1));
+                //userDTO.setUserId(rs.getString(1));
                 return true;
             }
         } catch (Exception e) {
@@ -143,18 +146,18 @@ public class UserDAO {
         return false;
     }
 
-    public boolean findPassword(UserDTO userDTO) {
+    public boolean findPassword(FindUserPasswordDto findUserPasswordDto) {
         conn = DBConnector.getConnection();
         String selectsql = "select password from user where name = ? and userID = ? and birth = ? and phoneNum= ?;";
         try {
             pt = conn.prepareStatement(selectsql);
-            pt.setString(1, userDTO.getName());
-            pt.setString(2, userDTO.getUserId());
-            pt.setString(3, userDTO.getBirth());
-            pt.setString(4, userDTO.getPhoneNum());
+            pt.setString(1, findUserPasswordDto.name());
+            pt.setString(2, findUserPasswordDto.userId());
+            pt.setString(3, findUserPasswordDto.birth());
+            pt.setString(4, findUserPasswordDto.phoneNumber());
             rs = pt.executeQuery();
             if (rs.next()) {
-                userDTO.setPassword(rs.getString(1));
+                //userDTO.setPassword(rs.getString(1));
                 return true;
             }
         } catch (Exception e) {

@@ -1,0 +1,77 @@
+
+D
+java:S3740K"/Provide the parametrized type for this generic.(—´Ô
+D
+java:S3740K"/Provide the parametrized type for this generic.(—´Ô
+E
+java:S3740S"/Provide the parametrized type for this generic.(œÄŞú
+E
+java:S3740S"/Provide the parametrized type for this generic.(œÄŞú
+K
+java:S3740"/Provide the parametrized type for this generic.(ˆğĞøûÿÿÿÿ
+K
+java:S3740"/Provide the parametrized type for this generic.(ˆğĞøûÿÿÿÿ
+K
+java:S3740»"/Provide the parametrized type for this generic.(ÿÀŠúÿÿÿÿ
+K
+java:S3740»"/Provide the parametrized type for this generic.(ÿÀŠúÿÿÿÿ
+E
+java:S3740Ã"/Provide the parametrized type for this generic.(€¡§
+E
+java:S3740Ã"/Provide the parametrized type for this generic.(€¡§
+c
+java:S1192<"NDefine a constant instead of duplicating this literal "ì±„íŒ… ëª©ë¡" 3 times.(ÒÊãD
+C
+java:S16043"(Make this anonymous inner class a lambda(ÔÔ‘çüÿÿÿÿ
+>
+java:S1604@"(Make this anonymous inner class a lambda(Šğ²É
+>
+java:S1604W"(Make this anonymous inner class a lambda(¡’Ø±
+C
+java:S1604_"(Make this anonymous inner class a lambda(ÒÒÿÿÿÿÿ
+>
+java:S1604†"(Make this anonymous inner class a lambda(ò¢ƒF
+?
+java:S1604¬"(Make this anonymous inner class a lambda(æï‚â
+D
+java:S1604Ú"(Make this anonymous inner class a lambda(éÙİ£úÿÿÿÿ
+?
+java:S1604°"(Make this anonymous inner class a lambda(™Øì
+K
+java:S1948")Make "userDTO" transient or serializable.(‰ˆ«§şÿÿÿÿ8ÕŸë½1
+L
+java:S1948"*Make "boardDAO" transient or serializable.(ˆ¦èµúÿÿÿÿ8Ä›è½1
+P
+java:S1172".Remove this unused method parameter "userDTO".(Ï¢ŠÊøÿÿÿÿ8×Ÿë½1
+d
+java:S3252""IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(Õû»öşÿÿÿÿ
+F
+java:S1197€"*Move the array designators [] to the type.(‰—­‘ÿÿÿÿÿ
+@	java:S106‰"+Replace this use of System.out by a logger.(Í™³
+F	java:S106œ"+Replace this use of System.out by a logger.(ŒØ¼ûÿÿÿÿ
+F	java:S106"+Replace this use of System.out by a logger.(Ùµ†´ÿÿÿÿÿ
+^
+java:S1117¤"BRename "listScrollPane" which hides the field declared at line 20.(Ò˜ôÀúÿÿÿÿ
+x
+java:S3252¥"\Use static access with "javax.swing.ScrollPaneConstants" for "VERTICAL_SCROLLBAR_AS_NEEDED".(ş¢”Šúÿÿÿÿ
+F
+java:S1197Ò"*Move the array designators [] to the type.(‚òó³ıÿÿÿÿ
+H
+java:S1197Ó",Move the array designators [][] to the type.(ÊÕññşÿÿÿÿ
+x
+java:S3252×"\Use static access with "javax.swing.ScrollPaneConstants" for "VERTICAL_SCROLLBAR_AS_NEEDED".(ş¢”Šúÿÿÿÿ
+?
+java:S1172á"(Remove this unused method parameter "t".(˜Êß®
+A	java:S106â"+Replace this use of System.out by a logger.(£Óù
+x
+java:S3252Ò"\Use static access with "javax.swing.ScrollPaneConstants" for "VERTICAL_SCROLLBAR_AS_NEEDED".(·ÀÃ™ùÿÿÿÿ
+v
+java:S3252Ò"ZUse static access with "javax.swing.ScrollPaneConstants" for "HORIZONTAL_SCROLLBAR_NEVER".(·ÀÃ™ùÿÿÿÿ
+V
+java:S1117Ş":Rename "region" which hides the field declared at line 16.(«öÓÑÿÿÿÿÿ
+S
+java:S1117ß"<Rename "category" which hides the field declared at line 17.(°ü±¼
+A	java:S106ä"+Replace this use of System.out by a logger.(¹ÔÎ‚
+F	java:S106‡"+Replace this use of System.out by a logger.(”›÷ƒüÿÿÿÿ
+X
+java:S1126š"AReplace this if-then-else statement by a single return statement.(¯‘Í

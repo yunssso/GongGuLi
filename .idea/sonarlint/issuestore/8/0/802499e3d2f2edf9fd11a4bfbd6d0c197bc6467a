@@ -1,0 +1,24 @@
+
+~
+java:S1192Q"aDefine a constant instead of duplicating this literal "ì „í™”ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”." 3 times.(¾ÅóÅ8ĞŒÚ’½1
+i
+java:S1192N"GDefine a constant instead of duplicating this literal "\\d{6}" 3 times.(îıŠ­ıÿÿÿÿ8ĞŒÚ’½1
+ƒ
+java:S1192M"aDefine a constant instead of duplicating this literal "ìƒë…„ì›”ì¼ì„ ì…ë ¥í•˜ì„¸ìš”." 3 times.(¬¸ ¬ıÿÿÿÿ8ÑŒÚ’½1
+€
+java:S1192@"^Define a constant instead of duplicating this literal "ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì„¸ìš”." 3 times.(†À‰Åıÿÿÿÿ8ÑŒÚ’½1
+j
+java:S1192R"HDefine a constant instead of duplicating this literal "\\d{11}" 3 times.(Ÿ’‘¼şÿÿÿÿ8ÑŒÚ’½1
+—
+java:S1192S"uDefine a constant instead of duplicating this literal "ì „í™”ë²ˆí˜¸ê°€ ì¡°ê±´ì„ ë§Œì¡±í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤." 3 times.(‘Åùïüÿÿÿÿ8ÑŒÚ’½1
+’
+java:S1192O"uDefine a constant instead of duplicating this literal "ìƒë…„ì›”ì¼ì´ ì¡°ê±´ì„ ë§Œì¡±í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤." 3 times.(ıÒÀ8ÑŒÚ’½1
+}
+java:S1192K"[Define a constant instead of duplicating this literal "ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš”." 3 times.(šõÁ¸ûÿÿÿÿ8ÑŒÚ’½1
+j	java:S1009"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†‰Â8ğŒÚ’½1
+j	java:S100c"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‰ÅÏä8óŒÚ’½1
+p	java:S100„"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ãï×éüÿÿÿÿ8öŒÚ’½1
+p	java:S100¢"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜåÉ±ıÿÿÿÿ8÷ŒÚ’½1
+j	java:S100Â"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(« ‡k8…Ú’½1
+^
+java:S1144¢";Remove this unused private "FindUserPasswordMethod" method.(ÜåÉ±ıÿÿÿÿ8†Ú’½1

@@ -20,9 +20,6 @@ public class MainPage extends JFrame{
     JScrollPane listScrollPane;
 
     public MainPage(UserDTO userDTO) {  // 생성자
-        this.userDTO = userDTO;
-        this.region = " --";
-        this.category = " --";
         setListFrame();
         setLeftPanel();
         setCenterPanel();

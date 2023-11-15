@@ -177,17 +177,15 @@ public class SignUp extends JDialog{
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    //회원가입 형식 : SignUp 아이디 비밀번호 비밀번호확인 이름 생년월일 전화번호 닉네임 지역
                     oos.writeObject(SignUpInfo);
 
-                    //Status + 메세지 형식으로 서버에서 응답 받도록 구성, HttpStatus를 기반으로 구성
                     ResponseDto response = (ResponseDto) ois.readObject();
 
                     if (response.responseCode() == 200) { //회원가입 성공
-                        System.out.println(response.message());
+                        showErrorDialog(response.message());
                         new LogIn();
-                    } else if (response.responseCode() >= 201 && response.responseCode() <= 213) { //회원가입 실패
-                        System.out.println(response.message());
+                    } else { //회원가입 실패
+                        showErrorDialog(response.message());
                     }
 
                     oos.close();
@@ -197,7 +195,8 @@ public class SignUp extends JDialog{
                     is.close();
 
                     clientSocket.close();
-                } catch(Exception E) {
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
         });
@@ -235,6 +234,6 @@ public class SignUp extends JDialog{
     }
 
     private void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 }
