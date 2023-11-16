@@ -166,7 +166,7 @@ public class SignUp extends JDialog{
                     String region = (String) residenceList.getSelectedItem();
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    SignUpDto SignUpInfo = new SignUpDto(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
+                    SignUpDto signUpDto = new SignUpDto(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1024);
@@ -178,15 +178,15 @@ public class SignUp extends JDialog{
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    oos.writeObject(SignUpInfo);
+                    oos.writeObject(signUpDto);
 
-                    ResponseCode response = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
 
-                    if (response.getKey() == 200) { //회원가입 성공
-                        showErrorDialog(response.getValue());
+                    if (responseCode.getKey() == 200) { //회원가입 성공
+                        showSuccessDialog(responseCode.getValue());
                         new LogIn();
                     } else { //회원가입 실패
-                        showErrorDialog(response.getValue());
+                        showErrorDialog(responseCode.getValue());
                     }
 
                     oos.close();
@@ -236,5 +236,9 @@ public class SignUp extends JDialog{
 
     private void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showSuccessDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
     }
 }

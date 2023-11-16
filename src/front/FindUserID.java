@@ -2,7 +2,7 @@ package front;
 
 import back.ResponseCode;
 import back.dto.FindUserIdDto;
-import back.dto.ResponseDto;
+import back.response.FindUserIdResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +83,7 @@ class FindUserId extends JDialog {
                     clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    FindUserIdDto FindUserIdInfo = new FindUserIdDto(name, birth, phoneNumber);
+                    FindUserIdDto findUserIdDto = new FindUserIdDto(name, birth, phoneNumber);
                     
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
@@ -92,14 +92,15 @@ class FindUserId extends JDialog {
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    oos.writeObject(FindUserIdInfo);
+                    oos.writeObject(findUserIdDto);
 
-                    ResponseCode response = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
 
-                    if (response.getKey() == 230) { //아이디 찾기 성공
-                        showErrorDialog(response.getValue());
+                    if (responseCode.getKey() == 230) { //아이디 찾기 성공
+                        FindUserIdResponse findUserIdResponse = (FindUserIdResponse) ois.readObject();
+                        showSuccessDialog(findUserIdResponse.userId());
                     } else { //아이디 찾기 실패
-                        showErrorDialog(response.getValue());
+                        showErrorDialog(responseCode.getValue());
                     }
 
                     oos.close();
@@ -120,6 +121,10 @@ class FindUserId extends JDialog {
     }
 
     private void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showSuccessDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
     }
 }
