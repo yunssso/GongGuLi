@@ -1,10 +1,8 @@
 package front;
 
 import back.ResponseCode;
-import back.dao.UserDAO;
 import back.dto.LoginDto;
-import back.dto.ResponseDto;
-import back.dto.SignUpDto;
+import back.response.LoginResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -141,7 +139,7 @@ public class LogIn extends JFrame {
                     clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    LoginDto LoginInfo = new LoginDto(id, password);
+                    LoginDto loginDto = new LoginDto(id, password);
 
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
@@ -150,14 +148,17 @@ public class LogIn extends JFrame {
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    oos.writeObject(LoginInfo);
+                    oos.writeObject(loginDto);
 
-                    ResponseCode response = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
 
-                    if (response.getKey() == 220) { //로그인 성공
-                        new MainPage();
+                    if (responseCode.getKey() == 220) { //로그인 성공
+                        LoginResponse loginResponse = (LoginResponse) ois.readObject();
+                        String uuid = loginResponse.uuid();
+
+                        new MainPage(); //uuid 받아 오는거 구현 해놨으니까 이거 가져다가 쓰면 돼.
                     } else { //로그인 실패
-                        showErrorDialog(response.getValue());
+                        showErrorDialog(responseCode.getValue());
                     }
 
                     oos.close();
