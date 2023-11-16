@@ -1,5 +1,6 @@
 package front;
 
+import back.ResponseCode;
 import back.dao.UserDAO;
 import back.dto.LoginDto;
 import back.dto.ResponseDto;
@@ -151,12 +152,12 @@ public class LogIn extends JFrame {
 
                     oos.writeObject(LoginInfo);
 
-                    ResponseDto response = (ResponseDto) ois.readObject();
+                    ResponseCode response = (ResponseCode) ois.readObject();
 
-                    if (response.responseCode() == 220) { //로그인 성공
-                        showErrorDialog(response.message());
+                    if (response.getKey() == 220) { //로그인 성공
+                        new MainPage();
                     } else { //로그인 실패
-                        showErrorDialog(response.message());
+                        showErrorDialog(response.getValue());
                     }
 
                     oos.close();

@@ -1,5 +1,6 @@
 package front;
 
+import back.ResponseCode;
 import back.dto.FindUserIdDto;
 import back.dto.ResponseDto;
 
@@ -93,12 +94,12 @@ class FindUserId extends JDialog {
 
                     oos.writeObject(FindUserIdInfo);
 
-                    ResponseDto response = (ResponseDto) ois.readObject();
+                    ResponseCode response = (ResponseCode) ois.readObject();
 
-                    if (response.responseCode() == 230) { //아이디 찾기 성공
-                        showErrorDialog(response.message());
+                    if (response.getKey() == 230) { //아이디 찾기 성공
+                        showErrorDialog(response.getValue());
                     } else { //아이디 찾기 실패
-                        showErrorDialog(response.message());
+                        showErrorDialog(response.getValue());
                     }
 
                     oos.close();

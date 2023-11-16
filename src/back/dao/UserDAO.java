@@ -71,36 +71,6 @@ public class UserDAO {
         return a;
     }
 
-    public void logIn(String inpId) {
-        conn = DBConnector.getConnection();
-        String selectSQL = "SELECT * FROM user WHERE userId = ?";
-        try {
-            pt = conn.prepareStatement(selectSQL);
-            pt.setString(1, inpId);
-            rs = pt.executeQuery();
-            if (rs.next()) {
-                UserDTO userDTO = new UserDTO();
-
-                userDTO.setNickName(rs.getString("nickName"));
-                userDTO.setName(rs.getString("name"));
-                userDTO.setUserId(rs.getString("userId"));
-                userDTO.setPassword(rs.getString("password"));
-                userDTO.setRegion(rs.getString("region"));
-                userDTO.setPhoneNum(rs.getString("phoneNum"));
-                userDTO.setBirth(rs.getString("birth"));
-
-                new MainPage(userDTO);
-            }
-
-            rs.close();
-            pt.close();
-            conn.close();
-        } catch (Exception e) {
-            System.out.println("로그인 실패");
-            e.printStackTrace();
-        }
-    }
-
     public void modifyUserInfo() {
 
     }

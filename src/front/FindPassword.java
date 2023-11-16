@@ -1,5 +1,6 @@
 package front;
 
+import back.ResponseCode;
 import back.dto.FindUserPasswordDto;
 import back.dto.ResponseDto;
 
@@ -106,12 +107,12 @@ class FindPassword extends JDialog {
 
                     oos.writeObject(FindUserPasswordInfo);
 
-                    ResponseDto response = (ResponseDto) ois.readObject();
+                    ResponseCode response = (ResponseCode) ois.readObject();
 
-                    if (response.responseCode() == 240) { //비밀번호 찾기 성공
-                        showErrorDialog(response.message());
+                    if (response.getKey() == 240) { //비밀번호 찾기 성공
+                        showErrorDialog(response.getValue());
                     } else { //비밀번호 찾기 실패
-                        showErrorDialog(response.message());
+                        showErrorDialog(response.getValue());
                     }
 
                     oos.close();
