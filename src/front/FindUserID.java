@@ -1,6 +1,8 @@
 package front;
 
+import back.ResponseCode;
 import back.dto.FindUserIdDto;
+import back.dto.ResponseDto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,7 +80,7 @@ class FindUserId extends JDialog {
                     String phoneNumber = phoneNumberText.getText().trim();
 
                     //아이피, 포트 번호로 소켓을 연결
-                    clientSocket = new Socket("localhost", 1025);
+                    clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
                     FindUserIdDto FindUserIdInfo = new FindUserIdDto(name, birth, phoneNumber);
@@ -90,7 +92,23 @@ class FindUserId extends JDialog {
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    
+                    oos.writeObject(FindUserIdInfo);
+
+                    ResponseCode response = (ResponseCode) ois.readObject();
+
+                    if (response.getKey() == 230) { //아이디 찾기 성공
+                        showErrorDialog(response.getValue());
+                    } else { //아이디 찾기 실패
+                        showErrorDialog(response.getValue());
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

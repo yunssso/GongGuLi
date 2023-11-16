@@ -1,28 +1,33 @@
 package front;
 
+import back.ResponseCode;
 import back.dao.BoardDAO;
 import back.BoardDTO;
 import back.UserDTO;
+import back.dto.Post_BoardDto;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class MainPage extends JFrame{
-    UserDTO userDTO = null;
     BoardDAO boardDAO = new BoardDAO();
     FrontSetting fs = new FrontSetting();
 
-    String region;
-    String category;
+    String region = " --";
+    String category = " --";
 
     JTable postTable;
     JScrollPane listScrollPane;
 
-    public MainPage(UserDTO userDTO) {  // 생성자
-        this.userDTO = userDTO;
-        this.region = " --";
-        this.category = " --";
+    private Socket clientSocket = null;
+
+    public MainPage() {  // 생성자
         setListFrame();
         setLeftPanel();
         setCenterPanel();
@@ -55,8 +60,8 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                MyPage mp = new MyPage(userDTO);
-                mp.setMyPage();
+                // MyPage mp = new MyPage(userDTO); // 마이페이지 넘어가는 코드
+                // mp.setMyPage();
             }
         });
 
@@ -155,9 +160,7 @@ public class MainPage extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = postTable.getSelectedRow();
-                    int selectColumn = postTable.getSelectedColumn();
                     System.out.println(selectRow);
-                    System.out.println(selectColumn);
                     BoardDTO boardDTO = boardDAO.readMorePost(selectRow);
                     readMorePost(postTable, boardDTO);
                 }
@@ -349,27 +352,47 @@ public class MainPage extends JFrame{
         postBtn.addActionListener(new ActionListener() {  // 올리기 버튼 클릭 시
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String region = (String) regionField.getSelectedItem();
-                String category = (String) categoryField.getSelectedItem();
-                String peopleNum = peopleNumField.getText();
-                String content = contentArea.getText();
+                try {
+                    String title = titleField.getText();
+                    String region = (String) regionField.getSelectedItem();
+                    String category = (String) categoryField.getSelectedItem();
+                    String peopleNum = peopleNumField.getText();
+                    String content = contentArea.getText();
 
-                if(postingErrorCheck(title, region, category, peopleNum, content)) { // 오류 검출 후 DB 넘기기
-                    System.out.println("글 올리기: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");
+                    Post_BoardDto Post_BoardInfo = new Post_BoardDto(title, region, category, peopleNum, content);
 
-                    BoardDTO boardDTO = new BoardDTO();
-                    boardDTO.setTitle(title);
-                    boardDTO.setRegion(region);
-                    boardDTO.setCategory(category);
-                    boardDTO.setNickName(userDTO.getNickName());
-                    boardDTO.setPeopleNum(peopleNum);
-                    boardDTO.setContent(content);
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1025);
 
-                    boardDAO.posting(boardDTO);
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(Post_BoardInfo);
+
+                    ResponseCode response = (ResponseCode) ois.readObject();
+
+                    if (response.getKey() == 200) { //게시글 생성 성공
+                        setSuccessPopUpFrame();
+                    } else { //게시글 생성 실패
+                        //실패 했을떄 팝업창 구현 해야돼
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
 
                     newPostFrame.dispose();
                     setSuccessPopUpFrame();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
         });
@@ -388,30 +411,6 @@ public class MainPage extends JFrame{
         c.add(postBtn);
 
         newPostFrame.setVisible(true);
-    }
-
-    private boolean postingErrorCheck(String title, String region, String category, String peopleNum, String content) {  // 빈칸 있는 지 확인 후 올리기
-        System.out.println("오류 검사: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");  // 테스트
-
-        boolean checkBlank = false;  // 빈 칸 & 공백 확인
-        boolean checkPeopleNum = false;  // 인원 수 입력 조건 확인
-
-        if (title.isBlank()) fs.showErrorDialog("제목을 입력해주세요.");
-        else if (region.equals(" --")) fs.showErrorDialog("지역을 선택해주세요.");
-        else if (category.equals(" --")) fs.showErrorDialog("카테고리를 선택해주세요.");
-        else if (peopleNum.isBlank()) fs.showErrorDialog("인원 수를 입력해주세요.");
-        else if (content.isBlank()) fs.showErrorDialog("내용을 입력해주세요.");
-        else {
-            try {
-                if (Integer.parseInt(peopleNum) > 30) fs.showErrorDialog("인원은 30명까지 입력 가능합니다.");
-                else if (Integer.parseInt(peopleNum) <= 1) fs.showErrorDialog("인원은 2명부터 입력 가능합니다.");
-                else checkPeopleNum = true;
-            } catch (NumberFormatException e) { fs.showErrorDialog("인원은 숫자만 입력 가능합니다."); }
-            checkBlank = true;
-        }
-
-        if(checkBlank && checkPeopleNum) return true;  // 마지막 오류 검출
-        else return false;
     }
 
     private void setSuccessPopUpFrame() {
@@ -437,7 +436,7 @@ public class MainPage extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
                 dispose();
-                new MainPage(userDTO);
+                // new MainPage(userDTO); // 새 글 쓰고 나서 새로고침
             }
         });
 
