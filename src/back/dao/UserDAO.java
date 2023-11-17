@@ -1,12 +1,10 @@
 package back.dao;
 
-import back.dto.FindUserIdDto;
-import back.dto.FindUserPasswordDto;
-import back.dto.LoginDto;
-import back.dto.SignUpDto;
-import back.UserDTO;
+import back.request.Find_UserId_Request;
+import back.request.Find_UserPassword_Request;
+import back.request.Login_Request;
+import back.request.SignUp_Request;
 import database.DBConnector;
-import front.MainPage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +15,7 @@ public class UserDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-    public void signUp(SignUpDto signUpInfo, String uuid) {
+    public void signUp(SignUp_Request signUpInfo, String uuid) {
         conn = DBConnector.getConnection();
         String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -44,19 +42,19 @@ public class UserDAO {
         }
     }
 
-    public String logInCheck(LoginDto loginDto) {
+    public String logInCheck(Login_Request loginRequest) {
         String a;
         conn = DBConnector.getConnection();
         String checkSQL = "SELECT password FROM user WHERE userId = ?";
         String getSQL = "SELECT uuid FROM user WHERE userId = ?";
         try {
             pt = conn.prepareStatement(checkSQL);
-            pt.setString(1, loginDto.userId());
+            pt.setString(1, loginRequest.userId());
             rs = pt.executeQuery();
             if (rs.next()) {
-                if (rs.getString(1).equals(loginDto.password())) {
+                if (rs.getString(1).equals(loginRequest.password())) {
                     pt = conn.prepareStatement(getSQL);
-                    pt.setString(1, loginDto.userId());
+                    pt.setString(1, loginRequest.userId());
                     rs = pt.executeQuery();
                     rs.next();
                     a = rs.getString(1);   // 로그인 성공
@@ -104,7 +102,7 @@ public class UserDAO {
         return nickNameCheck;
     }
 
-    public String findID(FindUserIdDto findUserIdInfo) {
+    public String findID(Find_UserId_Request findUserIdInfo) {
         conn = DBConnector.getConnection();
         String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
         try {
@@ -123,15 +121,15 @@ public class UserDAO {
         return "";
     }
 
-    public String findPassword(FindUserPasswordDto findUserPasswordDto) {
+    public String findPassword(Find_UserPassword_Request findUserPasswordRequest) {
         conn = DBConnector.getConnection();
         String selectsql = "select password from user where name = ? and userID = ? and birth = ? and phoneNum= ?;";
         try {
             pt = conn.prepareStatement(selectsql);
-            pt.setString(1, findUserPasswordDto.name());
-            pt.setString(2, findUserPasswordDto.userId());
-            pt.setString(3, findUserPasswordDto.birth());
-            pt.setString(4, findUserPasswordDto.phoneNumber());
+            pt.setString(1, findUserPasswordRequest.name());
+            pt.setString(2, findUserPasswordRequest.userId());
+            pt.setString(3, findUserPasswordRequest.birth());
+            pt.setString(4, findUserPasswordRequest.phoneNumber());
             rs = pt.executeQuery();
             if (rs.next()) {
                 return rs.getString(1);

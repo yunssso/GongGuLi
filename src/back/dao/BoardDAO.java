@@ -2,8 +2,9 @@ package back.dao;
 
 import back.BoardDTO;
 import back.UserDTO;
-import back.dto.Post_BoardDto;
+import back.request.Post_Board_Request;
 import database.DBConnector;
+import back.response.Board_Info_Response;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,76 +15,72 @@ import java.util.List;
 
 public class BoardDAO {
     Connection conn = null;
-    PreparedStatement pt = null;
-    ResultSet rs = null;
+    PreparedStatement pt1 = null;
+    ResultSet rs1 = null;
 
     // arraylist에 역순으로 담은 뒤, 2차원 배열로 저장 및 전달
     // 전체 개시글
     // 이 코드 기준으로 밑에 코드들 다 바꿔야 됨 ( 고민재 할 일 )
-    public String[][] printBoard(String region, String category) {
-        // 역순으로 리스트에 담기
-        List<BoardDTO> list = new ArrayList<>();
+    public List<Board_Info_Response> printBoard(String region, String category, String uuid) {
+        List<Board_Info_Response> list = new ArrayList<>();
         conn = DBConnector.getConnection();
+
         try {
             String selectSQL;
             if (region.equals(" --") && !category.equals(" --")) {
                 selectSQL = "SELECT * FROM board WHERE category = ? ORDER BY postingTime DESC;";
-                pt = conn.prepareStatement(selectSQL);
-                pt.setString(1, category);
+                pt1 = conn.prepareStatement(selectSQL);
+                pt1.setString(1, category);
             } else if (!region.equals(" --") && category.equals(" --")) {
                 selectSQL = "SELECT * FROM board WHERE region = ? ORDER BY postingTime DESC;";
-                pt = conn.prepareStatement(selectSQL);
-                pt.setString(1, region);
+                pt1 = conn.prepareStatement(selectSQL);
+                pt1.setString(1, region);
             } else if (!region.equals(" --") && !category.equals(" --")) {
                 selectSQL = "SELECT * FROM board WHERE region = ? AND category = ? ORDER BY postingTime DESC;";
-                pt = conn.prepareStatement(selectSQL);
-                pt.setString(1, region);
-                pt.setString(2, category);
+                pt1 = conn.prepareStatement(selectSQL);
+                pt1.setString(1, region);
+                pt1.setString(2, category);
             } else {
                 selectSQL = "SELECT * FROM board ORDER BY postingTime DESC";
-                pt = conn.prepareStatement(selectSQL);
+                pt1 = conn.prepareStatement(selectSQL);
             }
-            rs = pt.executeQuery();
+
+            rs1 = pt1.executeQuery();
             String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?";
-            while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
 
-                PreparedStatement pt1 = conn.prepareStatement(nickNameSQL);
-                pt1.setString(1, rs.getString("uuid"));
-                ResultSet rs1 = pt1.executeQuery();
-                rs1.next();
+            while (rs1.next()) {
+                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
 
-                BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs1.getString("nickName"));
-                boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
+                PreparedStatement pt2 = conn.prepareStatement(nickNameSQL);
+                pt2.setString(1, rs1.getString("uuid"));
+                ResultSet rs2 = pt2.executeQuery();
+                rs2.next();
 
-                list.add(boardDTO);
+                Board_Info_Response boardInfoResponse = new Board_Info_Response(
+                        rs1.getString("title"),
+                        rs1.getString("region"),
+                        rs1.getString("category"),
+                        rs1.getString("peopleNum"),
+                        rs1.getString("content"),
+                        rs1.getString("uuid").equals(uuid)
+                );
 
-                pt1.close();
-                rs1.close();
+                list.add(boardInfoResponse);
+
+                pt2.close();
+                rs2.close();
             }
             System.out.println("데이터 ArrayList에 저장 완료.");
 
-            rs.close();
-            pt.close();
+            rs1.close();
+            pt1.close();
             conn.close();
+
+            return list;
         } catch (SQLException e) {
             System.out.println("ArrayList 저장 중 오류 발생.");
+            return list = null; //오류 발생하면 list를 null로 만들고 반환 해주도록 함
         }
-
-        String[][] data = new String[list.size()][];    // ArrayList에 저장한 데이터들 2차원 배열로 변환해주기.
-
-        for (int i = 0; i < list.size(); i++) {
-            BoardDTO boardDTO = list.get(i);
-            data[i] = new String[]{boardDTO.getRegion(), boardDTO.getCategory(), boardDTO.getTitle(), boardDTO.getNickName(), boardDTO.getPeopleNum()};
-        }
-        System.out.println("2차원 배열로 변환 완료.");
-
-        return data;
     }
 
     // 내가 쓴 게시글 (마이페이지)
@@ -93,26 +90,26 @@ public class BoardDAO {
         conn = DBConnector.getConnection();
         String selectSQL = "SELECT * FROM board WHERE nickName = ? ORDER BY postingTime DESC;";
         try {
-            pt = conn.prepareStatement(selectSQL);
-            pt.setString(1, userDTO.getNickName());
-            rs = pt.executeQuery();
-            while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+            pt1 = conn.prepareStatement(selectSQL);
+            pt1.setString(1, userDTO.getNickName());
+            rs1 = pt1.executeQuery();
+            while (rs1.next()) {
+                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
 
                 BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
+                boardDTO.setTitle(rs1.getString("title"));
+                boardDTO.setRegion(rs1.getString("region"));
+                boardDTO.setCategory(rs1.getString("category"));
+                boardDTO.setNickName(rs1.getString("nickName"));
                 boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
+                boardDTO.setContent(rs1.getString("content"));
 
                 list.add(boardDTO);
             }
             System.out.println("내 글 데이터 ArrayList에 저장 완료.");
 
-            rs.close();
-            pt.close();
+            rs1.close();
+            pt1.close();
             conn.close();
         } catch (SQLException e) {
             System.out.println("내 글 ArrayList 저장 중 오류 발생.");
@@ -137,26 +134,26 @@ public class BoardDAO {
         conn = DBConnector.getConnection();
         String selectSQL = "SELECT * FROM board WHERE nickName = ? ORDER BY postingTime DESC;";
         try {
-            pt = conn.prepareStatement(selectSQL);
-            pt.setString(1, userDTO.getNickName());
-            rs = pt.executeQuery();
-            while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+            pt1 = conn.prepareStatement(selectSQL);
+            pt1.setString(1, userDTO.getNickName());
+            rs1 = pt1.executeQuery();
+            while (rs1.next()) {
+                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
 
                 BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
+                boardDTO.setTitle(rs1.getString("title"));
+                boardDTO.setRegion(rs1.getString("region"));
+                boardDTO.setCategory(rs1.getString("category"));
+                boardDTO.setNickName(rs1.getString("nickName"));
                 boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
+                boardDTO.setContent(rs1.getString("content"));
 
                 list.add(boardDTO);
             }
             System.out.println("내 글 데이터 ArrayList에 저장 완료.");
 
-            rs.close();
-            pt.close();
+            rs1.close();
+            pt1.close();
             conn.close();
         } catch (SQLException e) {
             System.out.println("내 글 ArrayList 저장 중 오류 발생.");
@@ -182,29 +179,29 @@ public class BoardDAO {
         String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?";
         try {
             conn = DBConnector.getConnection();
-            pt = conn.prepareStatement(selectSQL);
-            pt.setInt(1, selectRow);
-            rs = pt.executeQuery();
-            if (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+            pt1 = conn.prepareStatement(selectSQL);
+            pt1.setInt(1, selectRow);
+            rs1 = pt1.executeQuery();
+            if (rs1.next()) {
+                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
 
-                boardDTO.setBoardId(rs.getInt("boardID"));
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
+                boardDTO.setBoardId(rs1.getInt("boardID"));
+                boardDTO.setTitle(rs1.getString("title"));
+                boardDTO.setRegion(rs1.getString("region"));
+                boardDTO.setCategory(rs1.getString("category"));
+                boardDTO.setNickName(rs1.getString("nickName"));
                 boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
-                boardDTO.setView(rs.getInt("view") + 1);
+                boardDTO.setContent(rs1.getString("content"));
+                boardDTO.setView(rs1.getInt("view") + 1);
             }
             System.out.println("자세히 보기 성공.");
 
-            pt = conn.prepareStatement(updateSQL);
-            pt.setInt(1, boardDTO.getBoardId());
-            pt.execute();
+            pt1 = conn.prepareStatement(updateSQL);
+            pt1.setInt(1, boardDTO.getBoardId());
+            pt1.execute();
 
-            rs.close();
-            pt.close();
+            rs1.close();
+            pt1.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,7 +210,7 @@ public class BoardDAO {
         try {
             conn = DBConnector.getConnection();
             System.out.println("조회수 1 증가");
-            pt.close();
+            pt1.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -228,50 +225,50 @@ public class BoardDAO {
         String selectSQL = "SELECT * FROM boardView WHERE num = ?";
         try {
             conn = DBConnector.getConnection();
-            pt = conn.prepareStatement(selectSQL);
-            pt.setInt(1, selectRow);
-            rs = pt.executeQuery();
-            if (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+            pt1 = conn.prepareStatement(selectSQL);
+            pt1.setInt(1, selectRow);
+            rs1 = pt1.executeQuery();
+            if (rs1.next()) {
+                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
 
-                boardDTO.setBoardId(rs.getInt("boardID"));
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
+                boardDTO.setBoardId(rs1.getInt("boardID"));
+                boardDTO.setTitle(rs1.getString("title"));
+                boardDTO.setRegion(rs1.getString("region"));
+                boardDTO.setCategory(rs1.getString("category"));
+                boardDTO.setNickName(rs1.getString("nickName"));
                 boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
-                boardDTO.setView(rs.getInt("view") + 1);
+                boardDTO.setContent(rs1.getString("content"));
+                boardDTO.setView(rs1.getInt("view") + 1);
             }
             System.out.println("자세히 보기 성공.");
 
-            rs.close();
-            pt.close();
+            rs1.close();
+            pt1.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return boardDTO;
     }
-    public void posting(Post_BoardDto Post_BoardInfo) {
+    public void posting(Post_Board_Request Post_BoardInfo) {
         conn = DBConnector.getConnection();
         String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            pt = conn.prepareStatement(insertSQL);
-            pt.setString(1, Post_BoardInfo.title());
-            pt.setString(2, Post_BoardInfo.region());
-            pt.setString(3, Post_BoardInfo.category());
-            pt.setString(4, Post_BoardInfo.peopleNum());
-            pt.setString(5, Post_BoardInfo.content());
-            pt.setString(6, Post_BoardInfo.uuid());   // <- 이 부분에 닉네임 대신에 UUID 값이 들어갈 거 같은데?
-            pt.setInt(7, 0);
-            pt.setInt(8, 1);
+            pt1 = conn.prepareStatement(insertSQL);
+            pt1.setString(1, Post_BoardInfo.title());
+            pt1.setString(2, Post_BoardInfo.region());
+            pt1.setString(3, Post_BoardInfo.category());
+            pt1.setString(4, Post_BoardInfo.peopleNum());
+            pt1.setString(5, Post_BoardInfo.content());
+            pt1.setString(6, Post_BoardInfo.uuid());   // <- 이 부분에 닉네임 대신에 UUID 값이 들어갈 거 같은데?
+            pt1.setInt(7, 0);
+            pt1.setInt(8, 1);
 
-            if (!pt.execute()) {
+            if (!pt1.execute()) {
                 System.out.println("게시 성공.");
             }
 
-            pt.close();
+            pt1.close();
             conn.close();
         } catch (Exception e) {
             System.out.println("게시 실패.");

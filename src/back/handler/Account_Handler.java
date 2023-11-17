@@ -4,10 +4,10 @@ import java.net.Socket;
 
 import back.ResponseCode;
 import back.dao.UserDAO;
-import back.dto.*;
-import back.response.FindUserIdResponse;
-import back.response.FindUserPasswordResponse;
-import back.response.LoginResponse;
+import back.request.*;
+import back.response.Find_UserId_Response;
+import back.response.Find_UserPassword_Response;
+import back.response.Login_Response;
 
 import java.io.OutputStream;
 import java.io.ObjectOutputStream;
@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.UUID;
 
-public class AccountHandler extends Thread {
+public class Account_Handler extends Thread {
 	private Socket clientSocket = null;
 
 	private OutputStream os = null;
@@ -26,7 +26,7 @@ public class AccountHandler extends Thread {
 
 	private final UserDAO userDAO = new UserDAO();
 
-	public AccountHandler(Socket clientSocket) {
+	public Account_Handler(Socket clientSocket) {
 		try {
 			this.clientSocket = clientSocket;
 
@@ -48,13 +48,13 @@ public class AccountHandler extends Thread {
 		try {
 			Object readObj = ois.readObject();
 
-			if (readObj instanceof SignUpDto) {
+			if (readObj instanceof SignUp_Request) {
 				SignUpMethod(readObj);
-			} else if (readObj instanceof LoginDto) {
+			} else if (readObj instanceof Login_Request) {
 				LoginMethod(readObj);
-			} else if (readObj instanceof FindUserIdDto) {
+			} else if (readObj instanceof Find_UserId_Request) {
 				FindUserIdMethod(readObj);
-			} else if (readObj instanceof  FindUserPasswordDto) {
+			} else if (readObj instanceof Find_UserPassword_Request) {
 				FindUserPasswordMethod(readObj);
 			}
 		} catch (Exception exception) {
@@ -66,37 +66,37 @@ public class AccountHandler extends Thread {
 	private void SignUpMethod(Object readObj) {
 		try {
 			//클라이언트에서 회원가입 요청을 받는다.
-			SignUpDto SignUpInfo = (SignUpDto) readObj;
+			SignUp_Request signUpRequest = (SignUp_Request) readObj;
 
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
-			if (SignUpInfo.userId().isBlank()) {
+			if (signUpRequest.userId().isBlank()) {
 				oos.writeObject(ResponseCode.ID_MISSING);
-			} else if (SignUpInfo.password().isBlank()) {
+			} else if (signUpRequest.password().isBlank()) {
 				oos.writeObject(ResponseCode.PASSWORD_MISSING);
-			} else if (!SignUpInfo.password().equals(String.valueOf(SignUpInfo.passwordCheck()))) {
+			} else if (!signUpRequest.password().equals(String.valueOf(signUpRequest.passwordCheck()))) {
 				oos.writeObject(ResponseCode.PASSWORD_MISMATCH);
-			} else if (SignUpInfo.password().length() < 8 ||
-					!SignUpInfo.password().matches(".*[a-zA-Z].*") ||
-					!SignUpInfo.password().matches(".*\\d.*") ||
-					!SignUpInfo.password().matches(".*[@#$%^&*+_=!].*")) {
+			} else if (signUpRequest.password().length() < 8 ||
+					!signUpRequest.password().matches(".*[a-zA-Z].*") ||
+					!signUpRequest.password().matches(".*\\d.*") ||
+					!signUpRequest.password().matches(".*[@#$%^&*+_=!].*")) {
 				oos.writeObject(ResponseCode.PASSWORD_CONDITIONS_NOT_MET);
-			} else if (SignUpInfo.name().isBlank()) {
+			} else if (signUpRequest.name().isBlank()) {
 				oos.writeObject(ResponseCode.NAME_MISSING);
-			} else if (SignUpInfo.birth().isBlank()) {
+			} else if (signUpRequest.birth().isBlank()) {
 				oos.writeObject(ResponseCode.BIRTHDAY_MISSING);
-			} else if (!SignUpInfo.birth().matches("\\d{6}")) {
+			} else if (!signUpRequest.birth().matches("\\d{6}")) {
 				oos.writeObject(ResponseCode.BIRTHDAY_CONDITIONS_NOT_MET);
-			} else if (SignUpInfo.phoneNumber().isBlank()) {
+			} else if (signUpRequest.phoneNumber().isBlank()) {
 				oos.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
-			} else if (!SignUpInfo.phoneNumber().matches("\\d{11}")) {
+			} else if (!signUpRequest.phoneNumber().matches("\\d{11}")) {
 				oos.writeObject(ResponseCode.PHONE_NUMBER_CONDITIONS_NOT_MET);
-			} else if (SignUpInfo.nickName().isBlank()) {
+			} else if (signUpRequest.nickName().isBlank()) {
 				oos.writeObject(ResponseCode.NICKNAME_MISSING);
-			} else if (SignUpInfo.region().equals("거주 지역")) {
+			} else if (signUpRequest.region().equals("거주 지역")) {
 				oos.writeObject(ResponseCode.RESIDENCE_AREA_NOT_SELECTED);
 			} else {
 				String uuid = UUID.randomUUID().toString();
-				userDAO.signUp(SignUpInfo, uuid);
+				userDAO.signUp(signUpRequest, uuid);
 				oos.writeObject(ResponseCode.SIGNUP_SUCCESS);
 			}
 
@@ -110,22 +110,22 @@ public class AccountHandler extends Thread {
 	private void LoginMethod(Object readObj) {
 		try {
 			//클라이언트에서 로그인 요청을 받는다.
-			LoginDto LoginInfo = (LoginDto) readObj;
+			Login_Request loginRequest = (Login_Request) readObj;
 
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
-			if (LoginInfo.userId().isBlank()) {
+			if (loginRequest.userId().isBlank()) {
 				oos.writeObject(ResponseCode.ID_MISSING);
-			} else if (LoginInfo.password().isBlank()) {
+			} else if (loginRequest.password().isBlank()) {
 				oos.writeObject(ResponseCode.PASSWORD_MISSING);
 			} else {
-				String logInCheckResult = userDAO.logInCheck(LoginInfo);
+				String logInCheckResult = userDAO.logInCheck(loginRequest);
 				if (logInCheckResult.equals("0")) {
 					oos.writeObject(ResponseCode.PASSWORD_MISMATCH_LOGIN);
 				} else if (logInCheckResult.equals("-1")) {
 					oos.writeObject(ResponseCode.ID_NOT_EXIST);
 				} else if (!logInCheckResult.equals("-2")) {
 					oos.writeObject(ResponseCode.LOGIN_SUCCESS);
-					oos.writeObject(new LoginResponse(logInCheckResult));
+					oos.writeObject(new Login_Response(logInCheckResult));
 				}
 			}
 			CloseHandler();
@@ -138,17 +138,17 @@ public class AccountHandler extends Thread {
 	private void FindUserIdMethod(Object readObj) {
 		try {
 			//클라이언트에서 아이디 찾기 요청을 받는다.
-			FindUserIdDto findUserIdDto = (FindUserIdDto) readObj;
+			Find_UserId_Request findUserIdRequest = (Find_UserId_Request) readObj;
 
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
-			if (findUserIdDto.name().isBlank()) {
+			if (findUserIdRequest.name().isBlank()) {
 				oos.writeObject(ResponseCode.NAME_MISSING);
-			} else if (findUserIdDto.birth().isBlank()) {
+			} else if (findUserIdRequest.birth().isBlank()) {
 				oos.writeObject(ResponseCode.BIRTHDAY_MISSING);
-			} else if (findUserIdDto.phoneNumber().isBlank()) {
+			} else if (findUserIdRequest.phoneNumber().isBlank()) {
 				oos.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				FindUserIdResponse findUserIdResponse = new FindUserIdResponse(userDAO.findID(findUserIdDto));
+				Find_UserId_Response findUserIdResponse = new Find_UserId_Response(userDAO.findID(findUserIdRequest));
 
 				if (!findUserIdResponse.userId().isEmpty()) {
 					oos.writeObject(ResponseCode.FIND_ID_SUCCESS);
@@ -168,19 +168,19 @@ public class AccountHandler extends Thread {
 	private void FindUserPasswordMethod(Object readObj) {
 		try {
 			//클라이언트에서 아이디 찾기 요청을 받는다.
-			FindUserPasswordDto findUserPasswordDto = (FindUserPasswordDto) readObj;
+			Find_UserPassword_Request findUserPasswordRequest = (Find_UserPassword_Request) readObj;
 
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
-			if (findUserPasswordDto.name().isBlank()) {
+			if (findUserPasswordRequest.name().isBlank()) {
 				oos.writeObject(ResponseCode.NAME_MISSING);
-			} else if (findUserPasswordDto.userId().isBlank()) {
+			} else if (findUserPasswordRequest.userId().isBlank()) {
 				oos.writeObject(ResponseCode.ID_MISSING);
-			} else if (findUserPasswordDto.birth().isBlank()) {
+			} else if (findUserPasswordRequest.birth().isBlank()) {
 				oos.writeObject(ResponseCode.BIRTHDAY_MISSING);
-			} else if (findUserPasswordDto.phoneNumber().isBlank()) {
+			} else if (findUserPasswordRequest.phoneNumber().isBlank()) {
 				oos.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				FindUserPasswordResponse findUserPasswordResponse = new FindUserPasswordResponse(userDAO.findPassword(findUserPasswordDto));
+				Find_UserPassword_Response findUserPasswordResponse = new Find_UserPassword_Response(userDAO.findPassword(findUserPasswordRequest));
 
 				if (!findUserPasswordResponse.password().isEmpty()) {
 					oos.writeObject(ResponseCode.FIND_PASSWORD_SUCCESS);
