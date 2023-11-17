@@ -19,6 +19,7 @@ public class BoardDAO {
 
     // arraylist에 역순으로 담은 뒤, 2차원 배열로 저장 및 전달
     // 전체 개시글
+    // 이 코드 기준으로 밑에 코드들 다 바꿔야 됨 ( 고민재 할 일 )
     public String[][] printBoard(String region, String category) {
         // 역순으로 리스트에 담기
         List<BoardDTO> list = new ArrayList<>();
@@ -27,31 +28,43 @@ public class BoardDAO {
             String selectSQL;
             if (region.equals(" --") && !category.equals(" --")) {
                 selectSQL = "SELECT * FROM board WHERE category = ? ORDER BY postingTime DESC;";
+                pt = conn.prepareStatement(selectSQL);
                 pt.setString(1, category);
             } else if (!region.equals(" --") && category.equals(" --")) {
                 selectSQL = "SELECT * FROM board WHERE region = ? ORDER BY postingTime DESC;";
+                pt = conn.prepareStatement(selectSQL);
                 pt.setString(1, region);
             } else if (!region.equals(" --") && !category.equals(" --")) {
-                selectSQL = "SELECT * FROM board WHERE region = ? WHERE category = ? ORDER BY postingTime DESC;";
+                selectSQL = "SELECT * FROM board WHERE region = ? AND category = ? ORDER BY postingTime DESC;";
+                pt = conn.prepareStatement(selectSQL);
                 pt.setString(1, region);
                 pt.setString(2, category);
             } else {
                 selectSQL = "SELECT * FROM board ORDER BY postingTime DESC";
+                pt = conn.prepareStatement(selectSQL);
             }
-            pt = conn.prepareStatement(selectSQL);
             rs = pt.executeQuery();
+            String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?";
             while (rs.next()) {
                 String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+
+                PreparedStatement pt1 = conn.prepareStatement(nickNameSQL);
+                pt1.setString(1, rs.getString("uuid"));
+                ResultSet rs1 = pt1.executeQuery();
+                rs1.next();
 
                 BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs.getString("title"));
                 boardDTO.setRegion(rs.getString("region"));
                 boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
+                boardDTO.setNickName(rs1.getString("nickName"));
                 boardDTO.setPeopleNum(peoplenum);
                 boardDTO.setContent(rs.getString("content"));
 
                 list.add(boardDTO);
+
+                pt1.close();
+                rs1.close();
             }
             System.out.println("데이터 ArrayList에 저장 완료.");
 
@@ -242,7 +255,7 @@ public class BoardDAO {
     }
     public void posting(Post_BoardDto Post_BoardInfo) {
         conn = DBConnector.getConnection();
-        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, nickName, view, nowPeopleNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(insertSQL);
             pt.setString(1, Post_BoardInfo.title());
@@ -250,7 +263,7 @@ public class BoardDAO {
             pt.setString(3, Post_BoardInfo.category());
             pt.setString(4, Post_BoardInfo.peopleNum());
             pt.setString(5, Post_BoardInfo.content());
-            //pt.setString(6, boardDTO.getNickName()); <- 이 부분에 닉네임 대신에 UUID 값이 들어갈 거 같은데?
+            pt.setString(6, Post_BoardInfo.uuid());   // <- 이 부분에 닉네임 대신에 UUID 값이 들어갈 거 같은데?
             pt.setInt(7, 0);
             pt.setInt(8, 1);
 

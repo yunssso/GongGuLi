@@ -57,7 +57,6 @@ public class AccountHandler extends Thread {
 			} else if (readObj instanceof  FindUserPasswordDto) {
 				FindUserPasswordMethod(readObj);
 			}
-
 		} catch (Exception exception) {
 			CloseHandler();
 			exception.printStackTrace();
@@ -129,7 +128,6 @@ public class AccountHandler extends Thread {
 					oos.writeObject(new LoginResponse(logInCheckResult));
 				}
 			}
-
 			CloseHandler();
 		} catch (Exception exception) {
 			CloseHandler();
