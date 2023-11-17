@@ -156,7 +156,8 @@ public class LogIn extends JFrame {
                         LoginResponse loginResponse = (LoginResponse) ois.readObject();
                         String uuid = loginResponse.uuid();
 
-                        new MainPage(); //uuid 받아 오는거 구현 해놨으니까 이거 가져다가 쓰면 돼.
+                        System.out.println(uuid);
+                        new MainPage(uuid); //uuid 받아 오는거 구현 해놨으니까 이거 가져다가 쓰면 돼.
                     } else { //로그인 실패
                         showErrorDialog(responseCode.getValue());
                     }

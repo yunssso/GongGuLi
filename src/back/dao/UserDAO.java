@@ -19,7 +19,7 @@ public class UserDAO {
 
     public void signUp(SignUpDto signUpInfo, String uuid) {
         conn = DBConnector.getConnection();
-        String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(signInSQL);
 
@@ -30,6 +30,7 @@ public class UserDAO {
             pt.setString(5, signUpInfo.region());
             pt.setString(6, signUpInfo.phoneNumber());
             pt.setString(7, signUpInfo.birth());
+            pt.setString(8, uuid);
 
             if (!pt.execute()) {
                 System.out.println("회원가입 완료.");
@@ -47,13 +48,18 @@ public class UserDAO {
         String a;
         conn = DBConnector.getConnection();
         String checkSQL = "SELECT password FROM user WHERE userId = ?";
+        String getSQL = "SELECT uuid FROM user WHERE userId = ?";
         try {
             pt = conn.prepareStatement(checkSQL);
             pt.setString(1, loginDto.userId());
             rs = pt.executeQuery();
             if (rs.next()) {
                 if (rs.getString(1).equals(loginDto.password())) {
-                    a = "1";   // 로그인 성공 //여기서 "1"을 빼고 uuid를 a 안에 넣어줘야 돼.
+                    pt = conn.prepareStatement(getSQL);
+                    pt.setString(1, loginDto.userId());
+                    rs = pt.executeQuery();
+                    rs.next();
+                    a = rs.getString(1);   // 로그인 성공
                 } else {
                     a = "0";   // 비밀번호 불일치
                 }
@@ -68,6 +74,7 @@ public class UserDAO {
             e.printStackTrace();
             a = "-2";  // DB 오류
         }
+        System.out.println(a);
         return a;
     }
 

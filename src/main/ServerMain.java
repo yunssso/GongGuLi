@@ -42,5 +42,6 @@ class Board extends Thread {
 public class ServerMain {
     public static void main(String[] args) {
         new Account().start();
+        new Board().start();
     }
 }

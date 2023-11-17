@@ -47,9 +47,10 @@ public class BoardHandler extends Thread {
             Object readObj = ois.readObject();
 
             if (readObj instanceof Post_BoardDto) {
-
+                Post_BoardMethod(readObj);
             }
         } catch (Exception exception) {
+            CloseHandler();
             exception.printStackTrace();
         }
     }

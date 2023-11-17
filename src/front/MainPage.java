@@ -27,7 +27,10 @@ public class MainPage extends JFrame{
 
     private Socket clientSocket = null;
 
-    public MainPage() {  // 생성자
+    String uuid;
+
+    public MainPage(String uuid) {  // 생성자
+        this.uuid = uuid;
         setListFrame();
         setLeftPanel();
         setCenterPanel();
@@ -294,7 +297,6 @@ public class MainPage extends JFrame{
         c.setBackground(fs.mainColor);
         c.setLayout(null);
 
-
         JLabel newPostLabel = new JLabel("새 글");  // 라벨
         newPostLabel.setFont(fs.fb20);
         newPostLabel.setBounds(220, 20, 100, 40);
@@ -359,7 +361,7 @@ public class MainPage extends JFrame{
                     String peopleNum = peopleNumField.getText();
                     String content = contentArea.getText();
 
-                    Post_BoardDto Post_BoardInfo = new Post_BoardDto(title, region, category, peopleNum, content);
+                    Post_BoardDto Post_BoardInfo = new Post_BoardDto(title, region, category, peopleNum, content, uuid);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1025);
@@ -375,7 +377,7 @@ public class MainPage extends JFrame{
 
                     ResponseCode response = (ResponseCode) ois.readObject();
 
-                    if (response.getKey() == 200) { //게시글 생성 성공
+                    if (response.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
                         setSuccessPopUpFrame();
                     } else { //게시글 생성 실패
                         //실패 했을떄 팝업창 구현 해야돼
