@@ -1,6 +1,6 @@
 package front;
 
-import back.dto.SignUpDto;
+import back.request.SignUp_Request;
 import back.ResponseCode;
 
 import javax.swing.*;
@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.Socket;
 import java.io.*;
-import java.util.ResourceBundle;
 
 public class SignUp extends JDialog{
     private Color c1 = new Color(255, 240, 227);
@@ -166,7 +165,7 @@ public class SignUp extends JDialog{
                     String region = (String) residenceList.getSelectedItem();
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    SignUpDto signUpDto = new SignUpDto(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
+                    SignUp_Request signUpDto = new SignUp_Request(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1024);
@@ -182,7 +181,7 @@ public class SignUp extends JDialog{
 
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
-                    if (responseCode.getKey() == 200) { //회원가입 성공
+                    if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) { //회원가입 성공
                         showSuccessDialog(responseCode.getValue());
                         new LogIn();
                     } else { //회원가입 실패

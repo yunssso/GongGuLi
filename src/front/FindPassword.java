@@ -1,9 +1,8 @@
 package front;
 
 import back.ResponseCode;
-import back.dto.FindUserPasswordDto;
-import back.response.FindUserIdResponse;
-import back.response.FindUserPasswordResponse;
+import back.request.Find_UserPassword_Request;
+import back.response.Find_UserPassword_Response;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,7 +96,7 @@ class FindPassword extends JDialog {
                     clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    FindUserPasswordDto findUserPasswordDto = new FindUserPasswordDto(name, userId, birth, phoneNumber);
+                    Find_UserPassword_Request findUserPasswordRequest = new Find_UserPassword_Request(name, userId, birth, phoneNumber);
 
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
@@ -106,13 +105,13 @@ class FindPassword extends JDialog {
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    oos.writeObject(findUserPasswordDto);
+                    oos.writeObject(findUserPasswordRequest);
 
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
                     System.out.println("1");
                     if (responseCode.getKey() == 240) { //비밀번호 찾기 성공
                         System.out.println("2");
-                        FindUserPasswordResponse findUserPasswordResponse = (FindUserPasswordResponse) ois.readObject();
+                        Find_UserPassword_Response findUserPasswordResponse = (Find_UserPassword_Response) ois.readObject();
                         System.out.println("3");
                         showSuccessDialog(findUserPasswordResponse.password());
                     } else { //비밀번호 찾기 실패

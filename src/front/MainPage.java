@@ -3,8 +3,9 @@ package front;
 import back.ResponseCode;
 import back.dao.BoardDAO;
 import back.BoardDTO;
-import back.UserDTO;
-import back.dto.Post_BoardDto;
+import back.request.Board_Info_Request;
+import back.request.Post_Board_Request;
+import back.response.Board_Info_Response;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class MainPage extends JFrame{
     BoardDAO boardDAO = new BoardDAO();
@@ -27,10 +29,12 @@ public class MainPage extends JFrame{
 
     private Socket clientSocket = null;
 
-    String uuid;
+    private String uuid;
 
     public MainPage(String uuid) {  // 생성자
         this.uuid = uuid;
+        System.out.println(this.uuid);
+
         setListFrame();
         setLeftPanel();
         setCenterPanel();
@@ -98,17 +102,88 @@ public class MainPage extends JFrame{
         regionBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                region = (String) regionBtn.getSelectedItem();
-                category = (String) categoryBtn.getSelectedItem();
-                boardDAO.printBoard(region, category);
+                try {
+                    region = (String) regionBtn.getSelectedItem();
+                    category = (String) categoryBtn.getSelectedItem();
+
+                    //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+                    Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
+
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1027);
+
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(boardInfoRequest);
+
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                    if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
+                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+                        //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                    } else { //게시글 갱신 실패
+                        showErrorDialog(responseCode.getValue());
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         });
+
         categoryBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                region = (String) regionBtn.getSelectedItem();
-                category = (String) categoryBtn.getSelectedItem();
-                boardDAO.printBoard(region, category);
+                try {
+                    region = (String) regionBtn.getSelectedItem();
+                    category = (String) categoryBtn.getSelectedItem();
+
+                    //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+                    Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
+
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1027);
+
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(boardInfoRequest);
+
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                    if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
+                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+                        //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                    } else { //게시글 갱신 실패
+                        showErrorDialog(responseCode.getValue());
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         });
 
@@ -148,7 +223,7 @@ public class MainPage extends JFrame{
                 System.out.println(searchField.getText());
             }
         });
-        // 게시글 출력
+        // 게시글 출력 <- 이거 좀 해결 해줘봐
         postTable = new JTable(boardDAO.printBoard(region, category), fs.mainPageHeader) {
             @Override
             public boolean isCellEditable(int row, int column) {  // 셀 내용 수정 불가 설정
@@ -361,7 +436,7 @@ public class MainPage extends JFrame{
                     String peopleNum = peopleNumField.getText();
                     String content = contentArea.getText();
 
-                    Post_BoardDto Post_BoardInfo = new Post_BoardDto(title, region, category, peopleNum, content, uuid);
+                    Post_Board_Request Post_BoardInfo = new Post_Board_Request(title, region, category, peopleNum, content, uuid);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1025);
@@ -375,12 +450,12 @@ public class MainPage extends JFrame{
 
                     oos.writeObject(Post_BoardInfo);
 
-                    ResponseCode response = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
 
-                    if (response.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
+                    if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
                         setSuccessPopUpFrame();
                     } else { //게시글 생성 실패
-                        //실패 했을떄 팝업창 구현 해야돼
+                        showErrorDialog(responseCode.getValue());
                     }
 
                     oos.close();
@@ -413,6 +488,10 @@ public class MainPage extends JFrame{
         c.add(postBtn);
 
         newPostFrame.setVisible(true);
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 
     private void setSuccessPopUpFrame() {

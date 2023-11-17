@@ -42,11 +42,15 @@ public enum ResponseCode {
     CONTENT_MISSING(305, "내용을 입력해주세요."),
     PEOPLE_NUM_OVER_LIMIT(306, "인원은 30명까지 입력 가능합니다."),
     PEOPLE_NUM_UNDER_LIMIT(307, "인원은 2명부터 입력 가능합니다."),
-    PEOPLE_NUM_NOT_NUMBER(308, "인원은 숫자만 입력 가능합니다.");
+    PEOPLE_NUM_NOT_NUMBER(308, "인원은 숫자만 입력 가능합니다."),
 
     // DELETE BOARD
 
     // EDIT BOARD
+
+    // Refresh Info
+    BOARD_INFO_SUCCESS(400, "게시판 갱신이 완료되었습니다."),
+    BOARD_INFO_FAILURE(401, "게시판 갱신에 실패하였습니다.");
 
     private final int code;
     private final String message;
