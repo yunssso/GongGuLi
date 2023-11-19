@@ -1,5 +1,9 @@
 package front;
 
+import back.request.Message_ChatRoom_Request;
+import back.response.Message_ChatRoom_Response;
+import back.response.Send_Master_Response;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
@@ -10,8 +14,12 @@ import java.util.*;
 
 public class ChatClient extends JFrame implements Runnable {
     //통신 관련
-    private BufferedReader in = null;
-    private PrintWriter out = null;
+    private OutputStream os = null;
+    private ObjectOutputStream oos = null;
+
+    private InputStream is = null;
+    private ObjectInputStream ois = null;
+
     private Socket socket = null;
 
     //Main Frame
@@ -33,18 +41,20 @@ public class ChatClient extends JFrame implements Runnable {
     private JScrollPane participantsscrollPane = null;
 
     //클라이언트 사용자 이름
-    private String name = null;
+    private String nickName = null;
     //서버에서 각 클라이언트 이름을 받아오는 리스트
     private ArrayList<String> nameList = null;
-    //방장 권리
-    private boolean master = false;
+    private String uuid = null;
     //포트 정보
-    private int port;
+    private int port = 0;
 
     //처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
-    public ChatClient(int port) {
+    public ChatClient(String nickName, int port, String uuid) {
+        this.nickName = nickName;
         this.port = port;
-        login();
+        this.uuid = uuid;
+
+        startClient();
     }
 
     //Main Frame
@@ -91,37 +101,6 @@ public class ChatClient extends JFrame implements Runnable {
         setVisible(true);
     }
 
-    //Login Frame
-    private void login() {
-        loginFrame = new JFrame();
-        loginFrame.setLayout(null);
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.setSize(300, 150);
-        loginFrame.setLocationRelativeTo(null);
-        loginFrame.setResizable(false);
-
-        text = new JLabel("Name");
-        textbox = new JTextField();
-
-        textbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                name = textbox.getText();
-                loginFrame.dispose();
-                createAndShowGUI();
-                startClient(name);
-            }
-        });
-
-        text.setBounds(40, -20, 100, 100);
-        textbox.setBounds(80, 20, 160, 30);
-
-        loginFrame.add(text);
-        loginFrame.add(textbox);
-
-        loginFrame.setVisible(true);
-    }
-
     //Participants Frame
     private void showParticipants() {
         participantsFrame = new JFrame();
@@ -147,7 +126,7 @@ public class ChatClient extends JFrame implements Runnable {
                     } else {
                         String selected_name = participantsList.getSelectedValue();
                         if (selected_name != null) {
-                            if (selected_name.equals(name)) {
+                            if (selected_name.equals(nickName)) {
                                 JOptionPane.showMessageDialog(null, "자신을 강퇴할 수 없습니다.", "Confirm", JOptionPane.INFORMATION_MESSAGE);
                             } else {
                                 int answer = JOptionPane.showConfirmDialog(null, "[" + selected_name + "] 강퇴 하시겠습니까?", "Confirm", JOptionPane.YES_NO_OPTION);
@@ -170,84 +149,65 @@ public class ChatClient extends JFrame implements Runnable {
     }
 
     //클라이언트 시작 함수
-    private void startClient(String name) {
+    private void startClient() {
         try {
-            socket = new Socket("localhost", 1084);
+            socket = new Socket("localhost", port);
             //43.200.49.16
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            out.println(name);
-            out.flush();
+            //서버 -> 클라이언트 Output Stream
+            os = socket.getOutputStream();
+            oos = new ObjectOutputStream(os);
 
-            Thread t = new Thread(this);
-            t.start();
-        } catch (IOException e) {
+            //서버 <- 클라이언트 Input Stream
+            is = socket.getInputStream();
+            ois = new ObjectInputStream(is);
+
+            oos.writeObject(new Message_ChatRoom_Request(nickName, null, uuid));
+
+            Thread thread = new Thread(this);
+            thread.start();
+        } catch (Exception exception) {
             chatTextArea.append("[서버 통신 오류]");
         }
-    }
-    
-    //사용자를 강퇴 시키는 함수
-    private void kickoutUser(String target_name) {
-        out.println("KICKNAME:" + target_name);
-        out.flush();
     }
 
     //메세지를 서버에서 받아오는 함수
     @Override
     public void run() {
-        String message = null;
-
         try {
             while(true) {
-                if (in != null) {
-                    message = in.readLine();
+                if (ois != null) {
+                    Object readObj = ois.readObject();
 
-                    if (message.contains("USERCOUNT:")) {
-                        participantsButton.setText("참가자 : " + message.replace("USERCOUNT:", ""));
-                    } else if (message.contains("USERNAME:")) {
-                        message = message.replace("USERNAME:", "");
-                        nameList = new ArrayList<>(Arrays.asList(message.split(" ")));
-                    } else if (message.contains("KICKNAME:")) {
-                        if (message.replace("KICKNAME:", "").equals(name)) {
-                            in.close();
-                            out.close();
-                            socket.close();
-                            break;
-                        }
-                    } else if (message.contains("MASTER:")) {
-                        message = message.replace("MASTER:", "");
-                        
-                        if (message.equals(name)) {
-                            master = true;
-                            name = name + "(방장)";
-                        }
-                    } else {
-                        chatTextArea.append(message + "\n");
+                    if (readObj instanceof Message_ChatRoom_Response) {
+                        Message_ChatRoom_Response messageChatRoomResponse = (Message_ChatRoom_Response) readObj;
+
+                        chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message() + "\n");
                     }
 
                     int pos = chatTextArea.getText().length();
                     chatTextArea.setCaretPosition(pos);
                 }
             }
-        } catch(IOException e) {
+        } catch(Exception exception) {
             chatTextArea.append("서버 통신 오류...");
         }
     }
 
     //메세지를 서버로 전송하는 함수
     private void sendMessage() {
-        String message = tf.getText();
-                
-        if (message.contains("USERCOUNT:") || message.contains("USERNAME:") || message.contains("KICKNAME:") || message.contains("MASTER:")) {
-            chatTextArea.append("허용되지 않은 명령어입니다.\n");
-            tf.setText("");
-        } else {
-            if (out != null) {
-                out.println(message);
-                out.flush();
+        try {
+            String message = tf.getText();
+
+            if (oos != null) {
+                Message_ChatRoom_Request messageChatRoomRequest = new Message_ChatRoom_Request(nickName, message, uuid);
+
+                oos.writeObject(messageChatRoomRequest);
+
                 tf.setText("");
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 }
