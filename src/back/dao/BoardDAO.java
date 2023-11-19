@@ -3,6 +3,7 @@ package back.dao;
 import back.BoardDTO;
 import back.UserDTO;
 import back.request.Post_Board_Request;
+import back.response.Board_Info_More_Response;
 import database.DBConnector;
 import back.response.Board_Info_Response;
 
@@ -19,8 +20,9 @@ public class BoardDAO {
     ResultSet rs1 = null;
 
     // arraylist에 역순으로 담은 뒤, 2차원 배열로 저장 및 전달
-    // 전체 개시글
     // 이 코드 기준으로 밑에 코드들 다 바꿔야 됨 ( 고민재 할 일 )
+
+    // 게시글 갱신
     public List<Board_Info_Response> printBoard(String region, String category, String uuid) {
         List<Board_Info_Response> list = new ArrayList<>();
         conn = DBConnector.getConnection();
@@ -49,7 +51,7 @@ public class BoardDAO {
             String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?";
 
             while (rs1.next()) {
-                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
+                String peoplenum = rs1.getInt("nowPeopleNum") + "/" + rs1.getString("peopleNum");
 
                 PreparedStatement pt2 = conn.prepareStatement(nickNameSQL);
                 pt2.setString(1, rs1.getString("uuid"));
@@ -70,16 +72,16 @@ public class BoardDAO {
                 pt2.close();
                 rs2.close();
             }
-            System.out.println("데이터 ArrayList에 저장 완료.");
 
             rs1.close();
             pt1.close();
             conn.close();
 
             return list;
-        } catch (SQLException e) {
-            System.out.println("ArrayList 저장 중 오류 발생.");
-            return list = null; //오류 발생하면 list를 null로 만들고 반환 해주도록 함
+        } catch (Exception exception) {
+            exception.printStackTrace();
+
+            return null;
         }
     }
 
@@ -94,7 +96,7 @@ public class BoardDAO {
             pt1.setString(1, userDTO.getNickName());
             rs1 = pt1.executeQuery();
             while (rs1.next()) {
-                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
+                String peoplenum = rs1.getInt("nowPeopleNum") + "/" + rs1.getString("peopleNum");
 
                 BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs1.getString("title"));
@@ -138,7 +140,7 @@ public class BoardDAO {
             pt1.setString(1, userDTO.getNickName());
             rs1 = pt1.executeQuery();
             while (rs1.next()) {
-                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
+                String peoplenum = rs1.getInt("nowPeopleNum") + "/" + rs1.getString("peopleNum");
 
                 BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs1.getString("title"));
@@ -171,51 +173,50 @@ public class BoardDAO {
         return data;
     }
 
-    // 메인 게시판에서 게시글 자세히 보기
-    public BoardDTO readMorePost(int selectRow) {   // 게시글 자세히 보기
+    // 게시글 자세히 보기
+    public Board_Info_More_Response readMorePost(int selectRow) {   // 게시글 자세히 보기
         selectRow++;
-        BoardDTO boardDTO = new BoardDTO();
+
         String selectSQL = "SELECT * FROM boardView WHERE num = ?";
         String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?";
+
         try {
             conn = DBConnector.getConnection();
             pt1 = conn.prepareStatement(selectSQL);
             pt1.setInt(1, selectRow);
             rs1 = pt1.executeQuery();
+
             if (rs1.next()) {
-                String peoplenum = rs1.getInt("nowPeopleNum") +"/"+ rs1.getString("peopleNum");
+                String peoplenum = rs1.getInt("nowPeopleNum") + "/" + rs1.getString("peopleNum");
 
-                boardDTO.setBoardId(rs1.getInt("boardID"));
-                boardDTO.setTitle(rs1.getString("title"));
-                boardDTO.setRegion(rs1.getString("region"));
-                boardDTO.setCategory(rs1.getString("category"));
-                boardDTO.setNickName(rs1.getString("nickName"));
-                boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs1.getString("content"));
-                boardDTO.setView(rs1.getInt("view") + 1);
+                Board_Info_More_Response boardInfoMoreResponse = new Board_Info_More_Response(
+                        rs1.getInt("boardId"),
+                        rs1.getString("title"),
+                        rs1.getString("region"),
+                        rs1.getString("category"),
+                        rs1.getString("nickName"),
+                        peoplenum,
+                        rs1.getString("content"),
+                        rs1.getInt("view") + 1
+                );
+
+                pt1 = conn.prepareStatement(updateSQL);
+                pt1.setInt(1, boardInfoMoreResponse.boardId());
+                pt1.execute();
+
+                rs1.close();
+                pt1.close();
+                conn.close();
+
+                return boardInfoMoreResponse;
+            } else { //Error 발생시 null 반환
+                return null;
             }
-            System.out.println("자세히 보기 성공.");
+        } catch (Exception exception) {
+            exception.printStackTrace();
 
-            pt1 = conn.prepareStatement(updateSQL);
-            pt1.setInt(1, boardDTO.getBoardId());
-            pt1.execute();
-
-            rs1.close();
-            pt1.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-
-        try {
-            conn = DBConnector.getConnection();
-            System.out.println("조회수 1 증가");
-            pt1.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return boardDTO;
     }
 
     // 마이페이지에서 내가 쓴 글 자세히 보기
@@ -250,7 +251,8 @@ public class BoardDAO {
         }
         return boardDTO;
     }
-    public void posting(Post_Board_Request Post_BoardInfo) {
+
+    public void posting(Post_Board_Request Post_BoardInfo, int port) { // <- 이 port 정보도 게시글 테이블에 포함 해줘야돼
         conn = DBConnector.getConnection();
         String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
