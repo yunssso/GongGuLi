@@ -391,7 +391,8 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Join_ChatRoom_Request joinChatroomRequest = new Join_ChatRoom_Request(uuid);
+                    int selectRow = 0; //여기에 사용자가 선택한 게시글 id를 받아와야 돼
+                    Join_ChatRoom_Request joinChatroomRequest = new Join_ChatRoom_Request(selectRow, uuid);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1026);
