@@ -3,9 +3,9 @@ package back.handler;
 import back.ResponseCode;
 import back.dao.BoardDAO;
 import back.request.Board_Info_Request;
+import back.request.Join_ChatRoom_Request;
 import back.response.Board_Info_Response;
-import back.request.Board_Info_More_Request;
-import back.response.Board_Info_More_Response;
+import back.response.Join_ChatRoom_Response;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.List;
 
-public class Board_Info_Handler extends Thread {
+public class ChatRoom_Handler extends Thread {
     private Socket clientSocket = null;
 
     private OutputStream os = null;
@@ -25,7 +25,7 @@ public class Board_Info_Handler extends Thread {
 
     private final BoardDAO boardDAO = new BoardDAO();
 
-    public Board_Info_Handler(Socket clientSocket) {
+    public ChatRoom_Handler(Socket clientSocket) {
         try {
             this.clientSocket = clientSocket;
 
@@ -46,12 +46,6 @@ public class Board_Info_Handler extends Thread {
         try {
             Object readObj = ois.readObject();
 
-            if (readObj instanceof Board_Info_Request) {
-                boardInfoMethod(readObj);
-            } else if (readObj instanceof Board_Info_More_Response) {
-                boardInfoMoreMethod(readObj);
-            }
-
             closeHandler();
         } catch (Exception exception) {
             closeHandler();
@@ -59,39 +53,18 @@ public class Board_Info_Handler extends Thread {
         }
     }
 
-    // 게시판에 있는 글 갱신 해오는 메소드
-    private void boardInfoMethod(Object readObj) {
+    private void joinChatRoomMethod(Object readObj) {
         try {
-            Board_Info_Request boardInfoRequest = (Board_Info_Request) readObj;
+            Join_ChatRoom_Request joinChatRoomRequest = (Join_ChatRoom_Request) readObj;
 
-            List <Board_Info_Response> boardList = boardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category(), boardInfoRequest.uuid());
+            //사용자에게 접속을 원하는 게시글 id, uuid 정보를 받아와서 처리할 거 처리하고 포트 정보 및 대화 내용 등 return 해주는 DAO 필요
+            Join_ChatRoom_Response joinChatRoomResponse = new Join_ChatRoom_Response(8888); //<- 여기에 포트를 DAO에서 받아와야 함
 
-            if (boardList == null) {
-                oos.writeObject(ResponseCode.BOARD_INFO_FAILURE);
+            if (joinChatRoomResponse == null) {
+                oos.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
             } else {
-                oos.writeObject(ResponseCode.BOARD_INFO_SUCCESS);
-                oos.writeObject(boardList);
-            }
-
-            closeHandler();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            closeHandler();
-        }
-    }
-
-    // 게시글을 클릭 했을때 자세히 보기를 하는 메소드
-    private void boardInfoMoreMethod(Object readObj) {
-        try {
-            Board_Info_More_Request boardInfoMoreRequest = (Board_Info_More_Request) readObj;
-
-            Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(boardInfoMoreRequest.selectRow());
-
-            if (boardInfoMoreResponse == null) {
-                oos.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
-            } else {
-                oos.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
-                oos.writeObject(boardInfoMoreResponse);
+                oos.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
+                oos.writeObject(joinChatRoomResponse);
             }
 
             closeHandler();

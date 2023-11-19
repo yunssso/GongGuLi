@@ -48,9 +48,21 @@ public enum ResponseCode {
 
     // EDIT BOARD
 
-    // Refresh Info
+    // BOARD INFO
     BOARD_INFO_SUCCESS(400, "게시판 갱신이 완료되었습니다."),
-    BOARD_INFO_FAILURE(401, "게시판 갱신에 실패하였습니다.");
+    BOARD_INFO_FAILURE(401, "게시판 갱신에 실패하였습니다."),
+
+    // BOARD INFO MORE
+    BOARD_INFO_MORE_SUCCESS(410, "게시글 자세히 보기가 완료되었습니다."),
+    BOARD_INFO_MORE_FAILURE(411, "게시글 자세히 보기가 실패하였습니다."),
+
+    // JOIN CHATROOM
+    JOIN_CHATROOM_SUCCESS(500, "채팅방 입장이 완료되었습니다."),
+    JOIN_CHATROOM_FAILURE(501, "채팅방 입장이 실패하였습니다."),
+
+    // LEAVE CHATROOM
+    LEAVE_CHATROOM_SUCCESS(510, "채팅방 퇴장이 완료되었습니다."),
+    LEAVE_CHATROOM_FAILURE(511, "채팅방 퇴장이 실패하였습니다.");
 
     private final int code;
     private final String message;

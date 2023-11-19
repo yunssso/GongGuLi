@@ -1,11 +1,14 @@
 package front;
 
+import back.ChatServer;
 import back.ResponseCode;
-import back.dao.BoardDAO;
-import back.BoardDTO;
+import back.request.Board_Info_More_Request;
 import back.request.Board_Info_Request;
+import back.request.Join_ChatRoom_Request;
 import back.request.Post_Board_Request;
+import back.response.Board_Info_More_Response;
 import back.response.Board_Info_Response;
+import back.response.Join_ChatRoom_Response;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +21,6 @@ import java.net.Socket;
 import java.util.List;
 
 public class MainPage extends JFrame{
-    BoardDAO boardDAO = new BoardDAO();
     FrontSetting fs = new FrontSetting();
 
     String region = " --";
@@ -236,11 +238,45 @@ public class MainPage extends JFrame{
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2) {
-                    int selectRow = postTable.getSelectedRow();
-                    System.out.println(selectRow);
-                    BoardDTO boardDTO = boardDAO.readMorePost(selectRow);
-                    readMorePost(postTable, boardDTO);
+                try {
+                    if(e.getClickCount() == 2) {
+                        int selectRow = postTable.getSelectedRow();
+
+                        Board_Info_More_Request boardInfoMoreRequest = new Board_Info_More_Request(selectRow);
+
+                        //아이피, 포트 번호로 소켓을 연결
+                        clientSocket = new Socket("localhost", 1027);
+
+                        //서버와 정보를 주고 받기 위한 스트림 생성
+                        OutputStream os = clientSocket.getOutputStream();
+                        ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                        InputStream is = clientSocket.getInputStream();
+                        ObjectInputStream ois = new ObjectInputStream(is);
+
+                        oos.writeObject(boardInfoMoreRequest);
+
+                        ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                        if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
+                            Board_Info_More_Response boardInfoMoreResponse = (Board_Info_More_Response) ois.readObject();
+                            readMorePost(postTable, boardInfoMoreResponse);
+
+                            setSuccessPopUpFrame(responseCode.getValue());
+                        } else { //게시글 자세히 보기 실패
+                            showErrorDialog(responseCode.getValue());
+                        }
+
+                        oos.close();
+                        os.close();
+
+                        ois.close();
+                        is.close();
+
+                        clientSocket.close();
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
         });
@@ -306,10 +342,8 @@ public class MainPage extends JFrame{
         chattingListFrame.setVisible(true);
     }
 
-    public void readMorePost(JTable t, BoardDTO boardDTO) {  // 테이블 값 더블 클릭 시 자세히보기
-        System.out.println(boardDTO.getTitle());
-
-        JFrame readMoreFrame = new JFrame(boardDTO.getTitle());  // 자세히보기 팝업창 프레임
+    public void readMorePost(JTable t, Board_Info_More_Response boardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
+        JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);
 
@@ -321,43 +355,88 @@ public class MainPage extends JFrame{
         logoLabel.setFont(fs.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardDTO.getTitle());
+        JTextArea titleArea = new JTextArea(" 제목: " + boardInfoMoreResponse.title());
         titleArea.setBounds(20, 80, 445, 35);
         titleArea.setFont(fs.f18);
         titleArea.setEditable(false);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 글쓴이: " + boardDTO.getNickName());
+        JTextArea infoArea1 = new JTextArea(" 지역: " + boardInfoMoreResponse.region() +
+                "\n 글쓴이: " + boardInfoMoreResponse.nickName());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardDTO.getCategory() +
-                "\n현황: " + boardDTO.getPeopleNum());
+        JTextArea infoArea2 = new JTextArea("카테고리: " + boardInfoMoreResponse.category() +
+                "\n현황: " + boardInfoMoreResponse.peopleNum());
         infoArea2.setBounds(250, 125, 215, 55);
         infoArea2.setFont(fs.f18);
         infoArea2.setEditable(false);
 
-        JTextArea contentArea = new JTextArea(" " + boardDTO.getContent());
+        JTextArea contentArea = new JTextArea(" " + boardInfoMoreResponse.content());
         contentArea.setBounds(20, 210, 445, 250);
         contentArea.setFont(fs.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: " + boardDTO.getView());
+        JLabel viewCountLabel = new JLabel("조회수: " + boardInfoMoreResponse.view());
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
-        RoundedButton joinChatBtn = new RoundedButton("채팅 참여");
-        joinChatBtn.setBounds(190, 480, 110, 50);
-        joinChatBtn.setFont(fs.fb16);
+        RoundedButton joinChatRoomBtn = new RoundedButton("채팅 참여");
+        joinChatRoomBtn.setBounds(190, 480, 110, 50);
+        joinChatRoomBtn.setFont(fs.fb16);
+
+        // 채팅 참여 버튼 클릭시
+        joinChatRoomBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int selectRow = 0; //여기에 사용자가 선택한 게시글 id를 받아와야 돼
+                    Join_ChatRoom_Request joinChatroomRequest = new Join_ChatRoom_Request(selectRow, uuid);
+
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1026);
+
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(joinChatroomRequest);
+
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                    if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
+                        Join_ChatRoom_Response joinChatroomResponse = (Join_ChatRoom_Response) ois.readObject();
+
+                        //서버에서 받아온 포트 정보로 채팅방 클라이언트를 실행해서 접속 해준다.
+                        //채팅방 랜덤 포트는 애당초 게시글을 생성할때 같이 넣어둬야 한다.
+                        new ChatClient(joinChatroomResponse.port());
+                    } else { //채팅방 입장 실패
+                        showErrorDialog(responseCode.getValue());
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
 
         c.add(logoLabel);
         c.add(titleArea);
         c.add(infoArea1);
         c.add(infoArea2);
         c.add(contentArea);
-        c.add(joinChatBtn);
+        c.add(joinChatRoomBtn);
         c.add(viewCountLabel);
 
         readMoreFrame.setVisible(true);
@@ -453,7 +532,7 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
-                        setSuccessPopUpFrame();
+                        setSuccessPopUpFrame(responseCode.getValue());
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -467,7 +546,6 @@ public class MainPage extends JFrame{
                     clientSocket.close();
 
                     newPostFrame.dispose();
-                    setSuccessPopUpFrame();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -494,7 +572,7 @@ public class MainPage extends JFrame{
         JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void setSuccessPopUpFrame() {
+    private void setSuccessPopUpFrame(String message) {
         JFrame notifyFrame = new JFrame();  // 알림 팝업 프레임 "글이 올라갔어용"
         notifyFrame.setSize(300, 200);
         fs.FrameSetting(notifyFrame);
@@ -504,7 +582,7 @@ public class MainPage extends JFrame{
         c.setBackground(fs.mainColor);
 
 
-        JLabel successLabel = new JLabel("글 작성 완료");
+        JLabel successLabel = new JLabel(message);
         successLabel.setFont(fs.fb16);
         successLabel.setBounds(100, 35, 200, 40);
 
