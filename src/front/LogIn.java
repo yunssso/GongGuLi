@@ -1,10 +1,17 @@
 package front;
 
-import back.user.UserDAO;
+import back.ResponseCode;
+import back.request.Login_Request;
+import back.response.Login_Response;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class LogIn extends JFrame {
     FrontSetting fs = new FrontSetting();
@@ -18,7 +25,8 @@ public class LogIn extends JFrame {
     private JTextField idText;
     private JPasswordField passwordText;
 
-    UserDAO userDAO = new UserDAO();
+    private Socket clientSocket = null;
+
     public LogIn() {
         setLoginFrame();
         setLeftPanel();
@@ -123,21 +131,45 @@ public class LogIn extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (validateInput()) {
+                try {
                     String id = idText.getText();
-                    char[] password = passwordText.getPassword();
-                    System.out.println("아이디: " + id);
-                    System.out.println("비밀번호: " + new String(password));
+                    String password = String.valueOf(passwordText.getPassword());
 
-                    switch (userDAO.logInCheck(id, new String(password))) {
-                        case 1 -> {
-                            userDAO.logIn(id);
-                            dispose();
-                        }
-                        case 0 -> System.out.println("비밀번호 불일치.");
-                        case -1 -> System.out.println("아이디가 존재하지 않음");
-                        case -2 -> System.out.println("DB 오류 발생");
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1024);
+
+                    //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+                    Login_Request loginRequest = new Login_Request(id, password);
+
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(loginRequest);
+
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                    if (responseCode.getKey() == 220) { //로그인 성공
+                        Login_Response loginResponse = (Login_Response) ois.readObject();
+                        String uuid = loginResponse.uuid();
+
+                        new MainPage(uuid); //uuid 받아 오는거 구현 해놨으니까 이거 가져다가 쓰면 돼.
+                    } else { //로그인 실패
+                        showErrorDialog(responseCode.getValue());
                     }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
         });
@@ -156,7 +188,7 @@ public class LogIn extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 아이디 찾기 창을 띄우기
-                new FindUserID(LogIn.this);
+                new FindUserId(LogIn.this);
             }
         });
 
@@ -168,23 +200,6 @@ public class LogIn extends JFrame {
                 new FindPassword(LogIn.this);
             }
         });
-    }
-
-    private boolean validateInput() {
-        String username = idText.getText().trim();
-        char[] password = passwordText.getPassword();
-
-        if (username.isBlank()) {
-            showErrorDialog("아이디를 입력해 주세요.");
-            return false;
-        }
-
-        if (String.valueOf(password).isBlank()) {
-            showErrorDialog("비밀번호를 입력해 주세요.");
-            return false;
-        }
-
-        return true;
     }
 
     private void showErrorDialog(String message) {

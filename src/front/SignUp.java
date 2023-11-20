@@ -1,19 +1,21 @@
 package front;
 
-import back.user.UserDAO;
-import back.user.UserDTO;
+import back.request.SignUp_Request;
+import back.ResponseCode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.Socket;
+import java.io.*;
 
-public class SignUp extends JDialog {
+public class SignUp extends JDialog{
     private Color c1 = new Color(255, 240, 227);
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
     private Font f2 = new Font("SUITE", Font.BOLD, 10);
-
+    
     private JTextField idText;
     private JPasswordField passwordText;
     private JPasswordField pwCheckText;
@@ -24,6 +26,8 @@ public class SignUp extends JDialog {
     private JComboBox<String> residenceList;
 
     private boolean membershipProgress = false;
+
+    private Socket clientSocket = null;
 
     public SignUp() {
         setSignUp();
@@ -150,39 +154,49 @@ public class SignUp extends JDialog {
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (validateInput()) {
+                try {
                     String userId = idText.getText();
-                    char[] password = passwordText.getPassword();
-                    char[] passwordCheck = pwCheckText.getPassword();
+                    String password = String.valueOf(passwordText.getPassword()) ;
+                    String passwordCheck = String.valueOf(pwCheckText.getPassword());
                     String name = nameText.getText();
                     String birth = birthText.getText();
                     String phoneNum = phoneNumberText.getText();
                     String nickName = nickNameText.getText();
                     String region = (String) residenceList.getSelectedItem();
 
-                    System.out.println("아이디: " + userId);
-                    System.out.println("비밀번호: " + new String(password));
-                    System.out.println("비밀번호 확인: " + new String(passwordCheck));
-                    System.out.println("이름: " + name);
-                    System.out.println("닉네임: " + nickName);
-                    System.out.println("생년월일: " + birth);
-                    System.out.println("휴대폰 번호: " + phoneNum);
-                    System.out.println("거주 지역: " + region);
+                    //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+                    SignUp_Request signUpDto = new SignUp_Request(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
-                    UserDTO userDTO = new UserDTO();
+                    //아이피, 포트 번호로 소켓을 연결
+                    clientSocket = new Socket("localhost", 1024);
 
-                    userDTO.setNickName(nickName);
-                    userDTO.setName(name);
-                    userDTO.setUserId(userId);
-                    userDTO.setPassword(new String(password));
-                    userDTO.setRegion(region);
-                    userDTO.setPhoneNum(phoneNum);
-                    userDTO.setBirth(birth);
+                    //서버와 정보를 주고 받기 위한 스트림 생성
+                    OutputStream os = clientSocket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
 
-                    UserDAO userDAO = new UserDAO();
-                    userDAO.signUp(userDTO);
-                    new LogIn();
-                    dispose();
+                    InputStream is = clientSocket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
+                    oos.writeObject(signUpDto);
+
+                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+                    if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) { //회원가입 성공
+                        showSuccessDialog(responseCode.getValue());
+                        new LogIn();
+                    } else { //회원가입 실패
+                        showErrorDialog(responseCode.getValue());
+                    }
+
+                    oos.close();
+                    os.close();
+
+                    ois.close();
+                    is.close();
+
+                    clientSocket.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
             }
         });
@@ -219,78 +233,11 @@ public class SignUp extends JDialog {
         });
     }
 
-    private boolean validateInput() {
-        String username = idText.getText().trim();
-        char[] password = passwordText.getPassword();
-        char[] passwordCheck = pwCheckText.getPassword();
-        String name = nameText.getText().trim();
-        String birth = birthText.getText().trim();
-        String phoneNumber = phoneNumberText.getText().trim();
-        String nickName = nickNameText.getText().trim();
-        String residence = (String) residenceList.getSelectedItem();
-
-        if (username.isBlank()) {
-            showErrorDialog("아이디를 입력해 주세요.");
-            return false;
-        }
-
-        if (String.valueOf(password).isBlank()) {
-            showErrorDialog("비밀번호를 입력해 주세요.");
-            return false;
-        }
-
-        if (!String.valueOf(password).equals(String.valueOf(passwordCheck))) {
-            showErrorDialog("비밀번호가 일치하지 않습니다.");
-            return false;
-        }
-        String passwordStr = String.valueOf(password);
-        if (passwordStr.isBlank() || passwordStr.length() < 8 ||
-                !passwordStr.matches(".*[a-zA-Z].*") || // 영어 포함
-                !passwordStr.matches(".*\\d.*") ||      // 숫자 포함
-                !passwordStr.matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
-            showErrorDialog("비밀번호는 영어, 숫자, 특수문자를 포함하고 8글자 이상이어야 합니다.");
-            return false;
-        }
-
-        if (name.isBlank()) {
-            showErrorDialog("이름을 입력해 주세요.");
-            return false;
-        }
-
-        if (birth.isBlank()) {
-            showErrorDialog("생년월일을 입력해 주세요.");
-            return false;
-        }
-        // 생년월일 유효성 검사
-        if (!birth.matches("\\d{6}")) { // 6글자 숫자인지 확인
-            showErrorDialog("생년월일은 6글자의 숫자로 입력해 주세요.");
-            return false;
-        }
-
-        if (phoneNumber.isBlank()) {
-            showErrorDialog("휴대폰 번호를 입력해 주세요.");
-            return false;
-        }
-
-        if (!phoneNumber.matches("\\d{11}")) { // 6글자 숫자인지 확인
-            showErrorDialog("휴대폰 번호는 11글자의 숫자로 입력해 주세요.");
-            return false;
-        }
-
-        if (nickName.isBlank()) {
-            showErrorDialog("닉네임을 입력해 주세요.");
-            return false;
-        }
-
-        if (residence.equals("거주 지역")) {
-            showErrorDialog("거주지역을 선택해 주세요.");
-            return false;
-        }
-
-        return true;
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(null, message, "입력 오류", JOptionPane.ERROR_MESSAGE);
+    private void showSuccessDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "알림", JOptionPane.INFORMATION_MESSAGE);
     }
 }
