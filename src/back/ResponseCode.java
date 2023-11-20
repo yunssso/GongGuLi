@@ -62,7 +62,11 @@ public enum ResponseCode {
 
     // LEAVE CHATROOM
     LEAVE_CHATROOM_SUCCESS(510, "채팅방 퇴장이 완료되었습니다."),
-    LEAVE_CHATROOM_FAILURE(511, "채팅방 퇴장이 실패하였습니다.");
+    LEAVE_CHATROOM_FAILURE(511, "채팅방 퇴장이 실패하였습니다."),
+
+    // KICK CHATROOM
+    KICK_CHATROOM_SUCCESS(520, "강제퇴장이 완료되었습니다."),
+    KICK_CHATROOM_FAILURE(521, "권한이 없습니다.");
 
     private final int code;
     private final String message;
