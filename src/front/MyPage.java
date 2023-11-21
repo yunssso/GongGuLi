@@ -1,11 +1,10 @@
 package front;
 
-import back.BoardDTO;
 import back.dao.BoardDAO;
 import back.dao.UserDAO;
 import back.UserDTO;
-import back.response.Board_Info_More_Response;
-import back.response.My_Board_Info_More_Response;
+import back.response.board.Board_Info_More_Response;
+import back.response.mypage.My_Board_Info_More_Response;
 
 import javax.swing.*;
 import java.awt.*;
@@ -221,8 +220,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myHistoryTable.getSelectedRow();
-                    Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(selectRow);
-                    readMoreMyHistory(myHistoryTable, selectRow, boardInfoMoreResponse);
+                    //Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(selectRow, uuid);
+                    //readMoreMyHistory(myHistoryTable, selectRow, boardInfoMoreResponse);
                 }
             }
         });
@@ -416,8 +415,6 @@ public class MyPage extends JFrame {
     }
 
     public void readMoreMyPost(JTable t, int selectRow, My_Board_Info_More_Response myBoardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
-        System.out.println(t.getValueAt(selectRow, 2));
-
         JFrame readMoreFrame = new JFrame(myBoardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);

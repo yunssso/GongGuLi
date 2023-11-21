@@ -1,9 +1,9 @@
 package back.handler;
 
 import back.ResponseCode;
-import back.request.Kick_ChatRoom_Request;
-import back.request.Message_ChatRoom_Request;
-import back.response.Message_ChatRoom_Response;
+import back.request.chatroom.Kick_ChatRoom_Request;
+import back.request.chatroom.Message_ChatRoom_Request;
+import back.response.chatroom.Message_ChatRoom_Response;
 
 import java.io.*;
 import java.net.Socket;

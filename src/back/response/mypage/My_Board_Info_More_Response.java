@@ -1,4 +1,4 @@
-package back.response;
+package back.response.mypage;
 
 import java.io.Serializable;
 

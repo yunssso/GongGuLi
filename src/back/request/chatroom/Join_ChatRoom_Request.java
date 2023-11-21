@@ -1,4 +1,4 @@
-package back.request;
+package back.request.chatroom;
 
 import java.io.Serializable;
 

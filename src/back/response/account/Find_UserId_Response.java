@@ -1,4 +1,4 @@
-package back.response;
+package back.response.account;
 
 import java.io.Serializable;
 

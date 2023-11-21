@@ -1,6 +1,6 @@
 package front;
 
-import back.response.Board_Info_Response;
+import back.response.board.Board_Info_Response;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
