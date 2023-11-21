@@ -4,9 +4,11 @@ import back.BoardDTO;
 import back.UserDTO;
 import back.request.Post_Board_Request;
 import back.response.Board_Info_More_Response;
+import back.response.My_Board_Info_More_Response;
 import database.DBConnector;
 import back.response.Board_Info_Response;
 
+import javax.swing.text.View;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -173,16 +175,21 @@ public class BoardDAO {
     public Board_Info_More_Response readMorePost(int selectRow) {
         selectRow++;
 
-        String selectSQL = "SELECT * FROM boardView WHERE num = ?";
-        String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?";
+        String selectSQL = "SELECT * FROM boardView WHERE num = ?;";
+        String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?;";
+        String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?;";
 
         try {
             conn = DBConnector.getConnection();
             pt = conn.prepareStatement(selectSQL);
             pt.setInt(1, selectRow);
             rs = pt.executeQuery();
+            pt = conn.prepareStatement(nickNameSQL);
+            rs.next();
+            pt.setString(1, rs.getString("uuid"));
+            ResultSet rs1 = pt.executeQuery();
 
-            if (rs.next()) {
+            if (rs1.next()) {
                 String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
 
                 Board_Info_More_Response boardInfoMoreResponse = new Board_Info_More_Response(
@@ -190,7 +197,7 @@ public class BoardDAO {
                         rs.getString("title"),
                         rs.getString("region"),
                         rs.getString("category"),
-                        rs.getString("nickName"),
+                        rs1.getString(1),
                         peoplenum,
                         rs.getString("content"),
                         rs.getInt("view") + 1
@@ -201,6 +208,7 @@ public class BoardDAO {
                 pt.execute();
 
                 rs.close();
+                rs1.close();
                 pt.close();
                 conn.close();
 
@@ -213,9 +221,10 @@ public class BoardDAO {
     }
 
     // 내가 쓴 글 자세히 보기 (마이페이지)
-    public Board_Info_More_Response readMoreMyPost(int selectRow) {
+    public My_Board_Info_More_Response readMoreMyPost(int selectRow) {
         selectRow++;
         String selectSQL = "SELECT * FROM boardView WHERE num = ?";
+        String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?;";
         try {
             conn = DBConnector.getConnection();
             pt = conn.prepareStatement(selectSQL);
@@ -224,21 +233,25 @@ public class BoardDAO {
             if (rs.next()) {
                 String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
 
-                Board_Info_More_Response boardInfoMoreResponse = new Board_Info_More_Response(
+                My_Board_Info_More_Response myBoardInfoMoreResponse = new My_Board_Info_More_Response(
                         rs.getInt("boardId"),
                         rs.getString("title"),
                         rs.getString("region"),
                         rs.getString("category"),
-                        rs.getString("nickName"),
                         peoplenum,
                         rs.getString("content"),
-                        rs.getInt("view") + 1
+                        rs.getInt("view" + 1)
                 );
+                pt = conn.prepareStatement(updateSQL);
+                pt.setInt(1, myBoardInfoMoreResponse.boardId());
+                pt.execute();
                 System.out.println("자세히 보기 성공.");
+
                 rs.close();
                 pt.close();
                 conn.close();
-                return boardInfoMoreResponse;
+
+                return myBoardInfoMoreResponse;
             }
             rs.close();
             pt.close();

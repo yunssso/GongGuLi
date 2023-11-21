@@ -3,9 +3,11 @@ package back.handler;
 import back.ResponseCode;
 import back.dao.BoardDAO;
 import back.request.Board_Info_Request;
+import back.request.My_Board_Info_More_Request;
 import back.response.Board_Info_Response;
 import back.request.Board_Info_More_Request;
 import back.response.Board_Info_More_Response;
+import back.response.My_Board_Info_More_Response;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -50,6 +52,8 @@ public class Board_Info_Handler extends Thread {
                 boardInfoMethod(readObj);
             } else if (readObj instanceof Board_Info_More_Request) {
                 boardInfoMoreMethod(readObj);
+            } else if (readObj instanceof My_Board_Info_More_Request) {
+                myBoardInfoMoreMethod(readObj);
             }
 
             closeHandler();
@@ -92,6 +96,27 @@ public class Board_Info_Handler extends Thread {
             } else {
                 oos.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
                 oos.writeObject(boardInfoMoreResponse);
+            }
+
+            closeHandler();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            closeHandler();
+        }
+    }
+
+    // 내가 쓴 게시글을 클릭 했을때 자세히 보기를 하는 메소드
+    private void myBoardInfoMoreMethod(Object readObj) {
+        try {
+            My_Board_Info_More_Request myBoardInfoMoreRequest = (My_Board_Info_More_Request) readObj;
+
+            My_Board_Info_More_Response myBoardInfoMoreResponse = boardDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
+
+            if (myBoardInfoMoreResponse == null) {
+                oos.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
+            } else {
+                oos.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
+                oos.writeObject(myBoardInfoMoreRequest);
             }
 
             closeHandler();

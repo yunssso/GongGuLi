@@ -36,13 +36,11 @@ public class MainPage extends JFrame{
 
     public MainPage(String uuid) {  // 생성자
         this.uuid = uuid;
-        System.out.println(this.uuid);
 
         setListFrame();
         setLeftPanel();
         setCenterPanel();
         setRightPanel();
-
         setVisible(true);
     }
 
@@ -127,8 +125,19 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
-                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
                         //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+
+                        fs.setmainPageDB(boardList);
+
+                        postTable = new JTable(fs.mainPageDB, fs.mainPageHeader) {
+                            @Override
+                            public boolean isCellEditable(int row, int column) {  // 셀 내용 수정 불가 설정
+                                return false;
+                            }
+                        };
+
+                        fs.tableSetting(postTable, fs.mainTableWidths);
                     } else { //게시글 갱신 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -171,8 +180,10 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
-                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
                         //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+
+                        fs.setmainPageDB(boardList);
                     } else { //게시글 갱신 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -218,6 +229,8 @@ public class MainPage extends JFrame{
         JComboBox searchFilterBox = new JComboBox(searchFilter);
         searchFilterBox.setBounds(460, 40, 80, 30);
 
+        getBoardInfoMethod();
+
         // 검색창에 입력 후 검색 버튼 누르면 텍스트 출력
         // (테스트용 - 추후 백엔드로 넘기는 과정 필요)
         searchBtn.addActionListener(new ActionListener() {
@@ -226,6 +239,7 @@ public class MainPage extends JFrame{
                 System.out.println(searchField.getText());
             }
         });
+
         // 게시글 출력 <- 이거 좀 해결 해줘봐
         // 일단 테스트 할 수 있도록 해둠
         postTable = new JTable(fs.mainPageDB, fs.mainPageHeader) {
@@ -535,6 +549,7 @@ public class MainPage extends JFrame{
 
                     if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
                         setSuccessPopUpFrame(responseCode.getValue());
+                        new MainPage(uuid);
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -605,5 +620,45 @@ public class MainPage extends JFrame{
         c.add(okBtn);
 
         notifyFrame.setVisible(true);
+    }
+
+    private void getBoardInfoMethod() {
+        try {
+            //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+            Board_Info_Request boardInfoRequest = new Board_Info_Request(" --", " --", uuid);
+
+            //아이피, 포트 번호로 소켓을 연결
+            clientSocket = new Socket("localhost", 1027);
+
+            //서버와 정보를 주고 받기 위한 스트림 생성
+            OutputStream os = clientSocket.getOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+
+            InputStream is = clientSocket.getInputStream();
+            ObjectInputStream ois = new ObjectInputStream(is);
+
+            oos.writeObject(boardInfoRequest);
+
+            ResponseCode responseCode = (ResponseCode) ois.readObject();
+
+            if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
+                //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+
+                fs.setmainPageDB(boardList);
+            } else { //게시글 갱신 실패
+                showErrorDialog(responseCode.getValue());
+            }
+
+            oos.close();
+            os.close();
+
+            ois.close();
+            is.close();
+
+            clientSocket.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
