@@ -1,3 +1,5 @@
 package back.request;
 
-public record Board_Info_More_Request(int selectRow) {}
+import java.io.Serializable;
+
+public record Board_Info_More_Request(int selectRow) implements Serializable {}

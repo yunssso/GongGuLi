@@ -4,6 +4,7 @@ import back.BoardDTO;
 import back.dao.BoardDAO;
 import back.dao.UserDAO;
 import back.UserDTO;
+import back.response.Board_Info_More_Response;
 
 import javax.swing.*;
 import java.awt.*;
@@ -181,8 +182,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myPostingTable.getSelectedRow();
-                    BoardDTO boardDTO = boardDAO.readMorePost(selectRow);
-                    readMoreMyPost(myPostingTable, selectRow, boardDTO);
+                    Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMoreMyPost(selectRow);
+                    readMoreMyPost(myPostingTable, selectRow, boardInfoMoreResponse);
                 }
             }
         });
@@ -219,8 +220,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myHistoryTable.getSelectedRow();
-                    BoardDTO boardDTO = boardDAO.readMorePost(selectRow);
-                    readMoreMyHistory(myHistoryTable, selectRow, boardDTO);
+                    Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(selectRow);
+                    readMoreMyHistory(myHistoryTable, selectRow, boardInfoMoreResponse);
                 }
             }
         });
@@ -413,10 +414,10 @@ public class MyPage extends JFrame {
         c.add(modifyUserInfoBtn);
     }
 
-    public void readMoreMyPost(JTable t, int selectRow, BoardDTO boardDTO) {  // 테이블 값 더블 클릭 시 자세히보기
+    public void readMoreMyPost(JTable t, int selectRow, Board_Info_More_Response boardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
         System.out.println(t.getValueAt(selectRow, 2));
 
-        JFrame readMoreFrame = new JFrame(boardDTO.getTitle());  // 자세히보기 팝업창 프레임
+        JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);
 
@@ -428,29 +429,29 @@ public class MyPage extends JFrame {
         logoLabel.setFont(fs.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardDTO.getTitle());
+        JTextArea titleArea = new JTextArea(" 제목: " + boardInfoMoreResponse.title());
         titleArea.setBounds(20, 80, 445, 35);
         titleArea.setFont(fs.f18);
         titleArea.setEditable(false);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 현황: " + boardDTO.getPeopleNum());
+        JTextArea infoArea1 = new JTextArea(" 지역: " + boardInfoMoreResponse.region() +
+                "\n 현황: " + boardInfoMoreResponse.peopleNum());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardDTO.getCategory());
+        JTextArea infoArea2 = new JTextArea("카테고리: " + boardInfoMoreResponse.category());
         infoArea2.setBounds(250, 125, 215, 55);
         infoArea2.setFont(fs.f18);
         infoArea2.setEditable(false);
 
-        JTextArea contentArea = new JTextArea(boardDTO.getContent());
+        JTextArea contentArea = new JTextArea(boardInfoMoreResponse.content());
         contentArea.setBounds(20, 210, 445, 250);
         contentArea.setFont(fs.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: " + boardDTO.getView());
+        JLabel viewCountLabel = new JLabel("조회수: " + boardInfoMoreResponse.view());
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
@@ -497,10 +498,10 @@ public class MyPage extends JFrame {
         readMoreFrame.setVisible(true);
     }
 
-    public void readMoreMyHistory(JTable t, int selectRow, BoardDTO boardDTO) {  // 테이블 값 더블 클릭 시 자세히보기
+    public void readMoreMyHistory(JTable t, int selectRow, Board_Info_More_Response boardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
         System.out.println(t.getValueAt(selectRow, 2));
 
-        JFrame readMoreFrame = new JFrame(boardDTO.getTitle());  // 자세히보기 팝업창 프레임
+        JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);
 
@@ -512,30 +513,30 @@ public class MyPage extends JFrame {
         logoLabel.setFont(fs.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardDTO.getTitle());
+        JTextArea titleArea = new JTextArea(" 제목: " + boardInfoMoreResponse.title());
         titleArea.setBounds(20, 80, 445, 35);
         titleArea.setFont(fs.f18);
         titleArea.setEditable(false);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardDTO.getRegion() +
-                "\n 글쓴이: " + boardDTO.getNickName());
+        JTextArea infoArea1 = new JTextArea(" 지역: " + boardInfoMoreResponse.region() +
+                "\n 글쓴이: " + boardInfoMoreResponse.nickName());
         infoArea1.setBounds(20, 125, 230, 55);
         infoArea1.setFont(fs.f18);
         infoArea1.setEditable(false);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardDTO.getCategory() +
-                "\n현황: " + boardDTO.getPeopleNum());
+        JTextArea infoArea2 = new JTextArea("카테고리: " + boardInfoMoreResponse.category() +
+                "\n현황: " + boardInfoMoreResponse.peopleNum());
         infoArea2.setBounds(250, 125, 215, 55);
         infoArea2.setFont(fs.f18);
         infoArea2.setEditable(false);
 
-        JTextArea contentArea = new JTextArea(boardDTO.getContent());
+        JTextArea contentArea = new JTextArea(boardInfoMoreResponse.content());
         contentArea.setBounds(20, 210, 445, 250);
         contentArea.setFont(fs.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
-        JLabel viewCountLabel = new JLabel("조회수: " + boardDTO.getView());
+        JLabel viewCountLabel = new JLabel("조회수: " + boardInfoMoreResponse.view());
         viewCountLabel.setFont(fs.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 

@@ -2,6 +2,7 @@ package front;
 
 import back.ChatServer;
 import back.ResponseCode;
+import back.dao.BoardDAO;
 import back.request.Board_Info_More_Request;
 import back.request.Board_Info_Request;
 import back.request.Join_ChatRoom_Request;
@@ -69,8 +70,8 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                // MyPage mp = new MyPage(userDTO); // 마이페이지 넘어가는 코드
-                // mp.setMyPage();
+                 MyPage mp = new MyPage(); // 마이페이지 넘어가는 코드
+                 mp.setMyPage();
             }
         });
 
@@ -226,7 +227,8 @@ public class MainPage extends JFrame{
             }
         });
         // 게시글 출력 <- 이거 좀 해결 해줘봐
-        postTable = new JTable(boardDAO.printBoard(region, category), fs.mainPageHeader) {
+        // 일단 테스트 할 수 있도록 해둠
+        postTable = new JTable(fs.mainPageDB, fs.mainPageHeader) {
             @Override
             public boolean isCellEditable(int row, int column) {  // 셀 내용 수정 불가 설정
                 return false;
@@ -413,7 +415,7 @@ public class MainPage extends JFrame{
 
                         //서버에서 받아온 포트 정보로 채팅방 클라이언트를 실행해서 접속 해준다.
                         //채팅방 랜덤 포트는 애당초 게시글을 생성할때 같이 넣어둬야 한다.
-                        new ChatClient(joinChatroomResponse.port());
+//                        new ChatClient(joinChatroomResponse.port());
                     } else { //채팅방 입장 실패
                         showErrorDialog(responseCode.getValue());
                     }
