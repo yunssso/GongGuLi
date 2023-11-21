@@ -2,6 +2,7 @@ package main;
 
 import back.handler.Account_Handler;
 import back.handler.Board_Handler;
+import back.handler.Board_Info_Handler;
 import back.handler.ChatRoom_Handler;
 
 import java.net.ServerSocket;
@@ -65,7 +66,7 @@ class BoardInfo extends Thread {
         try (ServerSocket serverSocket = new ServerSocket(1027)) {
             while (true) {
                 clientSocket = serverSocket.accept();
-                new Board_Handler(clientSocket).start();
+                new Board_Info_Handler(clientSocket).start();
             }
 
         } catch(Exception exception) {
