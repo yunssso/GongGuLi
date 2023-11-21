@@ -21,11 +21,21 @@ import java.util.UUID;
 public class Account_Handler extends Thread {
 	private Socket clientSocket = null;
 
+	private InputStream inputStream = null;
+	private ObjectInputStream objectInputStream = null;
+	private OutputStream outputStream = null;
+	private ObjectOutputStream objectOutputStream = null;
 	private final UserDAO userDAO = new UserDAO();
 
 	public Account_Handler(Socket clientSocket) {
 		try {
 			this.clientSocket = clientSocket;
+
+			inputStream = clientSocket.getInputStream();
+			objectInputStream = new ObjectInputStream(inputStream);
+
+			outputStream = clientSocket.getOutputStream();
+			objectOutputStream = new ObjectOutputStream(outputStream);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -33,16 +43,15 @@ public class Account_Handler extends Thread {
 	
 	@Override
 	public void run() {
-		try (InputStream inputStream = clientSocket.getInputStream();
-			 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-			 ){
-
+		try {
 			Object readObj = objectInputStream.readObject();
 
 			if (readObj instanceof SignUp_Request signUpRequest) {
 				SignUpMethod(signUpRequest);
 			} else if (readObj instanceof Login_Request loginRequest) {
+				System.out.println("3");
 				LoginMethod(loginRequest);
+				System.out.println("4");
 			} else if (readObj instanceof Find_UserId_Request findUserIdRequest) {
 				FindUserIdMethod(findUserIdRequest);
 			} else if (readObj instanceof Find_UserPassword_Request findUserPasswordRequest) {
@@ -54,10 +63,7 @@ public class Account_Handler extends Thread {
 	}
 
 	private void SignUpMethod(SignUp_Request signUpRequest) {
-		try (OutputStream outputStream = clientSocket.getOutputStream();
-			 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			 ){
-
+		try {
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
 			if (signUpRequest.userId().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.ID_MISSING);
@@ -95,10 +101,7 @@ public class Account_Handler extends Thread {
 	}
 
 	private void LoginMethod(Login_Request loginRequest) {
-		try (OutputStream outputStream = clientSocket.getOutputStream();
-			 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			 ){
-
+		try {
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
 			if (loginRequest.userId().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.ID_MISSING);
@@ -121,10 +124,7 @@ public class Account_Handler extends Thread {
 	}
 
 	private void FindUserIdMethod(Find_UserId_Request findUserIdRequest) {
-		try (OutputStream outputStream = clientSocket.getOutputStream();
-			 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			 ){
-
+		try {
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
 			if (findUserIdRequest.name().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.NAME_MISSING);
@@ -148,10 +148,7 @@ public class Account_Handler extends Thread {
 	}
 
 	private void FindUserPasswordMethod(Find_UserPassword_Request findUserPasswordRequest) {
-		try (OutputStream outputStream = clientSocket.getOutputStream();
-			 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			 ){
-
+		try {
 			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
 			if (findUserPasswordRequest.name().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.NAME_MISSING);

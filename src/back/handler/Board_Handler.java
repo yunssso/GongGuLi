@@ -17,6 +17,10 @@ import java.util.Random;
 
 public class Board_Handler extends Thread {
     private Socket clientSocket = null;
+    private InputStream inputStream = null;
+    private ObjectInputStream objectInputStream = null;
+    private OutputStream outputStream = null;
+    private ObjectOutputStream objectOutputStream = null;
 
     private final BoardDAO boardDAO = new BoardDAO();
 
@@ -28,6 +32,12 @@ public class Board_Handler extends Thread {
     public Board_Handler(Socket clientSocket) {
         try {
             this.clientSocket = clientSocket;
+
+            inputStream = clientSocket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+
+            outputStream = clientSocket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -35,12 +45,7 @@ public class Board_Handler extends Thread {
 
     @Override
     public void run() {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             InputStream inputStream = clientSocket.getInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ) {
-
+        try {
             Object readObj = objectInputStream.readObject();
 
             if (readObj instanceof Post_Board_Request postBoardRequest) {
@@ -57,12 +62,7 @@ public class Board_Handler extends Thread {
 
     /*게시글 생성 함수*/
     private void postBoardMethod(Post_Board_Request postBoardRequest) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             InputStream inputStream = clientSocket.getInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ) {
-
+        try {
             //각 조건들을 비교하여 클라이언트에 응답을 보낸다.
             if (postBoardRequest.title().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.TITLE_MISSING);

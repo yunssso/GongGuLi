@@ -13,12 +13,22 @@ import java.net.Socket;
 
 public class ChatRoom_Handler extends Thread {
     private Socket clientSocket = null;
+    private InputStream inputStream = null;
+    private ObjectInputStream objectInputStream = null;
+    private OutputStream outputStream = null;
+    private ObjectOutputStream objectOutputStream = null;
 
     private final BoardDAO boardDAO = new BoardDAO();
 
     public ChatRoom_Handler(Socket clientSocket) {
         try {
             this.clientSocket = clientSocket;
+
+            inputStream = clientSocket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+
+            outputStream = clientSocket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -26,10 +36,7 @@ public class ChatRoom_Handler extends Thread {
 
     @Override
     public void run() {
-        try (InputStream inputStream = clientSocket.getInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
-
+        try {
             Object readObj = objectInputStream.readObject();
 
             if (readObj instanceof  Join_ChatRoom_Request joinChatRoomRequest) {
@@ -41,9 +48,7 @@ public class ChatRoom_Handler extends Thread {
     }
 
     private void joinChatRoomMethod(Join_ChatRoom_Request joinChatRoomRequest) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             ){
+        try {
             //사용자에게 접속을 원하는 게시글 id, uuid 정보를 받아와서 처리할 거 처리하고 포트 정보 및 대화 내용 등 return 해주는 DAO 필요
             Join_ChatRoom_Response joinChatRoomResponse = new Join_ChatRoom_Response(8888); //<- 여기에 포트를 DAO에서 받아와야 함
 

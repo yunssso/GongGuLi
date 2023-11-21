@@ -1,5 +1,6 @@
 package back.dao;
 
+import back.BoardDTO;
 import back.UserDTO;
 import back.request.board.Post_Board_Request;
 import back.response.board.Board_Info_More_Response;

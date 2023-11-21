@@ -17,17 +17,22 @@ import java.util.List;
 
 public class Board_Info_Handler extends Thread {
     private Socket clientSocket = null;
+    private InputStream inputStream = null;
+    private ObjectInputStream objectInputStream = null;
+    private OutputStream outputStream = null;
+    private ObjectOutputStream objectOutputStream = null;
 
     private final BoardDAO boardDAO = new BoardDAO();
 
     public Board_Info_Handler(Socket clientSocket) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             InputStream inputStream = clientSocket.getInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
-
+        try {
             this.clientSocket = clientSocket;
+
+            inputStream = clientSocket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+
+            outputStream = clientSocket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -35,10 +40,7 @@ public class Board_Info_Handler extends Thread {
 
     @Override
     public void run() {
-        try (InputStream inputStream = clientSocket.getInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
-
+        try {
             Object readObj = objectInputStream.readObject();
 
             if (readObj instanceof Board_Info_Request boardInfoRequest) {
@@ -55,10 +57,7 @@ public class Board_Info_Handler extends Thread {
 
     // 게시판에 있는 글 갱신 해오는 메소드
     private void boardInfoMethod(Board_Info_Request boardInfoRequest) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             ){
-
+        try {
             List boardList = boardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
 
             if (boardList == null) {
@@ -74,10 +73,7 @@ public class Board_Info_Handler extends Thread {
 
     // 게시글을 클릭 했을때 자세히 보기를 하는 메소드
     private void boardInfoMoreMethod(Board_Info_More_Request boardInfoMoreRequest) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             ){
-
+        try {
             Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(boardInfoMoreRequest.selectRow(), boardInfoMoreRequest.uuid());
 
             if (boardInfoMoreResponse == null) {
@@ -93,10 +89,7 @@ public class Board_Info_Handler extends Thread {
 
     // 내가 쓴 게시글을 클릭 했을때 자세히 보기를 하는 메소드
     private void myBoardInfoMoreMethod(My_Board_Info_More_Request myBoardInfoMoreRequest) {
-        try (OutputStream outputStream = clientSocket.getOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-             ){
-
+        try {
             My_Board_Info_More_Response myBoardInfoMoreResponse = boardDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
 
             if (myBoardInfoMoreResponse == null) {
