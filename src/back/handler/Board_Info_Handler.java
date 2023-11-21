@@ -48,7 +48,7 @@ public class Board_Info_Handler extends Thread {
 
             if (readObj instanceof Board_Info_Request) {
                 boardInfoMethod(readObj);
-            } else if (readObj instanceof Board_Info_More_Response) {
+            } else if (readObj instanceof Board_Info_More_Request) {
                 boardInfoMoreMethod(readObj);
             }
 
@@ -64,7 +64,7 @@ public class Board_Info_Handler extends Thread {
         try {
             Board_Info_Request boardInfoRequest = (Board_Info_Request) readObj;
 
-            List <Board_Info_Response> boardList = boardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category(), boardInfoRequest.uuid());
+            List boardList = boardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
 
             if (boardList == null) {
                 oos.writeObject(ResponseCode.BOARD_INFO_FAILURE);

@@ -2,4 +2,4 @@ package back.response;
 
 import java.io.Serializable;
 
-public record Board_Info_Response(String title, String region, String category, String peopleNum, String content, Boolean authority) implements Serializable {}
+public record Board_Info_Response(String region, String category, String title, String writer, String peopleNum) implements Serializable {}
