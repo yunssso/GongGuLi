@@ -1,6 +1,6 @@
 package front;
 
-import back.request.SignUp_Request;
+import back.request.account.SignUp_Request;
 import back.ResponseCode;
 
 import javax.swing.*;

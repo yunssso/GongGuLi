@@ -1,4 +1,4 @@
-package back.request;
+package back.request.mypage;
 
 import java.io.Serializable;
 

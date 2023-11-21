@@ -10,7 +10,8 @@ public class Account extends Thread {
 
     @Override
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(1024)) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(1024);
             while (true) {
                 clientSocket = serverSocket.accept();
                 new Account_Handler(clientSocket).start();

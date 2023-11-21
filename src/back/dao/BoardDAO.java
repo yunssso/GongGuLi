@@ -2,13 +2,12 @@ package back.dao;
 
 import back.BoardDTO;
 import back.UserDTO;
-import back.request.Post_Board_Request;
-import back.response.Board_Info_More_Response;
-import back.response.My_Board_Info_More_Response;
+import back.request.board.Post_Board_Request;
+import back.response.board.Board_Info_More_Response;
+import back.response.mypage.My_Board_Info_More_Response;
 import database.DBConnector;
-import back.response.Board_Info_Response;
+import back.response.board.Board_Info_Response;
 
-import javax.swing.text.View;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,7 +95,7 @@ public class BoardDAO {
             while (rs.next()) {
                 String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
 
-                BoardDTO boardDTO = new BoardDTO();
+                /*BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs.getString("title"));
                 boardDTO.setRegion(rs.getString("region"));
                 boardDTO.setCategory(rs.getString("category"));
@@ -104,7 +103,7 @@ public class BoardDAO {
                 boardDTO.setPeopleNum(peoplenum);
                 boardDTO.setContent(rs.getString("content"));
 
-                list.add(boardDTO);
+                list.add(boardDTO);*/
             }
             System.out.println("내 글 데이터 ArrayList에 저장 완료.");
 
@@ -140,7 +139,7 @@ public class BoardDAO {
             while (rs.next()) {
                 String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
 
-                BoardDTO boardDTO = new BoardDTO();
+                /*BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs.getString("title"));
                 boardDTO.setRegion(rs.getString("region"));
                 boardDTO.setCategory(rs.getString("category"));
@@ -148,7 +147,7 @@ public class BoardDAO {
                 boardDTO.setPeopleNum(peoplenum);
                 boardDTO.setContent(rs.getString("content"));
 
-                list.add(boardDTO);
+                list.add(boardDTO);*/
             }
             System.out.println("내 글 데이터 ArrayList에 저장 완료.");
 
@@ -172,7 +171,7 @@ public class BoardDAO {
     }
 
     // 게시글 자세히 보기 (메인페이지)
-    public Board_Info_More_Response readMorePost(int selectRow) {
+    public Board_Info_More_Response readMorePost(int selectRow, String uuid) {
         selectRow++;
 
         String selectSQL = "SELECT * FROM boardView WHERE num = ?;";
@@ -200,7 +199,8 @@ public class BoardDAO {
                         rs1.getString(1),
                         peoplenum,
                         rs.getString("content"),
-                        rs.getInt("view") + 1
+                        rs.getInt("view") + 1,
+                        rs.getString("uuid").equals(uuid)
                 );
 
                 pt = conn.prepareStatement(updateSQL);

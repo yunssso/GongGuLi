@@ -1,10 +1,9 @@
 package front;
 
 import back.ResponseCode;
-import back.request.Kick_ChatRoom_Request;
-import back.request.Message_ChatRoom_Request;
-import back.response.Message_ChatRoom_Response;
-import back.response.Send_Master_Response;
+import back.request.chatroom.Kick_ChatRoom_Request;
+import back.request.chatroom.Message_ChatRoom_Request;
+import back.response.chatroom.Message_ChatRoom_Response;
 
 import javax.swing.*;
 import javax.swing.event.*;
