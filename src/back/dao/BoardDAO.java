@@ -264,7 +264,7 @@ public class BoardDAO {
 
     public void posting(Post_Board_Request Post_BoardInfo, int port) { // <- 이 port 정보도 게시글 테이블에 포함 해줘야돼
         conn = DBConnector.getConnection();
-        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, chatPort) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(insertSQL);
             pt.setString(1, Post_BoardInfo.title());
@@ -272,14 +272,14 @@ public class BoardDAO {
             pt.setString(3, Post_BoardInfo.category());
             pt.setString(4, Post_BoardInfo.peopleNum());
             pt.setString(5, Post_BoardInfo.content());
-            pt.setString(6, Post_BoardInfo.uuid());   // <- 이 부분에 닉네임 대신에 UUID 값이 들어갈 거 같은데?
+            pt.setString(6, Post_BoardInfo.uuid());
             pt.setInt(7, 0);
             pt.setInt(8, 1);
+            pt.setInt(9, port);
 
             if (!pt.execute()) {
                 System.out.println("게시 성공.");
             }
-
             pt.close();
             conn.close();
         } catch (Exception e) {
