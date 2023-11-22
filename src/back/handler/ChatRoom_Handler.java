@@ -1,7 +1,6 @@
 package back.handler;
 
 import back.ResponseCode;
-import back.dao.BoardDAO;
 import back.request.chatroom.Join_ChatRoom_Request;
 import back.response.chatroom.Join_ChatRoom_Response;
 

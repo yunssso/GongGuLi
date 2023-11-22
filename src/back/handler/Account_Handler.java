@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 
 import back.ResponseCode;
+import back.dao.FindUserDAO;
 import back.dao.UserDAO;
 import back.request.account.Find_UserId_Request;
 import back.request.account.Find_UserPassword_Request;
@@ -20,6 +21,7 @@ public class Account_Handler extends Thread {
 	private ObjectInputStream objectInputStream = null;
 	private ObjectOutputStream objectOutputStream = null;
 	private final UserDAO userDAO = new UserDAO();
+	private final FindUserDAO findUserDAO = new FindUserDAO();
 
 	public Account_Handler(Socket clientSocket) {
 		try {
@@ -106,11 +108,11 @@ public class Account_Handler extends Thread {
 				objectOutputStream.writeObject(ResponseCode.PASSWORD_MISSING);
 			} else {
 				String logInCheckResult = userDAO.logInCheck(loginRequest);
-				if (logInCheckResult.equals("0")) {
+				if (logInCheckResult.equals("Password Does Not Match")) {
 					objectOutputStream.writeObject(ResponseCode.PASSWORD_MISMATCH_LOGIN);
-				} else if (logInCheckResult.equals("-1")) {
+				} else if (logInCheckResult.equals("Id Does Not Exist")) {
 					objectOutputStream.writeObject(ResponseCode.ID_NOT_EXIST);
-				} else if (!logInCheckResult.equals("-2")) {
+				} else if (!logInCheckResult.equals("Database Error")) {
 					objectOutputStream.writeObject(ResponseCode.LOGIN_SUCCESS);
 					objectOutputStream.writeObject(new Login_Response(logInCheckResult));
 				}
@@ -130,7 +132,7 @@ public class Account_Handler extends Thread {
 			} else if (findUserIdRequest.phoneNumber().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				Find_UserId_Response findUserIdResponse = new Find_UserId_Response(userDAO.findID(findUserIdRequest));
+				Find_UserId_Response findUserIdResponse = new Find_UserId_Response(findUserDAO.findID(findUserIdRequest));
 
 				if (!findUserIdResponse.userId().isEmpty()) {
 					objectOutputStream.writeObject(ResponseCode.FIND_ID_SUCCESS);
@@ -156,7 +158,7 @@ public class Account_Handler extends Thread {
 			} else if (findUserPasswordRequest.phoneNumber().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				Find_UserPassword_Response findUserPasswordResponse = new Find_UserPassword_Response(userDAO.findPassword(findUserPasswordRequest));
+				Find_UserPassword_Response findUserPasswordResponse = new Find_UserPassword_Response(findUserDAO.findPassword(findUserPasswordRequest));
 
 				if (!findUserPasswordResponse.password().isEmpty()) {
 					objectOutputStream.writeObject(ResponseCode.FIND_PASSWORD_SUCCESS);

@@ -1,7 +1,8 @@
 package back.handler;
 
 import back.ResponseCode;
-import back.dao.BoardDAO;
+import back.dao.PrintBoardDAO;
+import back.dao.ReadPostDAO;
 import back.request.board.Board_Info_Request;
 import back.request.mypage.My_Board_Info_More_Request;
 import back.request.board.Board_Info_More_Request;
@@ -19,7 +20,8 @@ public class Board_Info_Handler extends Thread {
     private ObjectInputStream objectInputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
-    private final BoardDAO boardDAO = new BoardDAO();
+    private final PrintBoardDAO boardDAO = new PrintBoardDAO();
+    private final ReadPostDAO readPostDAO = new ReadPostDAO();
 
     public Board_Info_Handler(Socket clientSocket) {
         try {
@@ -70,7 +72,7 @@ public class Board_Info_Handler extends Thread {
     // 게시글을 클릭 했을때 자세히 보기를 하는 메소드
     private void boardInfoMoreMethod(Board_Info_More_Request boardInfoMoreRequest) {
         try {
-            Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(boardInfoMoreRequest.selectRow(), boardInfoMoreRequest.uuid());
+            Board_Info_More_Response boardInfoMoreResponse = readPostDAO.readMorePost(boardInfoMoreRequest.selectRow(), boardInfoMoreRequest.uuid());
 
             if (boardInfoMoreResponse == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
@@ -86,7 +88,7 @@ public class Board_Info_Handler extends Thread {
     // 내가 쓴 게시글을 클릭 했을때 자세히 보기를 하는 메소드
     private void myBoardInfoMoreMethod(My_Board_Info_More_Request myBoardInfoMoreRequest) {
         try {
-            My_Board_Info_More_Response myBoardInfoMoreResponse = boardDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
+            My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
 
             if (myBoardInfoMoreResponse == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);

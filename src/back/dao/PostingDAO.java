@@ -1,17 +1,21 @@
 package back.dao;
 
+import back.ChatServer;
 import back.request.board.Post_Board_Request;
 import database.DBConnector;
 
+import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Random;
 
 public class PostingDAO {
     Connection conn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
-    public void posting(Post_Board_Request Post_BoardInfo, int port) { // <- 이 port 정보도 게시글 테이블에 포함 해줘야돼
+
+    public void posting(Post_Board_Request Post_BoardInfo, int port) {
         conn = DBConnector.getConnection();
         String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, chatPort) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
