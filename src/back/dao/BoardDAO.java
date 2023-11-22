@@ -200,7 +200,8 @@ public class BoardDAO {
                         peoplenum,
                         rs.getString("content"),
                         rs.getInt("view") + 1,
-                        rs.getString("uuid").equals(uuid)
+                        rs.getString("uuid").equals(uuid),
+                        rs.getInt("chatPort")
                 );
 
                 pt = conn.prepareStatement(updateSQL);

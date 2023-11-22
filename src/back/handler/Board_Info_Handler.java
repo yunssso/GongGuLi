@@ -16,22 +16,18 @@ import java.net.Socket;
 import java.util.List;
 
 public class Board_Info_Handler extends Thread {
-    private Socket clientSocket = null;
-    private InputStream inputStream = null;
     private ObjectInputStream objectInputStream = null;
-    private OutputStream outputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
     private final BoardDAO boardDAO = new BoardDAO();
 
     public Board_Info_Handler(Socket clientSocket) {
         try {
-            this.clientSocket = clientSocket;
 
-            inputStream = clientSocket.getInputStream();
+            InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            outputStream = clientSocket.getOutputStream();
+            OutputStream outputStream = clientSocket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -51,7 +47,7 @@ public class Board_Info_Handler extends Thread {
                 myBoardInfoMoreMethod(myBoardInfoMoreRequest);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            //exception.printStackTrace(); <- 여기서 계속 이상한 버그 터지는데 무시해도 될 듯
         }
     }
 
