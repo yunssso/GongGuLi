@@ -2,7 +2,7 @@ package back.handler;
 
 import back.ChatServer;
 import back.ResponseCode;
-import back.dao.BoardDAO;
+import back.dao.PostingDAO;
 import back.request.board.Delete_Board_Request;
 import back.request.board.Edit_Board_Request;
 import back.request.board.Post_Board_Request;
@@ -22,7 +22,7 @@ public class Board_Handler extends Thread {
     private OutputStream outputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
-    private final BoardDAO boardDAO = new BoardDAO();
+    private final PostingDAO posting = new PostingDAO();
 
     private static final int MIN_PORT = 1029; //1029 ~ 49151에서 채팅방 서버가 생성됨
     private static final int MAX_PORT = 49151;
@@ -92,7 +92,7 @@ public class Board_Handler extends Thread {
                         }
                     }
 
-                    boardDAO.posting(postBoardRequest, port);
+                    posting.posting(postBoardRequest, port);
                     objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS);
                 }
             }
