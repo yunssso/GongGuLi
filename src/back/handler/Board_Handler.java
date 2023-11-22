@@ -17,9 +17,7 @@ import java.util.Random;
 
 public class Board_Handler extends Thread {
     private Socket clientSocket = null;
-    private InputStream inputStream = null;
     private ObjectInputStream objectInputStream = null;
-    private OutputStream outputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
     private final BoardDAO boardDAO = new BoardDAO();
@@ -33,10 +31,10 @@ public class Board_Handler extends Thread {
         try {
             this.clientSocket = clientSocket;
 
-            inputStream = clientSocket.getInputStream();
+            InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            outputStream = clientSocket.getOutputStream();
+            OutputStream outputStream = clientSocket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
