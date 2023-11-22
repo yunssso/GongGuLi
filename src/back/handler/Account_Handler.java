@@ -1,5 +1,6 @@
 package back.handler;
 
+import java.io.*;
 import java.net.Socket;
 
 import back.ResponseCode;
@@ -12,29 +13,20 @@ import back.response.account.Find_UserId_Response;
 import back.response.account.Find_UserPassword_Response;
 import back.response.account.Login_Response;
 
-import java.io.OutputStream;
-import java.io.ObjectOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.UUID;
 
 public class Account_Handler extends Thread {
-	private Socket clientSocket = null;
 
-	private InputStream inputStream = null;
 	private ObjectInputStream objectInputStream = null;
-	private OutputStream outputStream = null;
 	private ObjectOutputStream objectOutputStream = null;
 	private final UserDAO userDAO = new UserDAO();
 
 	public Account_Handler(Socket clientSocket) {
 		try {
-			this.clientSocket = clientSocket;
-
-			inputStream = clientSocket.getInputStream();
+			InputStream inputStream = clientSocket.getInputStream();
 			objectInputStream = new ObjectInputStream(inputStream);
 
-			outputStream = clientSocket.getOutputStream();
+			OutputStream outputStream = clientSocket.getOutputStream();
 			objectOutputStream = new ObjectOutputStream(outputStream);
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -49,14 +41,13 @@ public class Account_Handler extends Thread {
 			if (readObj instanceof SignUp_Request signUpRequest) {
 				SignUpMethod(signUpRequest);
 			} else if (readObj instanceof Login_Request loginRequest) {
-				System.out.println("3");
 				LoginMethod(loginRequest);
-				System.out.println("4");
 			} else if (readObj instanceof Find_UserId_Request findUserIdRequest) {
 				FindUserIdMethod(findUserIdRequest);
 			} else if (readObj instanceof Find_UserPassword_Request findUserPasswordRequest) {
 				FindUserPasswordMethod(findUserPasswordRequest);
 			}
+
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -97,6 +88,12 @@ public class Account_Handler extends Thread {
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
+		} finally {
+			try {
+				objectOutputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
