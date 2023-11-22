@@ -17,9 +17,7 @@ import java.util.Random;
 
 public class Board_Handler extends Thread {
     private Socket clientSocket = null;
-    private InputStream inputStream = null;
     private ObjectInputStream objectInputStream = null;
-    private OutputStream outputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
     private final PostingDAO posting = new PostingDAO();
@@ -33,10 +31,10 @@ public class Board_Handler extends Thread {
         try {
             this.clientSocket = clientSocket;
 
-            inputStream = clientSocket.getInputStream();
+            InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            outputStream = clientSocket.getOutputStream();
+            OutputStream outputStream = clientSocket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -83,9 +81,10 @@ public class Board_Handler extends Thread {
                     while (true) {
                         port = getRandomPortInRange(MIN_PORT, MAX_PORT);
 
-                        try (ServerSocket serversocket = new ServerSocket(port)){
+                        try {
+                            ServerSocket serversocket = new ServerSocket(port);
                             System.out.println(port); // 생성된 채팅방 포트 확인용
-                            new ChatServer(serversocket);
+                            new ChatServer(serversocket).start();
                             break; // 유효한 포트를 찾으면 루프 종료
                         } catch (Exception exception) {
                             exception.printStackTrace();

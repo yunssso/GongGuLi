@@ -254,7 +254,7 @@ public class MainPage extends JFrame{
                             if (boardInfoMoreResponse.authority()) { //글쓴이인 경우
                                 readMoreMyPost(postTable, selectRow, boardInfoMoreResponse);
                             } else { //글쓴이가 아닌 경우
-                                readMorePost(postTable, boardInfoMoreResponse);
+                                readMorePost(postTable, boardInfoMoreResponse, boardInfoMoreResponse.port());
                             }
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
@@ -330,7 +330,7 @@ public class MainPage extends JFrame{
     }
 
     /*테이블 값 더블 클릭 시 자세히 보기*/
-    public void readMorePost(JTable t, Board_Info_More_Response boardInfoMoreResponse) {
+    public void readMorePost(JTable t, Board_Info_More_Response boardInfoMoreResponse, int port) {
         JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         frontSetting.FrameSetting(readMoreFrame);
@@ -393,11 +393,7 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
-                        Join_ChatRoom_Response joinChatroomResponse = (Join_ChatRoom_Response) ois.readObject();
-
-                        //서버에서 받아온 포트 정보로 채팅방 클라이언트를 실행해서 접속 해준다.
-                        //채팅방 랜덤 포트는 애당초 게시글을 생성할때 같이 넣어둬야 한다.
-                        //new ChatClient(joinChatroomResponse.port());
+                        new ChatClient("hello world", port, uuid);
                     } else { //채팅방 입장 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -588,7 +584,8 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
-                        setSuccessPopUpFrame(responseCode.getValue());
+                        //setSuccessPopUpFrame(responseCode.getValue());
+                        dispose();
                         new MainPage(uuid);
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
@@ -646,8 +643,6 @@ public class MainPage extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
                 dispose();
-
-                new MainPage(uuid);
             }
         });
 
