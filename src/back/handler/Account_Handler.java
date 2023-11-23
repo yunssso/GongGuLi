@@ -5,7 +5,8 @@ import java.net.Socket;
 
 import back.ResponseCode;
 import back.dao.FindUserDAO;
-import back.dao.UserDAO;
+import back.dao.LogInDAO;
+import back.dao.SignUpDAO;
 import back.request.account.Find_UserId_Request;
 import back.request.account.Find_UserPassword_Request;
 import back.request.account.Login_Request;
@@ -20,8 +21,9 @@ public class Account_Handler extends Thread {
 
 	private ObjectInputStream objectInputStream = null;
 	private ObjectOutputStream objectOutputStream = null;
-	private final UserDAO userDAO = new UserDAO();
+	private final SignUpDAO signUpDAO = new SignUpDAO();
 	private final FindUserDAO findUserDAO = new FindUserDAO();
+	private final LogInDAO logInDAO = new LogInDAO();
 
 	public Account_Handler(Socket clientSocket) {
 		try {
@@ -85,7 +87,7 @@ public class Account_Handler extends Thread {
 				objectOutputStream.writeObject(ResponseCode.RESIDENCE_AREA_NOT_SELECTED);
 			} else {
 				String uuid = UUID.randomUUID().toString();
-				userDAO.signUp(signUpRequest, uuid);
+				signUpDAO.signUp(signUpRequest, uuid);
 				objectOutputStream.writeObject(ResponseCode.SIGNUP_SUCCESS);
 			}
 		} catch (Exception exception) {
@@ -107,12 +109,12 @@ public class Account_Handler extends Thread {
 			} else if (loginRequest.password().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.PASSWORD_MISSING);
 			} else {
-				String logInCheckResult = userDAO.logInCheck(loginRequest);
+				String logInCheckResult = logInDAO.logIn(loginRequest);
 				if (logInCheckResult.equals("Password Does Not Match")) {
 					objectOutputStream.writeObject(ResponseCode.PASSWORD_MISMATCH_LOGIN);
 				} else if (logInCheckResult.equals("Id Does Not Exist")) {
 					objectOutputStream.writeObject(ResponseCode.ID_NOT_EXIST);
-				} else if (!logInCheckResult.equals("Database Error")) {
+				} else if (!logInCheckResult.equals("Database or SQL Error")) {
 					objectOutputStream.writeObject(ResponseCode.LOGIN_SUCCESS);
 					objectOutputStream.writeObject(new Login_Response(logInCheckResult));
 				}
