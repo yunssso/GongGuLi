@@ -43,7 +43,7 @@ public class UserDAO {
     }
 
     public String logInCheck(Login_Request loginRequest) {
-        String a;
+        String getUuid;
         conn = DBConnector.getConnection();
         String checkSQL = "SELECT password FROM user WHERE userId = ?";
         String getSQL = "SELECT uuid FROM user WHERE userId = ?";
@@ -57,12 +57,12 @@ public class UserDAO {
                     pt.setString(1, loginRequest.userId());
                     rs = pt.executeQuery();
                     rs.next();
-                    a = rs.getString(1);   // 로그인 성공
+                    getUuid = rs.getString(1);   // 로그인 성공
                 } else {
-                    a = "0";   // 비밀번호 불일치
+                    getUuid = "Password Does Not Match";   // 비밀번호 불일치
                 }
             } else {
-                a = "-1";   // 아이디가 존재하지 않음
+                getUuid = "Id Does Not Exist";   // 아이디가 존재하지 않음
             }
 
             rs.close();
@@ -70,10 +70,10 @@ public class UserDAO {
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            a = "-2";  // DB 오류
+            getUuid = "Database Error";  // DB 오류
         }
-        System.out.println(a);
-        return a;
+        System.out.println(getUuid);
+        return getUuid;
     }
 
     public void modifyUserInfo() {
@@ -101,43 +101,4 @@ public class UserDAO {
 
         return nickNameCheck;
     }
-
-    public String findID(Find_UserId_Request findUserIdInfo) {
-        conn = DBConnector.getConnection();
-        String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
-        try {
-            pt = conn.prepareStatement(selectsql);
-            pt.setString(1, findUserIdInfo.name());
-            pt.setString(2, findUserIdInfo.birth());
-            pt.setString(3, findUserIdInfo.phoneNumber());
-            rs = pt.executeQuery();
-            if (rs.next()) {
-                return rs.getString(1);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        return "";
     }
-
-    public String findPassword(Find_UserPassword_Request findUserPasswordRequest) {
-        conn = DBConnector.getConnection();
-        String selectsql = "select password from user where name = ? and userID = ? and birth = ? and phoneNum= ?;";
-        try {
-            pt = conn.prepareStatement(selectsql);
-            pt.setString(1, findUserPasswordRequest.name());
-            pt.setString(2, findUserPasswordRequest.userId());
-            pt.setString(3, findUserPasswordRequest.birth());
-            pt.setString(4, findUserPasswordRequest.phoneNumber());
-            rs = pt.executeQuery();
-            if (rs.next()) {
-                return rs.getString(1);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        return "";
-    }
-}

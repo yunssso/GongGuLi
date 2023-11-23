@@ -1,6 +1,7 @@
 package front;
 
-import back.dao.BoardDAO;
+import back.dao.PrintBoardDAO;
+import back.dao.ReadPostDAO;
 import back.dao.UserDAO;
 import back.UserDTO;
 import back.response.board.Board_Info_More_Response;
@@ -16,7 +17,8 @@ import java.awt.event.MouseEvent;
 public class MyPage extends JFrame {
     UserDTO userDTO = null;
     UserDAO userDAO = new UserDAO();
-    BoardDAO boardDAO = new BoardDAO();
+    PrintBoardDAO boardDAO = new PrintBoardDAO();
+    ReadPostDAO readPostDAO = new ReadPostDAO();
     FrontSetting fs = new FrontSetting();
 
     boolean checkNickDup = false;
@@ -182,7 +184,7 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myPostingTable.getSelectedRow();
-                    My_Board_Info_More_Response myBoardInfoMoreResponse = boardDAO.readMoreMyPost(selectRow);
+                    My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(selectRow);
                     readMoreMyPost(myPostingTable, selectRow, myBoardInfoMoreResponse);
                 }
             }
