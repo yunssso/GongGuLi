@@ -43,8 +43,7 @@ public class ReadPostDAO {
                         peoplenum,
                         rs.getString("content"),
                         rs.getInt("view") + 1,
-                        rs.getString("uuid").equals(uuid),
-                        rs.getInt("chatPort")
+                        rs.getString("uuid").equals(uuid)
                 );
 
                 pt = conn.prepareStatement(updateSQL);

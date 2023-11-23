@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.util.List;
 
 public class MainPage extends JFrame{
-    private final FrontSetting frontSetting = new FrontSetting();
+    private FrontSetting frontSetting = new FrontSetting();
 
     private String region = " --";
     private String category = " --";
@@ -113,7 +113,6 @@ public class MainPage extends JFrame{
                     category = (String) categoryBtn.getSelectedItem();
 
                     setCenterPanel();
-                    new MainPage(uuid);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -188,10 +187,10 @@ public class MainPage extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 try (Socket clientSocket = new Socket("localhost", 1027);
-                     OutputStream os = clientSocket.getOutputStream();
-                     ObjectOutputStream oos = new ObjectOutputStream(os);
-                     InputStream is = clientSocket.getInputStream();
-                     ObjectInputStream ois = new ObjectInputStream(is);
+                     OutputStream outputStream = clientSocket.getOutputStream();
+                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                     InputStream inputStream = clientSocket.getInputStream();
+                     ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                      ){
 
                     if(e.getClickCount() == 2) {
@@ -199,17 +198,17 @@ public class MainPage extends JFrame{
 
                         Board_Info_More_Request boardInfoMoreRequest = new Board_Info_More_Request(selectRow, uuid);
 
-                        oos.writeObject(boardInfoMoreRequest);
+                        objectOutputStream.writeObject(boardInfoMoreRequest);
 
-                        ResponseCode responseCode = (ResponseCode) ois.readObject();
+                        ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
-                            Board_Info_More_Response boardInfoMoreResponse = (Board_Info_More_Response) ois.readObject();
+                            Board_Info_More_Response boardInfoMoreResponse = (Board_Info_More_Response) objectInputStream.readObject();
 
                             if (boardInfoMoreResponse.authority()) { //글쓴이인 경우
                                 readMoreMyPost(postTable, selectRow, boardInfoMoreResponse);
                             } else { //글쓴이가 아닌 경우
-                                readMorePost(postTable, boardInfoMoreResponse, boardInfoMoreResponse.port());
+                                readMorePost(postTable, boardInfoMoreResponse);
                             }
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
@@ -285,7 +284,7 @@ public class MainPage extends JFrame{
     }
 
     /*테이블 값 더블 클릭 시 자세히 보기*/
-    public void readMorePost(JTable t, Board_Info_More_Response boardInfoMoreResponse, int port) {
+    public void readMorePost(JTable t, Board_Info_More_Response boardInfoMoreResponse) {
         JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         frontSetting.FrameSetting(readMoreFrame);
@@ -348,7 +347,9 @@ public class MainPage extends JFrame{
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
-                        new ChatClient("hello world", port, uuid);
+                        Join_ChatRoom_Response joinChatRoomResponse = (Join_ChatRoom_Response) objectInputStream.readObject();
+
+                        new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
                     } else { //채팅방 입장 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -538,10 +539,21 @@ public class MainPage extends JFrame{
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-                    if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
-                        //setSuccessPopUpFrame(responseCode.getValue());
+                    if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { // 게시글 생성 성공
                         dispose();
                         new MainPage(uuid);
+
+                        objectOutputStream.writeObject(new Join_ChatRoom_Request(0, uuid));
+
+                        responseCode = (ResponseCode) objectInputStream.readObject();
+
+                        if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
+                            Join_ChatRoom_Response joinChatRoomResponse = (Join_ChatRoom_Response) objectInputStream.readObject();
+
+                            new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
+                        } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { // 채팅방 입장 실패
+                           showErrorDialog(responseCode.getValue());
+                        }
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
                     }
