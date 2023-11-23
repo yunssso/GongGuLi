@@ -6,16 +6,17 @@ import database.DBConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.UUID;
 
 public class SignUpDAO {
     Connection conn = null;
     PreparedStatement pt = null;
-    ResultSet rs = null;
 
-    public void signUp(SignUp_Request signUpInfo, String uuid) {
-        conn = DBConnector.getConnection();
+    public void signUp(SignUp_Request signUpInfo) {
+        String uuid = UUID.randomUUID().toString();
         String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
+            conn = DBConnector.getConnection();
             pt = conn.prepareStatement(signInSQL);
 
             pt.setString(1, signUpInfo.nickName());
