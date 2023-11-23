@@ -1,8 +1,8 @@
 package front;
 
+import back.dao.CheckDAO;
 import back.dao.PrintBoardDAO;
 import back.dao.ReadPostDAO;
-import back.dao.UserDAO;
 import back.UserDTO;
 import back.response.board.Board_Info_More_Response;
 import back.response.mypage.My_Board_Info_More_Response;
@@ -16,9 +16,9 @@ import java.awt.event.MouseEvent;
 
 public class MyPage extends JFrame {
     UserDTO userDTO = null;
-    UserDAO userDAO = new UserDAO();
     PrintBoardDAO boardDAO = new PrintBoardDAO();
     ReadPostDAO readPostDAO = new ReadPostDAO();
+    CheckDAO checkDAO = new CheckDAO();
     FrontSetting fs = new FrontSetting();
 
     boolean checkNickDup = false;
@@ -303,7 +303,7 @@ public class MyPage extends JFrame {
         NickDupBtn.addActionListener(new ActionListener() {  // 닉네임 중복 확인 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (userDAO.nickNameCheck(userNickNameField.getText())) {
+                if (checkDAO.nickNameCheck(userNickNameField.getText())) {
                     // 닉네임 변경 가능.
                     fs.showCompleteDialog("해당 닉네임은 사용 가능합니다.");
                     checkNickDup = true;
