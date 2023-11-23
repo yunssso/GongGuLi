@@ -1,29 +1,26 @@
 package back.handler;
 
-import back.ChatServer;
 import back.ResponseCode;
 import back.dao.ChatRoomDAO;
 import back.dao.PostingDAO;
+import back.dao.GetInfoDAO;
+
 import back.request.board.Delete_Board_Request;
 import back.request.board.Edit_Board_Request;
 import back.request.board.Post_Board_Request;
+import back.request.chatroom.Join_ChatRoom_Request;
+import back.response.chatroom.Join_ChatRoom_Response;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 
 public class Board_Handler extends Thread {
     private Socket clientSocket = null;
     private ObjectInputStream objectInputStream = null;
     private ObjectOutputStream objectOutputStream = null;
-
-    private final PostingDAO posting = new PostingDAO();
-    private final ChatRoomDAO chatRoomDAO = new ChatRoomDAO();
-
 
     public Board_Handler(Socket clientSocket) {
         try {
@@ -47,18 +44,22 @@ public class Board_Handler extends Thread {
             if (readObj instanceof Post_Board_Request postBoardRequest) {
                 postBoardMethod(postBoardRequest);
             } else if (readObj instanceof Edit_Board_Request editBoardRequest) {
-                chatRoomDAO.editBoardMethod(editBoardRequest);
+                editBoardMethod(editBoardRequest);
             } else if (readObj instanceof Delete_Board_Request deleteBoardRequest) {
-                chatRoomDAO.deleteBoardMethod(deleteBoardRequest);
+                deleteBoardMethod(deleteBoardRequest);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-//    게시글 생성 함수
+    /*게시글 생성 함수*/
     private void postBoardMethod(Post_Board_Request postBoardRequest) {
         try {
+            PostingDAO postingDAO = new PostingDAO();
+            GetInfoDAO getInfoDAO = new GetInfoDAO();
+            ChatRoomDAO chatRoomDAO = new ChatRoomDAO();
+
             //각 조건들을 비교하여 클라이언트에 응답을 보낸다.
             if (postBoardRequest.title().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.TITLE_MISSING);
@@ -76,15 +77,28 @@ public class Board_Handler extends Thread {
                 } else if (Integer.parseInt(postBoardRequest.peopleNum()) <= 1) {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
-                    int port = chatRoomDAO.assignChatRoomPort();
-                    posting.posting(postBoardRequest, port);
-                    objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS);
+                    int port = chatRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
+                    postingDAO.posting(postBoardRequest, port); // 게시글 생성
+                    objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS); // 게시글 생성 성공 응답을 보낸다.
+
+                    Object readObj = objectInputStream.readObject(); // 채팅방 입장 요청을 받는다.
+
+                    if (readObj instanceof Join_ChatRoom_Request joinChatRoomRequest) { // 채팅방 입장 요청일 경우
+                        String nickName = getInfoDAO.getnickNameMethod(joinChatRoomRequest.uuid()); // uuid에 일치하는 닉네임을 가져옴
+
+                        if (nickName != null) {
+                            objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
+                            objectOutputStream.writeObject(new Join_ChatRoom_Response(nickName, port)); // 닉네임, 채팅방 port 정보를 보낸다.
+                        } else {
+                            objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
+                        }
+                    } else { // 그외의 요청이 들어올 경우
+                        objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
+                    }
                 }
             }
         } catch (NumberFormatException numberFormatException) {
-            try (OutputStream outputStream = clientSocket.getOutputStream();
-                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            ) {
+            try {
                 objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_NOT_NUMBER);
 
             } catch (Exception exception) {
@@ -93,5 +107,15 @@ public class Board_Handler extends Thread {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    /*게시글 수정 함수*/
+    private void editBoardMethod(Edit_Board_Request editBoardRequest) {
+
+    }
+
+    /*게시글 삭제 함수*/
+    private void deleteBoardMethod(Delete_Board_Request deleteBoardRequest) {
+
     }
 }

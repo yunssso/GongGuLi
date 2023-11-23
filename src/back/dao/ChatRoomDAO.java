@@ -28,7 +28,7 @@ public class ChatRoomDAO {
         return port;
     }
 
-//    지정해둔 포트 범위 안에서 랜덤한 값을 추출하는 함수
+    //    지정해둔 포트 범위 안에서 랜덤한 값을 추출하는 함수
     private static int getRandomPortInRange(int min, int max) {
         try {
             Random random = new Random();
@@ -37,15 +37,5 @@ public class ChatRoomDAO {
             exception.printStackTrace();
             return 0;
         }
-    }
-
-//    게시글 수정 함수
-    public void editBoardMethod(Edit_Board_Request editBoardRequest) {
-
-    }
-
-//    게시글 삭제 함수
-    public void deleteBoardMethod(Delete_Board_Request deleteBoardRequest) {
-
     }
 }

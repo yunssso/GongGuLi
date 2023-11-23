@@ -1,14 +1,11 @@
 package back.dao;
 
-import back.ChatServer;
 import back.request.board.Post_Board_Request;
 import database.DBConnector;
 
-import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Random;
 
 public class PostingDAO {
     Connection conn = null;
