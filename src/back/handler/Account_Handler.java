@@ -86,8 +86,7 @@ public class Account_Handler extends Thread {
 			} else if (signUpRequest.region().equals("거주 지역")) {
 				objectOutputStream.writeObject(ResponseCode.RESIDENCE_AREA_NOT_SELECTED);
 			} else {
-				String uuid = UUID.randomUUID().toString();
-				signUpDAO.signUp(signUpRequest, uuid);
+				signUpDAO.signUp(signUpRequest);
 				objectOutputStream.writeObject(ResponseCode.SIGNUP_SUCCESS);
 			}
 		} catch (Exception exception) {
