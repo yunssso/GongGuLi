@@ -8,6 +8,7 @@ import back.request.board.Post_Board_Request;
 import back.response.board.Board_Info_More_Response;
 import back.response.board.Board_Info_Response;
 import back.response.chatroom.Join_ChatRoom_Response;
+import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,39 +108,12 @@ public class MainPage extends JFrame{
         regionBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1027);
-                     OutputStream os = clientSocket.getOutputStream();
-                     ObjectOutputStream oos = new ObjectOutputStream(os);
-                     InputStream is = clientSocket.getInputStream();
-                     ObjectInputStream ois = new ObjectInputStream(is);
-                     ){
-
+                try {
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
-
-                    oos.writeObject(boardInfoRequest);
-
-                    ResponseCode responseCode = (ResponseCode) ois.readObject();
-
-                    if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
-                        //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
-                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
-
-                        frontSetting.setmainPageDB(boardList);
-
-                        postTable = new JTable(frontSetting.mainPageDB, frontSetting.mainPageHeader) {
-                            @Override
-                            public boolean isCellEditable(int row, int column) {  // 셀 내용 수정 불가 설정
-                                return false;
-                            }
-                        };
-
-                        frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
-                    } else { //게시글 갱신 실패
-                        showErrorDialog(responseCode.getValue());
-                    }
+                    setCenterPanel();
+                    new MainPage(uuid);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -150,30 +124,11 @@ public class MainPage extends JFrame{
         categoryBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1027);
-                     OutputStream os = clientSocket.getOutputStream();
-                     ObjectOutputStream oos = new ObjectOutputStream(os);
-                     InputStream is = clientSocket.getInputStream();
-                     ObjectInputStream ois = new ObjectInputStream(is);
-                     ){
-
+                try {
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
-
-                    oos.writeObject(boardInfoRequest);
-
-                    ResponseCode responseCode = (ResponseCode) ois.readObject();
-
-                    if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
-                        //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
-                        List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
-
-                        frontSetting.setmainPageDB(boardList);
-                    } else { //게시글 갱신 실패
-                        showErrorDialog(responseCode.getValue());
-                    }
+                    setCenterPanel();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -379,18 +334,18 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try (Socket clientSocket = new Socket("localhost", 1026);
-                     OutputStream os = clientSocket.getOutputStream();
-                     ObjectOutputStream oos = new ObjectOutputStream(os);
-                     InputStream is = clientSocket.getInputStream();
-                     ObjectInputStream ois = new ObjectInputStream(is);
+                     OutputStream outputStream = clientSocket.getOutputStream();
+                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                     InputStream inputStream = clientSocket.getInputStream();
+                     ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                      ){
 
                     int selectRow = 0; //여기에 사용자가 선택한 게시글 id를 받아와야 돼
                     Join_ChatRoom_Request joinChatroomRequest = new Join_ChatRoom_Request(selectRow, uuid);
 
-                    oos.writeObject(joinChatroomRequest);
+                    objectOutputStream.writeObject(joinChatroomRequest);
 
-                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
                         new ChatClient("hello world", port, uuid);
@@ -565,10 +520,10 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try (Socket clientSocket = new Socket("localhost", 1025);
-                     OutputStream os = clientSocket.getOutputStream();
-                     ObjectOutputStream oos = new ObjectOutputStream(os);
-                     InputStream is = clientSocket.getInputStream();
-                     ObjectInputStream ois = new ObjectInputStream(is);
+                     OutputStream outputStream = clientSocket.getOutputStream();
+                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                     InputStream inputStream = clientSocket.getInputStream();
+                     ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                      ){
 
                     String title = titleField.getText();
@@ -579,9 +534,9 @@ public class MainPage extends JFrame{
 
                     Post_Board_Request Post_BoardInfo = new Post_Board_Request(title, region, category, peopleNum, content, uuid);
 
-                    oos.writeObject(Post_BoardInfo);
+                    objectOutputStream.writeObject(Post_BoardInfo);
 
-                    ResponseCode responseCode = (ResponseCode) ois.readObject();
+                    ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { //게시글 생성 성공
                         //setSuccessPopUpFrame(responseCode.getValue());
@@ -655,24 +610,26 @@ public class MainPage extends JFrame{
     /*게시글 정보 불러오는 함수*/
     private void getBoardInfoMethod() {
         try (Socket clientSocket = new Socket("localhost", 1027);
-             OutputStream os = clientSocket.getOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(os);
-             InputStream is = clientSocket.getInputStream();
-             ObjectInputStream ois = new ObjectInputStream(is);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
              ){
 
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-            Board_Info_Request boardInfoRequest = new Board_Info_Request(" --", " --", uuid);
+            Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
 
-            oos.writeObject(boardInfoRequest);
+            objectOutputStream.writeObject(boardInfoRequest);
 
-            ResponseCode responseCode = (ResponseCode) ois.readObject();
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
             if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
                 //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
-                List <Board_Info_Response> boardList = (List <Board_Info_Response>) ois.readObject();
+                List <Board_Info_Response> boardList = (List <Board_Info_Response>) objectInputStream.readObject();
 
                 frontSetting.setmainPageDB(boardList);
+
+                System.out.println(frontSetting.getmainPageDB());
             } else { //게시글 갱신 실패
                 showErrorDialog(responseCode.getValue());
             }

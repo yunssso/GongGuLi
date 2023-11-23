@@ -92,4 +92,8 @@ public class FrontSetting extends JFrame{
             mainPageDB[i][4] = boardInfo.peopleNum();
         }
     }
+
+    public int getmainPageDB() {
+        return mainPageDB.length;
+    }
 }

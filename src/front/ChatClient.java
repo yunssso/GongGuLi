@@ -13,29 +13,19 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class ChatClient extends JFrame implements Runnable {
+public class ChatClient extends JFrame implements Runnable{
     private Color c1 = new Color(255, 240, 227);
     private Color c3 = new Color(255, 255, 255);
 
-    //통신 관련
-    private OutputStream os = null;
-    private ObjectOutputStream oos = null;
+    private ObjectOutputStream objectOutputStream = null;
 
-    private InputStream is = null;
-    private ObjectInputStream ois = null;
-
-    private Socket socket = null;
+    private ObjectInputStream objectInputStream = null;
 
     //Main Frame
     private JPanel chattingListPanel = null;
     private JTextField tf = null;
     private JTextArea chatTextArea = null;
     private JScrollPane scrollPane = null;
-
-    //Login Frame
-    private JFrame loginFrame = null;
-    private JLabel text = null;
-    private JTextField textbox = null;
 
     //Participants Frame
     private JButton participantsButton = null;
@@ -51,17 +41,34 @@ public class ChatClient extends JFrame implements Runnable {
     private ArrayList<String> nameList = null;
     private String uuid = null;
 
-    //포트 정보
-    private int port = 0;
-
     //처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
     public ChatClient(String nickName, int port, String uuid) {
-        this.nickName = nickName;
-        this.port = port;
-        this.uuid = uuid;
+        try {
+            this.nickName = nickName;
+            //포트 정보
+            this.uuid = uuid;
 
-        createAndShowGUI();
-        startClient();
+            createAndShowGUI();
+
+            Socket socket = new Socket("localhost", port);
+            //43.200.49.16
+
+            //서버 -> 클라이언트 Output Stream
+            //통신 관련
+            OutputStream outputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+
+            //서버 <- 클라이언트 Input Stream
+            InputStream inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+
+            objectOutputStream.writeObject(new Message_ChatRoom_Request(nickName, null, uuid));
+
+            Thread thread = new Thread(this);
+            thread.start();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void createAndShowGUI() {
@@ -149,36 +156,13 @@ public class ChatClient extends JFrame implements Runnable {
         participantsFrame.setVisible(true);
     }
 
-    //클라이언트 시작 함수
-    private void startClient() {
-        try {
-            socket = new Socket("localhost", port);
-            //43.200.49.16
-
-            //서버 -> 클라이언트 Output Stream
-            os = socket.getOutputStream();
-            oos = new ObjectOutputStream(os);
-
-            //서버 <- 클라이언트 Input Stream
-            is = socket.getInputStream();
-            ois = new ObjectInputStream(is);
-
-            oos.writeObject(new Message_ChatRoom_Request(nickName, null, uuid));
-
-            Thread thread = new Thread(this);
-            thread.start();
-        } catch (Exception exception) {
-            chatTextArea.append("[서버 통신 오류]");
-        }
-    }
-
     //메세지를 서버에서 받아오는 함수
     @Override
     public void run() {
         try {
             while(true) {
-                if (ois != null) {
-                    Object readObj = ois.readObject();
+                if (objectInputStream != null) {
+                    Object readObj = objectInputStream.readObject();
 
                     if (readObj instanceof Message_ChatRoom_Response) {
                         Message_ChatRoom_Response messageChatRoomResponse = (Message_ChatRoom_Response) readObj;
@@ -200,10 +184,10 @@ public class ChatClient extends JFrame implements Runnable {
         try {
             String message = tf.getText();
 
-            if (oos != null) {
+            if (objectOutputStream != null) {
                 Message_ChatRoom_Request messageChatRoomRequest = new Message_ChatRoom_Request(nickName, message, uuid);
 
-                oos.writeObject(messageChatRoomRequest);
+                objectOutputStream.writeObject(messageChatRoomRequest);
 
                 tf.setText("");
             }
@@ -214,12 +198,12 @@ public class ChatClient extends JFrame implements Runnable {
 
     private void kickRequest(String selected_name) {
         try {
-            if (oos != null) {
+            if (objectOutputStream != null) {
                 Kick_ChatRoom_Request kickChatRoomRequest = new Kick_ChatRoom_Request(selected_name, uuid);
 
-                oos.writeObject(kickChatRoomRequest);
+                objectOutputStream.writeObject(kickChatRoomRequest);
 
-                ResponseCode responseCode = (ResponseCode) ois.readObject();
+                ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                 if (responseCode.getKey() == ResponseCode.KICK_CHATROOM_SUCCESS.getKey()) {
                     // 성공적으로 강제퇴장을 했을 경우
