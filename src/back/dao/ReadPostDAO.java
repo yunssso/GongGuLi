@@ -19,7 +19,7 @@ public class ReadPostDAO {
 
         String selectSQL = "SELECT * FROM boardView WHERE num = ?;";
         String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?;";
-        String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?;";
+        String updateSQL = "UPDATE board SET view = view + 1 WHERE port = ?;";
 
         try {
             conn = DBConnector.getConnection();
@@ -35,7 +35,7 @@ public class ReadPostDAO {
                 String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
 
                 Board_Info_More_Response boardInfoMoreResponse = new Board_Info_More_Response(
-                        rs.getInt("boardId"),
+                        rs.getInt("port"),
                         rs.getString("title"),
                         rs.getString("region"),
                         rs.getString("category"),
@@ -47,7 +47,7 @@ public class ReadPostDAO {
                 );
 
                 pt = conn.prepareStatement(updateSQL);
-                pt.setInt(1, boardInfoMoreResponse.boardId());
+                pt.setInt(1, boardInfoMoreResponse.port());
                 pt.execute();
 
                 rs.close();
@@ -67,7 +67,7 @@ public class ReadPostDAO {
     public My_Board_Info_More_Response readMoreMyPost(int selectRow) {
     selectRow++;
     String selectSQL = "SELECT * FROM boardView WHERE num = ?";
-    String updateSQL = "UPDATE board SET view = view + 1 WHERE boardID = ?;";
+    String updateSQL = "UPDATE board SET view = view + 1 WHERE port = ?;";
     try {
         conn = DBConnector.getConnection();
         pt = conn.prepareStatement(selectSQL);
@@ -77,7 +77,7 @@ public class ReadPostDAO {
             String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
 
             My_Board_Info_More_Response myBoardInfoMoreResponse = new My_Board_Info_More_Response(
-                    rs.getInt("boardId"),
+                    rs.getInt("port"),
                     rs.getString("title"),
                     rs.getString("region"),
                     rs.getString("category"),
@@ -86,7 +86,7 @@ public class ReadPostDAO {
                     rs.getInt("view" + 1)
             );
             pt = conn.prepareStatement(updateSQL);
-            pt.setInt(1, myBoardInfoMoreResponse.boardId());
+            pt.setInt(1, myBoardInfoMoreResponse.port());
             pt.execute();
             System.out.println("자세히 보기 성공.");
 
