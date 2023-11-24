@@ -14,7 +14,7 @@ public class PostingDAO {
 
     public void posting(Post_Board_Request Post_BoardInfo, int port) {
         conn = DBConnector.getConnection();
-        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, chatPort) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             pt = conn.prepareStatement(insertSQL);
             pt.setString(1, Post_BoardInfo.title());
