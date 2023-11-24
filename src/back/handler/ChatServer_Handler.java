@@ -1,37 +1,34 @@
 package back.handler;
 
-import back.request.Message_ChatRoom_Request;
-import back.response.Message_ChatRoom_Response;
+import back.ResponseCode;
+import back.request.chatroom.Kick_ChatRoom_Request;
+import back.request.chatroom.Message_ChatRoom_Request;
+import back.response.chatroom.Message_ChatRoom_Response;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ChatServer_Handler extends Thread {
-	private OutputStream os = null;
-	private ObjectOutputStream oos = null;
+	private ObjectOutputStream objectOutputStream = null;
 
-	private InputStream is = null;
-	private ObjectInputStream ois = null;
-
-	private Socket socket = null;
+	private ObjectInputStream objectInputStream = null;
 
 	private ArrayList<ChatServer_Handler> list = null;
 
-	private String master = null; //방장의 uuid를 저장하는 함수
+	private Boolean master = false; //방장 권한
 
 	public ChatServer_Handler(Socket socket, ArrayList<ChatServer_Handler> list) {
-		this.socket = socket;
-		this.list = list;
-
 		try {
+			this.list = list;
+
 			//서버 -> 클라이언트 Output Stream
-			os = socket.getOutputStream();
-			oos = new ObjectOutputStream(os);
+			OutputStream outputStream = socket.getOutputStream();
+			objectOutputStream = new ObjectOutputStream(outputStream);
 
 			//서버 <- 클라이언트 Input Stream
-			is = socket.getInputStream();
-			ois = new ObjectInputStream(is);
+			InputStream inputStream = socket.getInputStream();
+			objectInputStream = new ObjectInputStream(inputStream);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -40,28 +37,29 @@ public class ChatServer_Handler extends Thread {
 	@Override
 	public void run() {
 		try {
-			Message_ChatRoom_Request join_Info = (Message_ChatRoom_Request) ois.readObject();
+			Message_ChatRoom_Request join_Info = (Message_ChatRoom_Request) objectInputStream.readObject();
 
-			sendAll(new Message_ChatRoom_Response(join_Info.nickName(), "이(가) 입장했습니다."));
+			//해당 사용자의 nickName
+			String nickName = join_Info.nickName();
 
-			if (list.size() == 1) {
-				master = join_Info.uuid();
+			sendAll(new Message_ChatRoom_Response(nickName, "이(가) 입장했습니다."));
+
+			if (list.size() == 1) { //처음으로 접속한 사람 즉 글쓴이에게 방장 권한 부여
+				master = true;
 			}
 
 			while (true) {
-				Object readObj = ois.readObject();
+				Object readObj = objectInputStream.readObject();
 
-				if (readObj instanceof Message_ChatRoom_Request) {
-					Message_ChatRoom_Request messageChatRoomRequest = (Message_ChatRoom_Request) readObj;
-
-					if (master.equals(messageChatRoomRequest.uuid())) {
+				if (readObj instanceof Message_ChatRoom_Request messageChatRoomRequest) { //클라이언트 -> 서버 메세지 요청
+					if (master) { // 방장이 메세지를 보냈을 때
 						Message_ChatRoom_Response messageChatRoomResponse = new Message_ChatRoom_Response(
 								messageChatRoomRequest.nickName() + "(방장)",
 								messageChatRoomRequest.message()
 						);
 
 						sendAll(messageChatRoomResponse);
-					} else {
+					} else { // 이외 사용자가 메세지를 보냈을 때
 						Message_ChatRoom_Response messageChatRoomResponse = new Message_ChatRoom_Response(
 								messageChatRoomRequest.nickName(),
 								messageChatRoomRequest.message()
@@ -69,20 +67,40 @@ public class ChatServer_Handler extends Thread {
 
 						sendAll(messageChatRoomResponse);
 					}
+				} else if (readObj instanceof Kick_ChatRoom_Request kickChatRoomRequest) { // 클라이언트 -> 서버 강퇴 요청
+					if (master) { // 방장일 경우에만 강퇴 요청을 accept
+						for (ChatServer_Handler handler : list) {
+							if (kickChatRoomRequest.target_nickName().equals(handler.getnickName())) {
+								sendAll(new Message_ChatRoom_Response("", kickChatRoomRequest.target_nickName() + "이(가) 강제퇴장 당했습니다."));
+
+								handler.objectInputStream.close();
+								list.remove(handler);
+								break;
+							}
+						}
+
+						objectOutputStream.writeObject(ResponseCode.KICK_CHATROOM_SUCCESS);
+					} else {
+						objectOutputStream.writeObject(ResponseCode.KICK_CHATROOM_FAILURE);
+					}
 				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 	}
-	
+
 	private void sendAll(Message_ChatRoom_Response messageChatRoomResponse) {
 		try {
 			for (ChatServer_Handler handler : list) {
-				handler.oos.writeObject(messageChatRoomResponse);
+				handler.objectOutputStream.writeObject(messageChatRoomResponse);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+	}
+
+	private String getnickName() {
+		return getnickName();
 	}
 }

@@ -1,4 +1,4 @@
-package back.request;
+package back.request.board;
 
 import java.io.Serializable;
 

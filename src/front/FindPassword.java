@@ -1,8 +1,8 @@
 package front;
 
 import back.ResponseCode;
-import back.request.Find_UserPassword_Request;
-import back.response.Find_UserPassword_Response;
+import back.request.account.Find_UserPassword_Request;
+import back.response.account.Find_UserPassword_Response;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,10 +1,13 @@
 package front;
 
+import back.response.board.Board_Info_Response;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.util.List;
 
 public class FrontSetting extends JFrame{
 
@@ -23,15 +26,17 @@ public class FrontSetting extends JFrame{
     String categoryArr[] = {" --", "음식", "생활용품", "OTT"};
 
     String mainPageHeader[] = {"지역", "카테고리", "제목", "작성자", "현황"};
-    String mainPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
-            {"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};  // 차후 DB 연동
+    String mainPageDB[][] = null;
+
+            //{{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
+                    //{"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
 
     String myPageHeader[] =  {"지역", "카테고리", "제목", "현황"};
     String myPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "1/4"},
             {"충청남도", "OTT", "얏호", "3/4"}};
 
     String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
-    String soDDuck[] = {"윤소정", "윤소떡소떡", "sodduck0", "sodduckpass01!", "충청남도", "01036207566", "031122"};
+
     //  이름 닉네임 아이디 비밀번호 지역 폰번호 생일
     int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯
     int myPostingTableWidths[] = {20, 20, 120, 1};
@@ -73,5 +78,22 @@ public class FrontSetting extends JFrame{
 
     public void showCompleteDialog(String message) {
         JOptionPane.showMessageDialog(null, message, "", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void setmainPageDB(List<Board_Info_Response> boardList) {
+        mainPageDB = new String[boardList.size()][5];
+
+        for (int i = 0; i < boardList.size(); i++) {
+            Board_Info_Response boardInfo = boardList.get(i);
+            mainPageDB[i][0] = boardInfo.region();
+            mainPageDB[i][1] = boardInfo.category();
+            mainPageDB[i][2] = boardInfo.title();
+            mainPageDB[i][3] = boardInfo.writer();
+            mainPageDB[i][4] = boardInfo.peopleNum();
+        }
+    }
+
+    public int getmainPageDB() {
+        return mainPageDB.length;
     }
 }

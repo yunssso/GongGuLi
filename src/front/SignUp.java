@@ -1,6 +1,6 @@
 package front;
 
-import back.request.SignUp_Request;
+import back.request.account.SignUp_Request;
 import back.ResponseCode;
 
 import javax.swing.*;
@@ -183,6 +183,7 @@ public class SignUp extends JDialog{
 
                     if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) { //회원가입 성공
                         showSuccessDialog(responseCode.getValue());
+                        dispose();
                         new LogIn();
                     } else { //회원가입 실패
                         showErrorDialog(responseCode.getValue());
