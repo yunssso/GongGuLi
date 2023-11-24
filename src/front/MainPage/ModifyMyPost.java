@@ -159,7 +159,7 @@ public class ModifyMyPost extends MainPage{
                 notifyFrame.dispose();
                 centerPanel.revalidate();
                 centerPanel.repaint();
-                System.out.println("수정완");  // 수정 필요
+                System.out.println("수정완");  // 수정 필요함
             }
         });
 
