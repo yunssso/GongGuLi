@@ -126,11 +126,11 @@ public class NewPost extends JFrame{
                         } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { // 채팅방 입장 실패
                             showErrorDialog(responseCode.getValue());
                         }
+                        newPostFrame.dispose();
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
                     }
 
-                    newPostFrame.dispose();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

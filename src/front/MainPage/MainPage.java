@@ -28,9 +28,12 @@ public class MainPage extends JFrame{
 
     private DefaultTableModel model;
     private JTable postTable = null;
-    private JPanel centerPanel;
+    JPanel centerPanel;
     private String uuid = null;
 
+    public MainPage() {
+
+    }
     /*생성자*/
     public MainPage(String uuid) {
         this.uuid = uuid;
