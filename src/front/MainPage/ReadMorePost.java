@@ -175,8 +175,7 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                //getTitle, 등 값을 얻어 modifyMyPost()에 매개변수로 넘기기
-                //modifyMyPost();
+                new ModifyMyPost();
             }
         });
 
