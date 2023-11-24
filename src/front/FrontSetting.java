@@ -11,36 +11,36 @@ import java.util.List;
 
 public class FrontSetting extends JFrame{
 
-    Color mainColor = new Color(255, 240, 227);
-    Color c2 = new Color(254, 217 , 183);  // 밝은 색
-    Color c3 = new Color(240, 112, 103);  // 진한 색
+    public Color mainColor = new Color(255, 240, 227);
+    public Color c2 = new Color(254, 217 , 183);  // 밝은 색
+    public Color c3 = new Color(240, 112, 103);  // 진한 색
 
-    Font fb14 = new Font("SUITE", Font.BOLD, 14);
-    Font fb16 = new Font("SUITE", Font.BOLD, 16);
-    Font fb20 = new Font("SUITE", Font.BOLD, 20);
-    Font f14 = new Font("SUITE", Font.PLAIN, 14);
-    Font f16 = new Font("SUITE", Font.PLAIN, 16);
-    Font f18 = new Font("SUITE", Font.PLAIN, 18);
+    public Font fb14 = new Font("SUITE", Font.BOLD, 14);
+    public Font fb16 = new Font("SUITE", Font.BOLD, 16);
+    public Font fb20 = new Font("SUITE", Font.BOLD, 20);
+    public Font f14 = new Font("SUITE", Font.PLAIN, 14);
+    public Font f16 = new Font("SUITE", Font.PLAIN, 16);
+    public Font f18 = new Font("SUITE", Font.PLAIN, 18);
 
-    String regionArr[] = {" --", "서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"};
-    String categoryArr[] = {" --", "음식", "생활용품", "OTT"};
+    public String regionArr[] = {" --", "서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"};
+    public String categoryArr[] = {" --", "음식", "생활용품", "OTT"};
 
-    String mainPageHeader[] = {"지역", "카테고리", "제목", "작성자", "현황"};
-    String mainPageDB[][] = null;
+    public String mainPageHeader[] = {"지역", "카테고리", "제목", "작성자", "현황"};
+    public String mainPageDB[][] = null;
 
             //{{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
                     //{"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
 
-    String myPageHeader[] =  {"지역", "카테고리", "제목", "현황"};
-    String myPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "1/4"},
+    public String myPageHeader[] =  {"지역", "카테고리", "제목", "현황"};
+    public String myPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "1/4"},
             {"충청남도", "OTT", "얏호", "3/4"}};
 
-    String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
+    public String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
 
     //  이름 닉네임 아이디 비밀번호 지역 폰번호 생일
-    int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯
-    int myPostingTableWidths[] = {20, 20, 120, 1};
-    int myHistoryTableWidths[] = {20, 20, 90, 2, 1};
+    public int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯
+    public int myPostingTableWidths[] = {20, 20, 120, 1};
+    public int myHistoryTableWidths[] = {20, 20, 90, 2, 1};
 
     public void tableCellCenter(JTable t) {  // 모든 열의 텍스트 가운데 지정
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();

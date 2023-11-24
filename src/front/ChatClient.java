@@ -76,7 +76,7 @@ public class ChatClient extends JFrame implements Runnable{
         setSize(400, 600);
         setLocationRelativeTo(null);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         chattingListPanel = new JPanel(new BorderLayout());
 
