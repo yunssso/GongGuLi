@@ -10,6 +10,7 @@ import back.response.chatroom.Join_ChatRoom_Response;
 import front.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.InputStream;
@@ -25,7 +26,9 @@ public class MainPage extends JFrame{
     private String region = " --";
     private String category = " --";
 
+    private DefaultTableModel model;
     private JTable postTable = null;
+    private JPanel centerPanel;
     private String uuid = null;
 
     /*생성자*/
@@ -109,7 +112,10 @@ public class MainPage extends JFrame{
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    setCenterPanel();
+                    getBoardInfoMethod();
+                    model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+                    postTable.setModel(model);
+                    frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -124,7 +130,10 @@ public class MainPage extends JFrame{
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    setCenterPanel();
+                    getBoardInfoMethod();
+                    model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+                    postTable.setModel(model);
+                    frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -143,7 +152,7 @@ public class MainPage extends JFrame{
 
     /*게시글 패널*/
     private void setCenterPanel() {
-        JPanel centerPanel = new JPanel(null);
+        centerPanel = new JPanel(null);
         centerPanel.setBounds(300, 0, 770, 700);
         centerPanel.setBackground(Color.WHITE);
 
@@ -160,8 +169,6 @@ public class MainPage extends JFrame{
         JComboBox searchFilterBox = new JComboBox(searchFilter);
         searchFilterBox.setBounds(460, 40, 80, 30);
 
-        getBoardInfoMethod();
-
         /*검색창에 입력 후 검색 버튼 누르면 텍스트 출력*/
         searchBtn.addActionListener(new ActionListener() {
             @Override
@@ -170,14 +177,16 @@ public class MainPage extends JFrame{
             }
         });
 
-        /*게시글 출력*/
-        postTable = new JTable(frontSetting.mainPageDB, frontSetting.mainPageHeader) {
+        getBoardInfoMethod();
+
+        /*게시글 출력 아님. 세팅하는거일 뿐*/
+        model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+        postTable = new JTable(model) {
             @Override
             public boolean isCellEditable(int row, int column) {  // 셀 내용 수정 불가 설정
                 return false;
             }
         };
-
         frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);  // postTable 세팅
 
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
@@ -258,7 +267,6 @@ public class MainPage extends JFrame{
     private void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
-
 
     /*게시글 정보 불러오는 함수*/
     private void getBoardInfoMethod() {

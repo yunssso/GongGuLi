@@ -61,6 +61,7 @@ public class PrintBoardDAO {
                         peoplenum
                         );
 
+                System.out.println(rs.getString("title"));
                 list.add(boardInfoResponse);
 
                 pt2.close();
