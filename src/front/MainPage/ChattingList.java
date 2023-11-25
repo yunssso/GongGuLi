@@ -1,34 +1,46 @@
 package front.MainPage;
 
+import back.ResponseCode;
+import back.request.chatroom.GetChattingRoomRequest;
+import back.response.chatroom.GetChattingRoomResponse;
 import front.FrontSetting;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.List;
 
 public class ChattingList {
-    FrontSetting frontSetting = new FrontSetting();
+    String uuid;
 
-    public ChattingList() {
+    private String[][] chattingRoomListDB = null;  // 차후 DB 연동
+    FrontSetting fs = new FrontSetting();
+
+    public ChattingList(String uuid) {
+        this.uuid = uuid;
         setChattingList();
     }
+
     private void setChattingList() {
         JFrame chattingListFrame = new JFrame();  // 채팅 목록 팝업창 프레임
         chattingListFrame.setTitle("채팅 목록");
         chattingListFrame.setSize(400, 600);
-        frontSetting.FrameSetting(chattingListFrame);
+        fs.FrameSetting(chattingListFrame);
 
         JPanel chattingListPanel = new JPanel(null);  // 채팅 목록 팝업창 패널
         chattingListPanel.setBounds(0, 0, 400, 600);
-        chattingListPanel.setBackground(frontSetting.mainColor);
+        chattingListPanel.setBackground(fs.mainColor);
 
         JLabel chattingListLabel = new JLabel("채팅 목록");  // 채팅 목록 레이블
         chattingListLabel.setFont(new Font("SUITE", Font.BOLD, 20));
         chattingListPanel.setBounds(10, 10, 100, 60);
 
-        // 채팅 목록 출력
-        String listHeader[] = {"카테고리", "제목", "작성자", "참여하기"};
-        String listDB[][] = {{"", "", "", ""}};  // 차후 DB 연동
-        JTable listTable = new JTable(listDB, listHeader);
+        getChattingRoomMethod();
+        JTable listTable = new JTable(chattingRoomListDB, fs.chattinglistHeader);
 
         JScrollPane listScrollPane = new JScrollPane(listTable);
         listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -39,5 +51,49 @@ public class ChattingList {
         chattingListPanel.add(listScrollPane);
 
         chattingListFrame.setVisible(true);
+    }
+
+    private void getChattingRoomMethod() {
+        try (Socket clientSocket = new Socket("localhost", 1028);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ){
+
+            //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+            GetChattingRoomRequest getChattingRoomRequest = new GetChattingRoomRequest(uuid);
+
+            objectOutputStream.writeObject(getChattingRoomRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { // 채팅방 목록 갱신 성공    //  여기도 ResponseCode 수정 해야됨
+                //  boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                java.util.List<GetChattingRoomResponse> getChattingRoomResponse = (List<GetChattingRoomResponse>) objectInputStream.readObject();
+
+                setChattingRoomListDB(getChattingRoomResponse);
+
+                System.out.println(fs.getmainPageDB());
+            } else { // 채팅방 갱신 실패
+                fs.showErrorDialog(responseCode.getValue());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    //  2차원 배열로 변환
+    public void setChattingRoomListDB(List<GetChattingRoomResponse> getChattingRoomResponse) {
+        chattingRoomListDB = new String[getChattingRoomResponse.size()][5];
+
+        for (int i = 0; i < getChattingRoomResponse.size(); i++) {
+            GetChattingRoomResponse boardInfo = getChattingRoomResponse.get(i);
+            chattingRoomListDB[i][0] = boardInfo.region();
+            chattingRoomListDB[i][1] = boardInfo.category();
+            chattingRoomListDB[i][2] = boardInfo.title();
+            chattingRoomListDB[i][3] = boardInfo.writerUuid();
+            chattingRoomListDB[i][4] = boardInfo.lastUpdatedTime();
+        }
     }
 }

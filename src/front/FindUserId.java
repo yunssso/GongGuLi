@@ -1,8 +1,8 @@
 package front;
 
 import back.ResponseCode;
-import back.request.account.Find_UserId_Request;
-import back.response.account.Find_UserId_Response;
+import back.request.account.FindUserIdRequest;
+import back.response.account.FindUserIdResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +83,7 @@ class FindUserId extends JDialog {
                     clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    Find_UserId_Request findUserIdRequest = new Find_UserId_Request(name, birth, phoneNumber);
+                    FindUserIdRequest findUserIdRequest = new FindUserIdRequest(name, birth, phoneNumber);
                     
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
@@ -97,7 +97,7 @@ class FindUserId extends JDialog {
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == 230) { //아이디 찾기 성공
-                        Find_UserId_Response findUserIdResponse = (Find_UserId_Response) ois.readObject();
+                        FindUserIdResponse findUserIdResponse = (FindUserIdResponse) ois.readObject();
                         showSuccessDialog(findUserIdResponse.userId());
                     } else { //아이디 찾기 실패
                         showErrorDialog(responseCode.getValue());

@@ -1,9 +1,9 @@
 package front.MainPage;
 
 import back.ResponseCode;
-import back.request.board.Post_Board_Request;
-import back.request.chatroom.Join_ChatRoom_Request;
-import back.response.chatroom.Join_ChatRoom_Response;
+import back.request.board.PostBoardRequest;
+import back.request.chatroom.JoinChatRoomRequest;
+import back.response.chatroom.JoinChatRoomResponse;
 import front.ChatClient;
 import front.FrontSetting;
 import front.RoundedButton;
@@ -104,7 +104,7 @@ public class NewPost extends JFrame{
                     String peopleNum = peopleNumField.getText();
                     String content = contentArea.getText();
 
-                    Post_Board_Request Post_BoardInfo = new Post_Board_Request(title, region, category, peopleNum, content, uuid);
+                    PostBoardRequest Post_BoardInfo = new PostBoardRequest(title, region, category, peopleNum, content, uuid);
 
                     objectOutputStream.writeObject(Post_BoardInfo);
 
@@ -115,12 +115,12 @@ public class NewPost extends JFrame{
                         new MainPage(uuid);
                         setSuccessPopUpFrame(" 글 작성 성공");
 
-                        objectOutputStream.writeObject(new Join_ChatRoom_Request(0, uuid));
+                        objectOutputStream.writeObject(new JoinChatRoomRequest(0, uuid));
 
                         responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
-                            Join_ChatRoom_Response joinChatRoomResponse = (Join_ChatRoom_Response) objectInputStream.readObject();
+                            JoinChatRoomResponse joinChatRoomResponse = (JoinChatRoomResponse) objectInputStream.readObject();
 
                             new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
                         } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { // 채팅방 입장 실패

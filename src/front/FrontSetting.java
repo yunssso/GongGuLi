@@ -1,6 +1,6 @@
 package front;
 
-import back.response.board.Board_Info_Response;
+import back.response.board.BoardInfoResponse;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,7 +10,6 @@ import java.awt.*;
 import java.util.List;
 
 public class FrontSetting extends JFrame{
-
     public Color mainColor = new Color(255, 240, 227);
     public Color c2 = new Color(254, 217 , 183);  // 밝은 색
     public Color c3 = new Color(240, 112, 103);  // 진한 색
@@ -38,6 +37,7 @@ public class FrontSetting extends JFrame{
             {"충청남도", "OTT", "얏호", "3/4"}};
 
     public String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
+    public String chattinglistHeader[] = {"카테고리", "제목", "작성자", "참여하기"};
 
     //  이름 닉네임 아이디 비밀번호 지역 폰번호 생일
     public int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯
@@ -82,11 +82,11 @@ public class FrontSetting extends JFrame{
         JOptionPane.showMessageDialog(null, message, "", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void setmainPageDB(List<Board_Info_Response> boardList) {
+    public void setmainPageDB(List<BoardInfoResponse> boardList) {
         mainPageDB = new String[boardList.size()][5];
 
         for (int i = 0; i < boardList.size(); i++) {
-            Board_Info_Response boardInfo = boardList.get(i);
+            BoardInfoResponse boardInfo = boardList.get(i);
             mainPageDB[i][0] = boardInfo.region();
             mainPageDB[i][1] = boardInfo.category();
             mainPageDB[i][2] = boardInfo.title();

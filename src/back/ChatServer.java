@@ -1,6 +1,6 @@
 package back;
 
-import back.handler.ChatServer_Handler;
+import back.handler.ChatServerHandler;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class ChatServer extends Thread {
     private Socket socket = null;
     private ServerSocket serversocket = null;
-    private ChatServer_Handler handler = null;
-    private ArrayList<ChatServer_Handler> list = new ArrayList<>();
+    private ChatServerHandler handler = null;
+    private ArrayList<ChatServerHandler> list = new ArrayList<>();
 
     public ChatServer(ServerSocket serversocket) {
         this.serversocket = serversocket;
@@ -24,7 +24,7 @@ public class ChatServer extends Thread {
                 socket = serversocket.accept();
                 System.out.println("Client connect: " + socket.getLocalAddress());
 
-                handler = new ChatServer_Handler(socket, list);
+                handler = new ChatServerHandler(socket, list);
                 handler.start();
 
                 list.add(handler);

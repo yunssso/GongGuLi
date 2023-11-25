@@ -1,8 +1,8 @@
 package front;
 
 import back.ResponseCode;
-import back.request.account.Login_Request;
-import back.response.account.Login_Response;
+import back.request.account.LoginRequest;
+import back.response.account.LoginResponse;
 import front.MainPage.MainPage;
 
 import javax.swing.*;
@@ -140,7 +140,7 @@ public class LogIn extends JFrame {
                     clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    Login_Request loginRequest = new Login_Request(id, password);
+                    LoginRequest loginRequest = new LoginRequest(id, password);
 
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
@@ -154,7 +154,7 @@ public class LogIn extends JFrame {
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
                     if (responseCode.getKey() == 220) { //로그인 성공
-                        Login_Response loginResponse = (Login_Response) ois.readObject();
+                        LoginResponse loginResponse = (LoginResponse) ois.readObject();
                         String uuid = loginResponse.uuid();
 
                         dispose();
