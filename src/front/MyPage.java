@@ -1,11 +1,9 @@
 package front;
 
 import back.dao.CheckDAO;
-import back.dao.PrintBoardDAO;
-import back.dao.ReadPostDAO;
 import back.UserDTO;
-import back.response.board.Board_Info_More_Response;
-import back.response.mypage.My_Board_Info_More_Response;
+import back.response.board.BoardInfoMoreResponse;
+import back.response.mypage.MyBoardInfoMoreResponse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -410,7 +408,7 @@ public class MyPage extends JFrame {
         c.add(modifyUserInfoBtn);
     }
 
-    public void readMoreMyPost(JTable t, int selectRow, My_Board_Info_More_Response myBoardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
+    public void readMoreMyPost(JTable t, int selectRow, MyBoardInfoMoreResponse myBoardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
         JFrame readMoreFrame = new JFrame(myBoardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         fs.FrameSetting(readMoreFrame);
@@ -492,7 +490,7 @@ public class MyPage extends JFrame {
         readMoreFrame.setVisible(true);
     }
 
-    public void readMoreMyHistory(JTable t, int selectRow, Board_Info_More_Response boardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
+    public void readMoreMyHistory(JTable t, int selectRow, BoardInfoMoreResponse boardInfoMoreResponse) {  // 테이블 값 더블 클릭 시 자세히보기
         System.out.println(t.getValueAt(selectRow, 2));
 
         JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임

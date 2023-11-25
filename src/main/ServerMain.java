@@ -1,9 +1,9 @@
 package main;
 
-import server_structure.Account;
-import server_structure.Board;
-import server_structure.BoardInfo;
-import server_structure.ChatRoom;
+import serverStructure.Account;
+import serverStructure.Board;
+import serverStructure.BoardInfo;
+import serverStructure.ChatRoom;
 
 public class ServerMain {
     public static void main(String[] args) {

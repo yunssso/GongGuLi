@@ -1,6 +1,6 @@
 package front;
 
-import back.request.account.SignUp_Request;
+import back.request.account.SignUpRequest;
 import back.ResponseCode;
 
 import javax.swing.*;
@@ -165,7 +165,7 @@ public class SignUp extends JDialog{
                     String region = (String) residenceList.getSelectedItem();
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    SignUp_Request signUpDto = new SignUp_Request(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
+                    SignUpRequest signUpDto = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1024);

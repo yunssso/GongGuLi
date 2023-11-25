@@ -1,9 +1,9 @@
 package front.MainPage;
 
 import back.ResponseCode;
-import back.request.chatroom.Join_ChatRoom_Request;
-import back.response.board.Board_Info_More_Response;
-import back.response.chatroom.Join_ChatRoom_Response;
+import back.request.chatroom.JoinChatRoomRequest;
+import back.response.board.BoardInfoMoreResponse;
+import back.response.chatroom.JoinChatRoomResponse;
 import front.ChatClient;
 import front.FrontSetting;
 import front.RoundedButton;
@@ -23,16 +23,16 @@ public class ReadMorePost {
     private String uuid = null;
     private int selectRow = 0;
     private JTable t;
-    private Board_Info_More_Response boardInfoMoreResponse;
+    private BoardInfoMoreResponse boardInfoMoreResponse;
 
-    public ReadMorePost(String uuid, JTable t, Board_Info_More_Response boardInfoMoreResponse) {
+    public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         readMorePost();
     }
 
-    public ReadMorePost(String uuid, JTable t, int selectRow, Board_Info_More_Response boardInfoMoreResponse) {
+    public ReadMorePost(String uuid, JTable t, int selectRow, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.t = t;
         this.selectRow = selectRow;
@@ -97,14 +97,14 @@ public class ReadMorePost {
                 ){
 
                     int selectRow = 0; //여기에 사용자가 선택한 게시글 id를 받아와야 돼
-                    Join_ChatRoom_Request joinChatroomRequest = new Join_ChatRoom_Request(selectRow, uuid);
+                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(selectRow, uuid);
 
                     objectOutputStream.writeObject(joinChatroomRequest);
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
-                        Join_ChatRoom_Response joinChatRoomResponse = (Join_ChatRoom_Response) objectInputStream.readObject();
+                        JoinChatRoomResponse joinChatRoomResponse = (JoinChatRoomResponse) objectInputStream.readObject();
 
                         new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
                     } else { //채팅방 입장 실패
