@@ -26,6 +26,8 @@ public class FrontSetting extends JFrame{
     public String categoryArr[] = {" --", "음식", "생활용품", "OTT"};
 
     public String mainPageHeader[] = {"지역", "카테고리", "제목", "작성자", "현황"};
+    public String mmmDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
+            {"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
     public String mainPageDB[][] = null;
 
             //{{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},

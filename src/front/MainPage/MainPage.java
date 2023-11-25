@@ -74,8 +74,7 @@ public class MainPage extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 dispose();
 
-                MyPage mp = new MyPage();
-                mp.setMyPage();
+                new MyPage(uuid);
             }
         });
 

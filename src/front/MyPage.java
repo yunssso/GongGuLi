@@ -15,22 +15,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class MyPage extends JFrame {
+    String uuid = null;
     UserDTO userDTO = null;
-    PrintBoardDAO boardDAO = new PrintBoardDAO();
-    ReadPostDAO readPostDAO = new ReadPostDAO();
     CheckDAO checkDAO = new CheckDAO();
     FrontSetting fs = new FrontSetting();
 
     boolean checkNickDup = false;
 
-    public MyPage() {  // 생성자
-        setLeftPanel();
-        setCenterPanel();
-        setRightPanel();
-    }
-
-    public MyPage(UserDTO userDTO) {  // 생성자
-        this.userDTO = userDTO;
+    public MyPage(String uuid) {  // 생성자
+        this.uuid = uuid;
+        setMyPage();
         setLeftPanel();
         setCenterPanel();
         setRightPanel();
@@ -65,7 +59,7 @@ public class MyPage extends JFrame {
             }
         });
 
-        JLabel nickNameLabel = new JLabel(userDTO.getNickName() + " 님");  // 닉네임 라벨
+        JLabel nickNameLabel = new JLabel("test" + " 님");  // 닉네임 라벨
         nickNameLabel.setFont(fs.fb20);
         nickNameLabel.setForeground(fs.c3);
         nickNameLabel.setBounds(100, 30, 150, 50);
@@ -166,7 +160,7 @@ public class MyPage extends JFrame {
         myPostingPanel.setBounds(30, 120, 340, 500);
         myPostingPanel.setBackground(Color.WHITE);
 
-        JTable myPostingTable = new JTable(boardDAO.printMyBoard(userDTO), fs.myPageHeader) { // 셀 내용 수정 불가
+        JTable myPostingTable = new JTable(fs.mmmDB, fs.myPageHeader) { // 셀 내용 수정 불가
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -184,8 +178,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myPostingTable.getSelectedRow();
-                    My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(selectRow);
-                    readMoreMyPost(myPostingTable, selectRow, myBoardInfoMoreResponse);
+//                    My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(selectRow);
+//                    readMoreMyPost(myPostingTable, selectRow, myBoardInfoMoreResponse);
                 }
             }
         });
@@ -204,7 +198,7 @@ public class MyPage extends JFrame {
         myHistoryPanel.setBounds(400, 120, 340, 480);
         myHistoryPanel.setBackground(Color.WHITE);
 
-        JTable myHistoryTable = new JTable(boardDAO.printMyHistoryBoard(userDTO), fs.mainPageHeader) { // 셀 내용 수정 불가
+        JTable myHistoryTable = new JTable(fs.mainPageDB, fs.mainPageHeader) { // 셀 내용 수정 불가
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -240,18 +234,18 @@ public class MyPage extends JFrame {
 
         String[] userInfo = new String[5];
 
-        userInfo[0] = userDTO.getName();
-        userInfo[1] = userDTO.getUserId();
-        userInfo[2] = userDTO.getRegion();
-        userInfo[3] = userDTO.getPhoneNum();
-        userInfo[4] = userDTO.getBirth();
+        userInfo[0] = "test";
+        userInfo[1] = "test";
+        userInfo[2] = "test";
+        userInfo[3] = "test";
+        userInfo[4] = "test";
 
         for (int i = 0; i < userInfo.length; i++) {
             int size = i;
             JLabel info = new JLabel(fs.userInfoHeader[i] + ": " + userInfo[i]);
             info.setFont(fs.fb14);
             info.setForeground(fs.c3);
-            info.setBounds(20, 25+(30*size), 240, 20);
+            info.setBounds(20, 25 + (30 * size), 240, 20);
             userInfoPanel.add(info);
         }
 
@@ -278,14 +272,14 @@ public class MyPage extends JFrame {
         JLabel userNameLabel = new JLabel("이름");
         userNameLabel.setBounds(35, 20, 300, 30);
         userNameLabel.setFont(fs.f16);
-        JLabel userName = new JLabel(userDTO.getName());
+        JLabel userName = new JLabel("test");
         userName.setBounds(160, 20, 300, 30);
         userName.setFont(fs.f16);
 
         JLabel userIDLabel = new JLabel("아이디");
         userIDLabel.setBounds(35, 52, 300, 30);
         userIDLabel.setFont(fs.f16);
-        JLabel userID = new JLabel(userDTO.getUserId());
+        JLabel userID = new JLabel("test");
         userID.setBounds(160, 52, 300, 30);
         userID.setFont(fs.f16);
 
@@ -293,7 +287,7 @@ public class MyPage extends JFrame {
         userNickNameLabel.setBounds(35, 84, 70, 30);
         userNickNameLabel.setFont(fs.f16);
 
-        JTextField userNickNameField = new JTextField(userDTO.getNickName());
+        JTextField userNickNameField = new JTextField("test");
         userNickNameField.setBounds(160, 84, 85, 30);
 
         RoundedButtonR NickDupBtn = new RoundedButtonR("확인");
@@ -343,7 +337,7 @@ public class MyPage extends JFrame {
         JLabel userPhoneNumberLabel = new JLabel("휴대폰 번호");
         userPhoneNumberLabel.setBounds(35, 212, 300,  30);
         userPhoneNumberLabel.setFont(fs.f16);
-        JLabel userPhoneNumber = new JLabel(userDTO.getPhoneNum());
+        JLabel userPhoneNumber = new JLabel("test");
         userPhoneNumber.setBounds(160, 212, 300,  30);
         userPhoneNumber.setFont(fs.f16);
 
@@ -694,7 +688,7 @@ public class MyPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
                 // dispose(); 메인프레임이랑 똑같은디 왜 걍 꺼지냐 ㅋㅋ;
-                new MyPage(userDTO);
+                new MyPage(uuid);
             }
         });
 
