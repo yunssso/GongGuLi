@@ -23,12 +23,13 @@ public class ReadMorePost {
     private String uuid = null;
     private JTable t;
     private BoardInfoMoreResponse boardInfoMoreResponse;
-    private int port = boardInfoMoreResponse.port();
+    private int port = 0;
 
     public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
+        this.port = boardInfoMoreResponse.port();
         if (boardInfoMoreResponse.authority()) {
             readMoreMyPost();
         } else {
@@ -161,6 +162,7 @@ public class ReadMorePost {
         viewCountLabel.setFont(frontSetting.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
+//        게시글 수정
         RoundedButton modifyPostBtn = new RoundedButton("수정하기");
         modifyPostBtn.setBounds(190, 480, 110, 50);
         modifyPostBtn.setFont(frontSetting.fb16);
@@ -169,10 +171,11 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost();
+                new ModifyMyPost(boardInfoMoreResponse);
             }
         });
 
+//        게시글 삭제
         JButton deletePostBtn = new JButton("삭제하기");
         deletePostBtn.setBounds(400, 465, 70, 20);
         deletePostBtn.setBackground(null);
