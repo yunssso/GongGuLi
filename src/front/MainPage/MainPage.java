@@ -1,12 +1,10 @@
 package front.MainPage;
 
 import back.ResponseCode;
-import back.request.board.Board_Info_More_Request;
-import back.request.board.Board_Info_Request;
-import back.request.chatroom.Join_ChatRoom_Request;
-import back.response.board.Board_Info_More_Response;
-import back.response.board.Board_Info_Response;
-import back.response.chatroom.Join_ChatRoom_Response;
+import back.request.board.BoardInfoMoreRequest;
+import back.request.board.BoardInfoRequest;
+import back.response.board.BoardInfoMoreResponse;
+import back.response.board.BoardInfoResponse;
 import front.*;
 
 import javax.swing.*;
@@ -86,7 +84,7 @@ public class MainPage extends JFrame{
         chattingListBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ChattingList();
+                new ChattingList(uuid);
             }
         });
 
@@ -204,14 +202,14 @@ public class MainPage extends JFrame{
                     if(e.getClickCount() == 2) {
                         int selectRow = postTable.getSelectedRow();
 
-                        Board_Info_More_Request boardInfoMoreRequest = new Board_Info_More_Request(selectRow, uuid);
+                        BoardInfoMoreRequest boardInfoMoreRequest = new BoardInfoMoreRequest(selectRow, uuid);
 
                         objectOutputStream.writeObject(boardInfoMoreRequest);
 
                         ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
-                            Board_Info_More_Response boardInfoMoreResponse = (Board_Info_More_Response) objectInputStream.readObject();
+                            BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
 
                             if (boardInfoMoreResponse.authority()) { //글쓴이인 경우
                                 new ReadMorePost(uuid, postTable, selectRow, boardInfoMoreResponse);
@@ -280,7 +278,7 @@ public class MainPage extends JFrame{
              ){
 
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-            Board_Info_Request boardInfoRequest = new Board_Info_Request(region, category, uuid);
+            BoardInfoRequest boardInfoRequest = new BoardInfoRequest(region, category, uuid);
 
             objectOutputStream.writeObject(boardInfoRequest);
 
@@ -288,7 +286,7 @@ public class MainPage extends JFrame{
 
             if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
                 //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
-                List <Board_Info_Response> boardList = (List <Board_Info_Response>) objectInputStream.readObject();
+                List <BoardInfoResponse> boardList = (List <BoardInfoResponse>) objectInputStream.readObject();
 
                 frontSetting.setmainPageDB(boardList);
 

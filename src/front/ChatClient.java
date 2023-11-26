@@ -1,9 +1,9 @@
 package front;
 
 import back.ResponseCode;
-import back.request.chatroom.Kick_ChatRoom_Request;
-import back.request.chatroom.Message_ChatRoom_Request;
-import back.response.chatroom.Message_ChatRoom_Response;
+import back.request.chatroom.KickChatRoomRequest;
+import back.request.chatroom.MessageChatRoomRequest;
+import back.response.chatroom.MessageChatRoomResponse;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -62,7 +62,7 @@ public class ChatClient extends JFrame implements Runnable{
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            objectOutputStream.writeObject(new Message_ChatRoom_Request(nickName, null, uuid));
+            objectOutputStream.writeObject(new MessageChatRoomRequest(nickName, null, uuid));
 
             Thread thread = new Thread(this);
             thread.start();
@@ -164,8 +164,8 @@ public class ChatClient extends JFrame implements Runnable{
                 if (objectInputStream != null) {
                     Object readObj = objectInputStream.readObject();
 
-                    if (readObj instanceof Message_ChatRoom_Response) {
-                        Message_ChatRoom_Response messageChatRoomResponse = (Message_ChatRoom_Response) readObj;
+                    if (readObj instanceof MessageChatRoomResponse) {
+                        MessageChatRoomResponse messageChatRoomResponse = (MessageChatRoomResponse) readObj;
 
                         chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message() + "\n");
                     }
@@ -185,7 +185,7 @@ public class ChatClient extends JFrame implements Runnable{
             String message = tf.getText();
 
             if (objectOutputStream != null) {
-                Message_ChatRoom_Request messageChatRoomRequest = new Message_ChatRoom_Request(nickName, message, uuid);
+                MessageChatRoomRequest messageChatRoomRequest = new MessageChatRoomRequest(nickName, message, uuid);
 
                 objectOutputStream.writeObject(messageChatRoomRequest);
 
@@ -199,7 +199,7 @@ public class ChatClient extends JFrame implements Runnable{
     private void kickRequest(String selected_name) {
         try {
             if (objectOutputStream != null) {
-                Kick_ChatRoom_Request kickChatRoomRequest = new Kick_ChatRoom_Request(selected_name, uuid);
+                KickChatRoomRequest kickChatRoomRequest = new KickChatRoomRequest(selected_name, uuid);
 
                 objectOutputStream.writeObject(kickChatRoomRequest);
 

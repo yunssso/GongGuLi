@@ -1,6 +1,5 @@
 package back.dao;
 
-import back.request.account.Login_Request;
 import database.DBConnector;
 
 import java.sql.Connection;

@@ -33,8 +33,8 @@ public enum ResponseCode {
 
     // COMMON BOARD
 
-    // POST BOARD
-    POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
+                                                                                                                                                                                // POST BOARD
+                                                                                                                                                                                POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
     TITLE_MISSING(301, "제목을 입력해주세요."),
     REGION_NOT_SELECTED(302, "지역을 선택해주세요."),
     CATEGORY_NOT_SELECTED(303, "카테고리를 선택해주세요."),
@@ -66,7 +66,11 @@ public enum ResponseCode {
 
     // KICK CHATROOM
     KICK_CHATROOM_SUCCESS(520, "강제퇴장이 완료되었습니다."),
-    KICK_CHATROOM_FAILURE(521, "권한이 없습니다.");
+    KICK_CHATROOM_FAILURE(521, "권한이 없습니다."),
+
+    // GET CHATROOM INFO
+    GET_CHATROOM_SUCCESS(530, "채팅방 정보를 가져오는데 완료하였습니다."),
+    GET_CHATROOM_FAILURE(531, "채팅방 정보를 가져오는데 실패하였습니다.");
 
     private final int code;
     private final String message;
