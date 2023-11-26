@@ -47,9 +47,9 @@ public class ChatRoomHandler extends Thread {
         }
     }
 
+    /*채팅방 입장을 수행하는 메소드*/
     private void joinChatRoomMethod(JoinChatRoomRequest joinChatRoomRequest) {
         try {
-            //사용자에게 접속을 원하는 게시글 id, uuid 정보를 받아와서 처리할 거 처리하고 포트 정보 및 대화 내용 등 return 해주는 DAO 필요
             GetInfoDAO getInfoDAO = new GetInfoDAO();
 
             String nickName = getInfoDAO.getnickNameMethod(joinChatRoomRequest.uuid());
@@ -66,21 +66,21 @@ public class ChatRoomHandler extends Thread {
         }
     }
 
-//    사용자가 들어있는 채팅방 목록
+    /*사용자가 들어있는 채팅방 목록*/
     private void getChattingRoomMethod(GetChattingRoomRequest getChattingRoomRequest) {
         try {
             GetChattingRoomDAO getChattingRoomDAO = new GetChattingRoomDAO();
 
-            String uuid = getChattingRoomRequest.uuid();
-            List<GetChattingRoomResponse> chattingRoomList = getChattingRoomDAO.getChattingRoomList(uuid);
+            List<GetChattingRoomResponse> chattingRoomList = getChattingRoomDAO.getChattingRoomList(getChattingRoomRequest.uuid());
 
-            if (chattingRoomList == null) {
-                objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);      // GetChattingRoom_Fail, Success ResponseCode 만들어주세요.
-            } else {
+            if (chattingRoomList == null) { // 채팅방 목록 갱신 실패
+                objectOutputStream.writeObject(ResponseCode.GET_CHATROOM_FAILURE);
+            } else { // 채팅방 목록 갱신 성공
+                objectOutputStream.writeObject(ResponseCode.GET_CHATROOM_SUCCESS);
                 objectOutputStream.writeObject(chattingRoomList);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 }
