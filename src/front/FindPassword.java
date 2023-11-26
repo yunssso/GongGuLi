@@ -21,6 +21,7 @@ class FindPassword extends JDialog {
     private JTextField phoneNumberText;
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
     private Font f2 = new Font("SUITE", Font.BOLD, 9);
+    private Color c1 = new Color(255, 240, 227);
 
     private Socket clientSocket = null;
 
@@ -32,6 +33,7 @@ class FindPassword extends JDialog {
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
+        panel.setBackground(c1);
 
         // 이름 입력 필드
         JLabel nameLabel = new JLabel("이름:");

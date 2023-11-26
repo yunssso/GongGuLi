@@ -33,6 +33,7 @@ public class SignUp extends JDialog{
         setSignUp();
         setLeftPanel();
         setRightPanel();
+        setLocationRelativeTo(null);
     }
 
     private void setLeftPanel() {
