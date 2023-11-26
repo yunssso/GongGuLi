@@ -1,8 +1,12 @@
 package front;
 
 import back.ResponseCode;
+import back.request.chatroom.GetParticipantsChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
 import back.request.chatroom.MessageChatRoomRequest;
+import back.response.chatroom.GetParticipantsChatRoomResponse;
+import back.response.chatroom.JoinChatRoomResponse;
+import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
 
 import javax.swing.*;
@@ -156,7 +160,7 @@ public class ChatClient extends JFrame implements Runnable{
         participantsFrame.setVisible(true);
     }
 
-    //메세지를 서버에서 받아오는 함수
+    /*서버 Response를 받는 메소드*/
     @Override
     public void run() {
         try {
@@ -164,10 +168,14 @@ public class ChatClient extends JFrame implements Runnable{
                 if (objectInputStream != null) {
                     Object readObj = objectInputStream.readObject();
 
-                    if (readObj instanceof MessageChatRoomResponse) {
-                        MessageChatRoomResponse messageChatRoomResponse = (MessageChatRoomResponse) readObj;
+                    if (readObj instanceof MessageChatRoomResponse messageChatRoomResponse) {
+                        getMessage(messageChatRoomResponse);
+                    } else if (readObj instanceof JoinMessageChatRoomResponse joinMessageChatRoomResponse) {
+                        getParticipants();
 
-                        chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message() + "\n");
+                        getMessage(joinMessageChatRoomResponse);
+                    } else if (readObj instanceof GetParticipantsChatRoomResponse getParticipantsChatRoomResponse) {
+                        getParticipantsChatRoomResponse.list(); //이런식으로 list 안에 있는 원소들을 for문을 통해서 출력 해주도록 해야함
                     }
 
                     int pos = chatTextArea.getText().length();
@@ -179,7 +187,7 @@ public class ChatClient extends JFrame implements Runnable{
         }
     }
 
-    //메세지를 서버로 전송하는 함수
+    /*메세지 전송 Request를 보내는 메소드*/
     private void sendMessage() {
         try {
             String message = tf.getText();
@@ -196,6 +204,17 @@ public class ChatClient extends JFrame implements Runnable{
         }
     }
 
+    /*메세지 출력 메소드*/
+    private void getMessage(MessageChatRoomResponse messageChatRoomResponse) {
+        chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message() + "\n");
+    }
+
+    /*새로운 참여자 관련 메소드*/
+    private void getMessage(JoinMessageChatRoomResponse joinMessageChatRoomResponse) {
+        chatTextArea.append(joinMessageChatRoomResponse.nickName() + joinMessageChatRoomResponse.message());
+    }
+
+    /*강퇴 Request를 보내는 메소드*/
     private void kickRequest(String selected_name) {
         try {
             if (objectOutputStream != null) {
@@ -210,6 +229,17 @@ public class ChatClient extends JFrame implements Runnable{
                 } else if (responseCode.getKey() == ResponseCode.KICK_CHATROOM_FAILURE.getKey()) {
                     // 방장 권한이 없어서 강제퇴장을 못 했을 경우
                 }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /*채팅방 참여자 명단 Request를 보내는 메소드*/
+    private void getParticipants() {
+        try {
+            if (objectOutputStream != null) {
+                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest());
             }
         } catch (Exception exception) {
             exception.printStackTrace();

@@ -211,11 +211,7 @@ public class MainPage extends JFrame{
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
                             BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
 
-                            if (boardInfoMoreResponse.authority()) { //글쓴이인 경우
-                                new ReadMorePost(uuid, postTable, selectRow, boardInfoMoreResponse);
-                            } else { //글쓴이가 아닌 경우
-                                new ReadMorePost(uuid, postTable, boardInfoMoreResponse);
-                            }
+                            new ReadMorePost(uuid, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
                         }

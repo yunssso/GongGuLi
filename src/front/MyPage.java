@@ -176,8 +176,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myPostingTable.getSelectedRow();
-//                    My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(selectRow);
-//                    readMoreMyPost(myPostingTable, selectRow, myBoardInfoMoreResponse);
+//                    My_Board_Info_More_Response myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(port);
+//                    readMoreMyPost(myPostingTable, port, myBoardInfoMoreResponse);
                 }
             }
         });
@@ -214,8 +214,8 @@ public class MyPage extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     int selectRow = myHistoryTable.getSelectedRow();
-                    //Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(selectRow, uuid);
-                    //readMoreMyHistory(myHistoryTable, selectRow, boardInfoMoreResponse);
+                    //Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(port, uuid);
+                    //readMoreMyHistory(myHistoryTable, port, boardInfoMoreResponse);
                 }
             }
         });
