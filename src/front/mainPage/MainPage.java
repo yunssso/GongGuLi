@@ -112,10 +112,7 @@ public class MainPage extends JFrame{
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    getBoardInfoMethod();
-                    model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
-                    postTable.setModel(model);
-                    frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
+                    refreshTable();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -130,10 +127,7 @@ public class MainPage extends JFrame{
                     region = (String) regionBtn.getSelectedItem();
                     category = (String) categoryBtn.getSelectedItem();
 
-                    getBoardInfoMethod();
-                    model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
-                    postTable.setModel(model);
-                    frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
+                    refreshTable();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -189,6 +183,7 @@ public class MainPage extends JFrame{
         };
         frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);  // postTable 세팅
 
+//        자세히 보기
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -211,7 +206,7 @@ public class MainPage extends JFrame{
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
                             BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
 
-                            new ReadMorePost(uuid, centerPanel, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
+                            new ReadMorePost(uuid, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
                         }
@@ -252,6 +247,12 @@ public class MainPage extends JFrame{
         rightPanel.setBackground(frontSetting.mainColor);
 
         add(rightPanel);
+    }
+    public void refreshTable() {
+        getBoardInfoMethod();
+        model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+        postTable.setModel(model);
+        frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
     }
 
     /*새 글 작성*/
