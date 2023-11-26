@@ -1,4 +1,4 @@
-package front.MainPage;
+package front.mainPage;
 
 import back.ResponseCode;
 import back.request.chatroom.GetChattingRoomRequest;

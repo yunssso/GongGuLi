@@ -33,20 +33,25 @@ public enum ResponseCode {
 
     // COMMON BOARD
 
-                                                                                                                                                                                // POST BOARD
-                                                                                                                                                                                POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
-    TITLE_MISSING(301, "제목을 입력해주세요."),
-    REGION_NOT_SELECTED(302, "지역을 선택해주세요."),
-    CATEGORY_NOT_SELECTED(303, "카테고리를 선택해주세요."),
-    PEOPLE_NUM_MISSING(304, "인원 수를 입력해주세요."),
-    CONTENT_MISSING(305, "내용을 입력해주세요."),
-    PEOPLE_NUM_OVER_LIMIT(306, "인원은 30명까지 입력 가능합니다."),
-    PEOPLE_NUM_UNDER_LIMIT(307, "인원은 2명부터 입력 가능합니다."),
-    PEOPLE_NUM_NOT_NUMBER(308, "인원은 숫자만 입력 가능합니다."),
+    // POST BOARD
+    POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
+    POST_BOARD_FAILURE(301, "게시글 생성이 완료되었습니다."),
+    TITLE_MISSING(302, "제목을 입력해주세요."),
+    REGION_NOT_SELECTED(303, "지역을 선택해주세요."),
+    CATEGORY_NOT_SELECTED(304, "카테고리를 선택해주세요."),
+    PEOPLE_NUM_MISSING(305, "인원 수를 입력해주세요."),
+    CONTENT_MISSING(306, "내용을 입력해주세요."),
+    PEOPLE_NUM_OVER_LIMIT(307, "인원은 30명까지 입력 가능합니다."),
+    PEOPLE_NUM_UNDER_LIMIT(308, "인원은 2명부터 입력 가능합니다."),
+    PEOPLE_NUM_NOT_NUMBER(309, "인원은 숫자만 입력 가능합니다."),
 
     // DELETE BOARD
+    DELETE_MY_BOARD_SUCCESS(1, "게시글 삭제가 완료되었습니다."),
+    DELETE_MY_BOARD_FAILURE(2, "게시글 삭제에 실패하였습니다."),
 
-    // EDIT BOARD
+    // MODIFY BOARD
+    MODIFY_MY_BOARD_SUCCESS(3, "게시글 수정이 완료되었습니다."),
+    MODIFY_MY_BOARD_FAILURE(4, "게시글 수정에 실패하였습니다."),
 
     // BOARD INFO
     BOARD_INFO_SUCCESS(400, "게시판 갱신이 완료되었습니다."),
@@ -70,7 +75,8 @@ public enum ResponseCode {
 
     // GET CHATROOM INFO
     GET_CHATROOM_SUCCESS(530, "채팅방 정보를 가져오는데 완료하였습니다."),
-    GET_CHATROOM_FAILURE(531, "채팅방 정보를 가져오는데 실패하였습니다.");
+    GET_CHATROOM_FAILURE(531, "채팅방 정보를 가져오는데 실패하였습니다."),
+    ;
 
     private final int code;
     private final String message;

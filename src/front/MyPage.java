@@ -4,7 +4,7 @@ import back.dao.CheckDAO;
 import back.UserDTO;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.mypage.MyBoardInfoMoreResponse;
-import front.MainPage.MainPage;
+import front.mainPage.MainPage;
 
 import javax.swing.*;
 import java.awt.*;
