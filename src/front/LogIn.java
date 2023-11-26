@@ -8,10 +8,7 @@ import front.MainPage.MainPage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class LogIn extends JFrame {
@@ -82,6 +79,8 @@ public class LogIn extends JFrame {
         idText.setBounds(700, 365, 200, 30);
         panel.add(idText);
         idText.setFont(f2);
+
+
 
         // 비밀번호 입력 필드
         JLabel passwordLabel = new JLabel("비밀번호:");
@@ -173,6 +172,12 @@ public class LogIn extends JFrame {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
+            }
+        });
+        idText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                loginButton.doClick();
             }
         });
 
