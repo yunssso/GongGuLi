@@ -21,23 +21,19 @@ import java.net.Socket;
 public class ReadMorePost {
     FrontSetting frontSetting = new FrontSetting();
     private String uuid = null;
-    private int selectRow = 0;
     private JTable t;
     private BoardInfoMoreResponse boardInfoMoreResponse;
+    private int port = boardInfoMoreResponse.port();
 
     public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
-        readMorePost();
-    }
-
-    public ReadMorePost(String uuid, JTable t, int selectRow, BoardInfoMoreResponse boardInfoMoreResponse) {
-        this.uuid = uuid;
-        this.t = t;
-        this.selectRow = selectRow;
-        this.boardInfoMoreResponse =boardInfoMoreResponse;
-        readMoreMyPost();
+        if (boardInfoMoreResponse.authority()) {
+            readMoreMyPost();
+        } else {
+            readMorePost();
+        }
     }
 
     /*테이블 값 더블 클릭 시 자세히 보기(작성자 타인)*/
@@ -95,9 +91,7 @@ public class ReadMorePost {
                      InputStream inputStream = clientSocket.getInputStream();
                      ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                 ){
-
-                    int selectRow = 0; //여기에 사용자가 선택한 게시글 id를 받아와야 돼
-                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(selectRow, uuid);
+                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(port, uuid);
 
                     objectOutputStream.writeObject(joinChatroomRequest);
 
