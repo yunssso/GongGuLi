@@ -162,6 +162,7 @@ public class ReadMorePost {
         viewCountLabel.setFont(frontSetting.f14);
         viewCountLabel.setBounds(20, 465, 150, 20);
 
+//        게시글 수정
         RoundedButton modifyPostBtn = new RoundedButton("수정하기");
         modifyPostBtn.setBounds(190, 480, 110, 50);
         modifyPostBtn.setFont(frontSetting.fb16);
@@ -170,10 +171,11 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost();
+                new ModifyMyPost(boardInfoMoreResponse);
             }
         });
 
+//        게시글 삭제
         JButton deletePostBtn = new JButton("삭제하기");
         deletePostBtn.setBounds(400, 465, 70, 20);
         deletePostBtn.setBackground(null);
