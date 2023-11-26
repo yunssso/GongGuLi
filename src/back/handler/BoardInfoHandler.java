@@ -7,12 +7,10 @@ import back.request.board.BoardInfoRequest;
 import back.request.mypage.MyBoardInfoMoreRequest;
 import back.request.board.BoardInfoMoreRequest;
 import back.response.board.BoardInfoMoreResponse;
+import back.response.board.BoardInfoResponse;
 import back.response.mypage.MyBoardInfoMoreResponse;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
@@ -20,12 +18,8 @@ public class BoardInfoHandler extends Thread {
     private ObjectInputStream objectInputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
-    private final PrintBoardDAO boardDAO = new PrintBoardDAO();
-    private final ReadPostDAO readPostDAO = new ReadPostDAO();
-
     public BoardInfoHandler(Socket clientSocket) {
         try {
-
             InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
@@ -33,9 +27,16 @@ public class BoardInfoHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
+    /*사용자 Request를 받는 메소드*/
     @Override
     public void run() {
         try {
@@ -50,13 +51,21 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             //exception.printStackTrace(); <- 여기서 계속 이상한 버그 터지는데 무시해도 될 듯
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
-    // 게시판에 있는 글 갱신 해오는 메소드
+    /*게시글 갱신 Response를 보내는 메소드*/
     private void boardInfoMethod(BoardInfoRequest boardInfoRequest) {
         try {
-            List boardList = boardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
+            PrintBoardDAO printBoardDAO = new PrintBoardDAO();
+
+            List <BoardInfoResponse> boardList = printBoardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
 
             if (boardList == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_FAILURE);
@@ -66,12 +75,20 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
-    // 게시글을 클릭 했을때 자세히 보기를 하는 메소드
+    /*게시글 자세히 보기 (타인) Response를 보내는 메소드*/
     private void boardInfoMoreMethod(BoardInfoMoreRequest boardInfoMoreRequest) {
         try {
+            ReadPostDAO readPostDAO = new ReadPostDAO();
+
             BoardInfoMoreResponse boardInfoMoreResponse = readPostDAO.readMorePost(boardInfoMoreRequest.selectRow(), boardInfoMoreRequest.uuid());
 
             if (boardInfoMoreResponse == null) {
@@ -82,12 +99,20 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
-    // 내가 쓴 게시글을 클릭 했을때 자세히 보기를 하는 메소드
+    /*게시글 자세히 보기 (자신) Response를 보내는 메소드*/
     private void myBoardInfoMoreMethod(MyBoardInfoMoreRequest myBoardInfoMoreRequest) {
         try {
+            ReadPostDAO readPostDAO = new ReadPostDAO();
+
             MyBoardInfoMoreResponse myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
 
             if (myBoardInfoMoreResponse == null) {
@@ -98,6 +123,12 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 }

@@ -54,13 +54,12 @@ public class ChattingList {
     }
 
     private void getChattingRoomMethod() {
-        try (Socket clientSocket = new Socket("localhost", 1028);
+        try (Socket clientSocket = new Socket("localhost", 1026);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
         ){
-
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
             GetChattingRoomRequest getChattingRoomRequest = new GetChattingRoomRequest(uuid);
 
@@ -68,14 +67,14 @@ public class ChattingList {
 
             ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-            if (responseCode.getKey() == ResponseCode.BOARD_INFO_SUCCESS.getKey()) { // 채팅방 목록 갱신 성공    //  여기도 ResponseCode 수정 해야됨
+            if (responseCode.getKey() == ResponseCode.GET_CHATROOM_SUCCESS.getKey()) { // 채팅방 목록 갱신 성공
                 //  boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
                 java.util.List<GetChattingRoomResponse> getChattingRoomResponse = (List<GetChattingRoomResponse>) objectInputStream.readObject();
 
                 setChattingRoomListDB(getChattingRoomResponse);
 
                 System.out.println(fs.getmainPageDB());
-            } else { // 채팅방 갱신 실패
+            } else { // 채팅방 목록 갱신 실패
                 fs.showErrorDialog(responseCode.getValue());
             }
         } catch (Exception exception) {

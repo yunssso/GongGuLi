@@ -15,7 +15,7 @@ public class GetChattingRoomDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-//    채팅방 리스트 반환
+    /*채팅방 리스트 반환*/
     public List<GetChattingRoomResponse> getChattingRoomList(String uuid) {
         List portList = getPortMethod(uuid);
         List<GetChattingRoomResponse> list = new ArrayList<>();
@@ -45,13 +45,14 @@ public class GetChattingRoomDAO {
             conn.close();
 
             return list;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return null;
     }
 
-//    내가 참여해 있는 채팅방의 포트를 저장
+    /*내가 참여해 있는 채팅방의 포트를 저장*/
     public List getPortMethod(String uuid) {
         List portList = new ArrayList();
         try {
@@ -64,9 +65,10 @@ public class GetChattingRoomDAO {
                 portList.add(rs.getInt("port"));
             }
             return portList;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return null;
     }
 }

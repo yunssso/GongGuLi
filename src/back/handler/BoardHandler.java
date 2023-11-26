@@ -11,21 +11,15 @@ import back.request.board.PostBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.chatroom.JoinChatRoomResponse;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class BoardHandler extends Thread {
-    private Socket clientSocket = null;
     private ObjectInputStream objectInputStream = null;
     private ObjectOutputStream objectOutputStream = null;
 
     public BoardHandler(Socket clientSocket) {
         try {
-            this.clientSocket = clientSocket;
-
             InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
@@ -33,9 +27,16 @@ public class BoardHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
+    /*사용자 Request를 받는 메소드*/
     @Override
     public void run() {
         try {
@@ -50,17 +51,22 @@ public class BoardHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
-    /*게시글 생성 함수*/
+    /*게시글 생성 Reponse를 보내는 메소드*/
     private void postBoardMethod(PostBoardRequest postBoardRequest) {
         try {
             PostingDAO postingDAO = new PostingDAO();
             GetInfoDAO getInfoDAO = new GetInfoDAO();
             JoinChattingRoomDAO joinChattingRoomDAO = new JoinChattingRoomDAO();
 
-            //각 조건들을 비교하여 클라이언트에 응답을 보낸다.
             if (postBoardRequest.title().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.TITLE_MISSING);
             } else if (postBoardRequest.region().equals(" --")) {
@@ -106,15 +112,21 @@ public class BoardHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
-    /*게시글 수정 함수*/
+    /*게시글 수정 Response를 보내는 메소드*/
     private void editBoardMethod(EditBoardRequest editBoardRequest) {
 
     }
 
-    /*게시글 삭제 함수*/
+    /*게시글 삭제 Reponse를 보내는 메소드*/
     private void deleteBoardMethod(DeleteBoardRequest deleteBoardRequest) {
 
     }

@@ -16,25 +16,28 @@ import back.response.account.FindUserPasswordResponse;
 import back.response.account.LoginResponse;
 
 public class AccountHandler extends Thread {
-
 	private ObjectInputStream objectInputStream = null;
 	private ObjectOutputStream objectOutputStream = null;
-	private final SignUpDAO signUpDAO = new SignUpDAO();
-	private final FindUserDAO findUserDAO = new FindUserDAO();
-	private final LogInDAO logInDAO = new LogInDAO();
 
 	public AccountHandler(Socket clientSocket) {
-		try {
-			InputStream inputStream = clientSocket.getInputStream();
-			objectInputStream = new ObjectInputStream(inputStream);
+        try {
+            InputStream inputStream = clientSocket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
 
-			OutputStream outputStream = clientSocket.getOutputStream();
-			objectOutputStream = new ObjectOutputStream(outputStream);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+            OutputStream outputStream = clientSocket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
 	}
-	
+
+	/*사용자 Request를 받는 메소드*/
 	@Override
 	public void run() {
 		try {
@@ -52,12 +55,20 @@ public class AccountHandler extends Thread {
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
+	/*회원가입 Response를 보내는 메소드*/
 	private void SignUpMethod(SignUpRequest signUpRequest) {
 		try {
-			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
+			SignUpDAO signUpDAO = new SignUpDAO();
+
 			if (signUpRequest.userId().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.ID_MISSING);
 			} else if (signUpRequest.password().isBlank()) {
@@ -91,16 +102,18 @@ public class AccountHandler extends Thread {
 			exception.printStackTrace();
 		} finally {
 			try {
-				objectOutputStream.close();
+				objectInputStream.close();
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
 			}
 		}
 	}
 
+	/*로그인 Response를 보내는 메소드*/
 	private void LoginMethod(LoginRequest loginRequest) {
 		try {
-			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
+			LogInDAO logInDAO = new LogInDAO();
+
 			if (loginRequest.userId().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.ID_MISSING);
 			} else if (loginRequest.password().isBlank()) {
@@ -118,12 +131,20 @@ public class AccountHandler extends Thread {
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
+	/*아이디 찾기 Response를 보내는 메소드*/
 	private void FindUserIdMethod(FindUserIdRequest findUserIdRequest) {
 		try {
-			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
+			FindUserDAO findUserDAO = new FindUserDAO();
+
 			if (findUserIdRequest.name().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.NAME_MISSING);
 			} else if (findUserIdRequest.birth().isBlank()) {
@@ -142,12 +163,20 @@ public class AccountHandler extends Thread {
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
+	/*비밀번호 찾기 Response를 보내는 메소드*/
 	private void FindUserPasswordMethod(FindUserPasswordRequest findUserPasswordRequest) {
 		try {
-			//각 조건들을 비교하여 클라이언트에 응답을 보낸다.
+			FindUserDAO findUserDAO = new FindUserDAO();
+
 			if (findUserPasswordRequest.name().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.NAME_MISSING);
 			} else if (findUserPasswordRequest.userId().isBlank()) {
@@ -168,6 +197,12 @@ public class AccountHandler extends Thread {
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 }
