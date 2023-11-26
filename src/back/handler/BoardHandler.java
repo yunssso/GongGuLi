@@ -1,12 +1,13 @@
 package back.handler;
 
 import back.ResponseCode;
+import back.dao.board.ModifyMyPostDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.dao.board.PostingDAO;
 import back.dao.GetInfoDAO;
 
 import back.request.board.DeleteBoardRequest;
-import back.request.board.EditBoardRequest;
+import back.request.board.ModifyMyPostRequest;
 import back.request.board.PostBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.chatroom.JoinChatRoomResponse;
@@ -44,8 +45,8 @@ public class BoardHandler extends Thread {
 
             if (readObj instanceof PostBoardRequest postBoardRequest) {
                 postBoardMethod(postBoardRequest);
-            } else if (readObj instanceof EditBoardRequest editBoardRequest) {
-                editBoardMethod(editBoardRequest);
+            } else if (readObj instanceof ModifyMyPostRequest modifyMyPostRequest) {
+                modifyMyPostMethod(modifyMyPostRequest);
             } else if (readObj instanceof DeleteBoardRequest deleteBoardRequest) {
                 deleteBoardMethod(deleteBoardRequest);
             }
@@ -84,8 +85,12 @@ public class BoardHandler extends Thread {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
                     int port = joinChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
-                    postingDAO.posting(postBoardRequest, port); // 게시글 생성
-                    objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS); // 게시글 생성 성공 응답을 보낸다.
+
+                    if (postingDAO.posting(postBoardRequest, port)) {   //  DB로 게시글 생성 요청
+                        objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS); // 게시글 생성 성공 응답을 보낸다.
+                    } else {
+                        objectOutputStream.writeObject(ResponseCode.POST_BOARD_FAILURE);
+                    }
 
                     Object readObj = objectInputStream.readObject(); // 채팅방 입장 요청을 받는다.
 
@@ -106,7 +111,6 @@ public class BoardHandler extends Thread {
         } catch (NumberFormatException numberFormatException) {
             try {
                 objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_NOT_NUMBER);
-
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -122,8 +126,18 @@ public class BoardHandler extends Thread {
     }
 
     /*게시글 수정 Response를 보내는 메소드*/
-    private void editBoardMethod(EditBoardRequest editBoardRequest) {
-
+    private void modifyMyPostMethod(ModifyMyPostRequest modifyMyPostRequest) {
+        try {
+            ModifyMyPostDAO modifyMyPostDAO = new ModifyMyPostDAO();
+            boolean isModified = modifyMyPostDAO.modifyMyPost(modifyMyPostRequest); //  DB로 수정 요청
+            if (isModified) {
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_SUCCESS); // 게시글 수정 성공 응답을 보낸다.
+            } else {
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*게시글 삭제 Reponse를 보내는 메소드*/

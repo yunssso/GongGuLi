@@ -3,7 +3,7 @@ package front;
 import back.ResponseCode;
 import back.request.account.LoginRequest;
 import back.response.account.LoginResponse;
-import front.MainPage.MainPage;
+import front.mainPage.MainPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,8 +79,6 @@ public class LogIn extends JFrame {
         idText.setBounds(700, 365, 200, 30);
         panel.add(idText);
         idText.setFont(f2);
-
-
 
         // 비밀번호 입력 필드
         JLabel passwordLabel = new JLabel("비밀번호:");

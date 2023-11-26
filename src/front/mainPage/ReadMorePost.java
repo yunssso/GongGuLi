@@ -1,4 +1,4 @@
-package front.MainPage;
+package front.mainPage;
 
 import back.ResponseCode;
 import back.request.chatroom.JoinChatRoomRequest;
@@ -21,12 +21,14 @@ import java.net.Socket;
 public class ReadMorePost {
     FrontSetting frontSetting = new FrontSetting();
     private String uuid = null;
+    private JPanel centerPanel;
     private JTable t;
     private BoardInfoMoreResponse boardInfoMoreResponse;
     private int port = 0;
 
-    public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
+    public ReadMorePost(String uuid, JPanel centerPanel, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
+        this.centerPanel = centerPanel;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = boardInfoMoreResponse.port();
@@ -51,35 +53,32 @@ public class ReadMorePost {
         logoLabel.setFont(frontSetting.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardInfoMoreResponse.title());
-        titleArea.setBounds(20, 80, 445, 35);
-        titleArea.setFont(frontSetting.f18);
-        titleArea.setEditable(false);
+        JLabel title = new JLabel("  제목:   " + boardInfoMoreResponse.title());
+        title.setBounds(20, 80, 445, 35);
+        title.setFont(frontSetting.f18);
+        title.setOpaque(true);
+        title.setBackground(Color.WHITE);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardInfoMoreResponse.region() +
-                "\n 글쓴이: " + boardInfoMoreResponse.nickName());
-        infoArea1.setBounds(20, 125, 230, 55);
-        infoArea1.setFont(frontSetting.f18);
-        infoArea1.setEditable(false);
+        JLabel info = new JLabel("  지역:   " + boardInfoMoreResponse.region() +
+                "             카테고리:   " + boardInfoMoreResponse.category() +
+                "             현황: " + boardInfoMoreResponse.peopleNum());
+        info.setBounds(20, 125, 445, 35);
+        info.setFont(frontSetting.f18);
+        info.setOpaque(true);
+        info.setBackground(Color.WHITE);
 
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardInfoMoreResponse.category() +
-                "\n현황: " + boardInfoMoreResponse.peopleNum());
-        infoArea2.setBounds(250, 125, 215, 55);
-        infoArea2.setFont(frontSetting.f18);
-        infoArea2.setEditable(false);
-
-        JTextArea contentArea = new JTextArea(" " + boardInfoMoreResponse.content());
-        contentArea.setBounds(20, 210, 445, 250);
+        JTextArea contentArea = new JTextArea(boardInfoMoreResponse.content());
+        contentArea.setBounds(20, 185, 445, 250);
         contentArea.setFont(frontSetting.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
         JLabel viewCountLabel = new JLabel("조회수: " + boardInfoMoreResponse.view());
         viewCountLabel.setFont(frontSetting.f14);
-        viewCountLabel.setBounds(20, 465, 150, 20);
+        viewCountLabel.setBounds(20, 440, 150, 20);
 
         RoundedButton joinChatRoomBtn = new RoundedButton("채팅 참여");
-        joinChatRoomBtn.setBounds(190, 480, 110, 50);
+        joinChatRoomBtn.setBounds(200, 480, 90, 50);
         joinChatRoomBtn.setFont(frontSetting.fb16);
 
         /*채팅 참여 버튼 클릭시*/
@@ -112,9 +111,8 @@ public class ReadMorePost {
         });
 
         c.add(logoLabel);
-        c.add(titleArea);
-        c.add(infoArea1);
-        c.add(infoArea2);
+        c.add(title);
+        c.add(info);
         c.add(contentArea);
         c.add(joinChatRoomBtn);
         c.add(viewCountLabel);
@@ -136,48 +134,46 @@ public class ReadMorePost {
         logoLabel.setFont(frontSetting.fb20);
         logoLabel.setBounds(220, 20, 100, 40);
 
-        JTextArea titleArea = new JTextArea(" 제목: " + boardInfoMoreResponse.title());
-        titleArea.setBounds(20, 80, 445, 35);
-        titleArea.setFont(frontSetting.f18);
-        titleArea.setEditable(false);
+        JLabel title = new JLabel("  제목:   " + boardInfoMoreResponse.title());
+        title.setBounds(20, 80, 445, 35);
+        title.setFont(frontSetting.f18);
+        title.setOpaque(true);
+        title.setBackground(Color.WHITE);
 
-        JTextArea infoArea1 = new JTextArea(" 지역: " + boardInfoMoreResponse.region() +
-                "\n 현황: " + boardInfoMoreResponse.peopleNum());
-        infoArea1.setBounds(20, 125, 230, 55);
-        infoArea1.setFont(frontSetting.f18);
-        infoArea1.setEditable(false);
-
-        JTextArea infoArea2 = new JTextArea("카테고리: " + boardInfoMoreResponse.category());
-        infoArea2.setBounds(250, 125, 215, 55);
-        infoArea2.setFont(frontSetting.f18);
-        infoArea2.setEditable(false);
+        JLabel info = new JLabel("  지역:   " + boardInfoMoreResponse.region() +
+                "             카테고리:   " + boardInfoMoreResponse.category() +
+                "             현황: " + boardInfoMoreResponse.peopleNum());
+        info.setBounds(20, 125, 445, 35);
+        info.setFont(frontSetting.f18);
+        info.setOpaque(true);
+        info.setBackground(Color.WHITE);
 
         JTextArea contentArea = new JTextArea(boardInfoMoreResponse.content());
-        contentArea.setBounds(20, 210, 445, 250);
+        contentArea.setBounds(20, 185, 445, 250);
         contentArea.setFont(frontSetting.f18);
         contentArea.setEditable(false);
         contentArea.setDragEnabled(false);
 
         JLabel viewCountLabel = new JLabel("조회수: " + boardInfoMoreResponse.view());
         viewCountLabel.setFont(frontSetting.f14);
-        viewCountLabel.setBounds(20, 465, 150, 20);
+        viewCountLabel.setBounds(20, 440, 150, 20);
 
 //        게시글 수정
         RoundedButton modifyPostBtn = new RoundedButton("수정하기");
-        modifyPostBtn.setBounds(190, 480, 110, 50);
+        modifyPostBtn.setBounds(200, 480, 90, 50);
         modifyPostBtn.setFont(frontSetting.fb16);
 
         modifyPostBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost(boardInfoMoreResponse);
+                new ModifyMyPost(centerPanel, port, boardInfoMoreResponse);
             }
         });
 
 //        게시글 삭제
         JButton deletePostBtn = new JButton("삭제하기");
-        deletePostBtn.setBounds(400, 465, 70, 20);
+        deletePostBtn.setBounds(400, 440, 70, 20);
         deletePostBtn.setBackground(null);
         deletePostBtn.setBorder(null);
         deletePostBtn.setFont(frontSetting.f14);
@@ -194,9 +190,9 @@ public class ReadMorePost {
         });
 
         c.add(logoLabel);
-        c.add(titleArea);
-        c.add(infoArea1);
-        c.add(infoArea2);
+        c.add(title);
+        c.add(info);
+        c.add(contentArea);
         c.add(contentArea);
         c.add(modifyPostBtn);
         c.add(deletePostBtn);

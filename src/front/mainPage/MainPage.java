@@ -1,4 +1,4 @@
-package front.MainPage;
+package front.mainPage;
 
 import back.ResponseCode;
 import back.request.board.BoardInfoMoreRequest;
@@ -26,7 +26,7 @@ public class MainPage extends JFrame{
 
     private DefaultTableModel model;
     private JTable postTable = null;
-    JPanel centerPanel;
+    private JPanel centerPanel;
     private String uuid = null;
 
     public MainPage() {
@@ -211,7 +211,7 @@ public class MainPage extends JFrame{
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
                             BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
 
-                            new ReadMorePost(uuid, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
+                            new ReadMorePost(uuid, centerPanel, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
                         }

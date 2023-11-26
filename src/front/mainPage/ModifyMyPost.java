@@ -1,10 +1,8 @@
-package front.MainPage;
+package front.mainPage;
 
 import back.ResponseCode;
-import back.request.chatroom.JoinChatRoomRequest;
+import back.request.board.ModifyMyPostRequest;
 import back.response.board.BoardInfoMoreResponse;
-import back.response.chatroom.JoinChatRoomResponse;
-import front.ChatClient;
 import front.FrontSetting;
 import front.RoundedButton;
 
@@ -18,12 +16,16 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class ModifyMyPost extends MainPage{
+public class ModifyMyPost{
+    private JPanel centerPanel;
+    int port;
     BoardInfoMoreResponse boardInfoMoreResponse;
     FrontSetting fs = new FrontSetting();
 
-    public ModifyMyPost(BoardInfoMoreResponse boardInfoMoreResponse) {
+    public ModifyMyPost(JPanel centerPanel, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
+        this.centerPanel = centerPanel;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
+        this.port = port;
         modifyMyPost();
     }
     private void modifyMyPost() {  // 글 수정하기
@@ -40,12 +42,13 @@ public class ModifyMyPost extends MainPage{
         newPostLabel.setBounds(210, 20, 100, 40);
 
         JLabel titleLabel = new JLabel("  제목:");  // 제목 라벨
-        titleLabel.setBounds(20, 80, 80, 35);
+        titleLabel.setBounds(20, 80, 60, 35);
         titleLabel.setFont(fs.f18);
         titleLabel.setOpaque(true);
         titleLabel.setBackground(Color.WHITE);
 
         JTextField titleField = new JTextField();  // 제목 입력 필드
+        titleField.setText(boardInfoMoreResponse.title());
         titleField.setBounds(80, 80, 385, 35);
         titleField.setFont(fs.f18);
         titleField.setBorder(null);
@@ -59,7 +62,8 @@ public class ModifyMyPost extends MainPage{
         regionLabel.setFont(fs.f18);
 
         JComboBox regionField = new JComboBox(fs.regionArr);  // 지역 콤보 박스
-        regionField.setBounds(60, 3, 100, 30);
+        regionField.setSelectedItem(boardInfoMoreResponse.region());
+        regionField.setBounds(55, 3, 100, 30);
         regionField.setFont(fs.f16);
 
         JLabel categoryLabel = new JLabel("카테고리: ");  // 카테고리 라벨
@@ -67,18 +71,16 @@ public class ModifyMyPost extends MainPage{
         categoryLabel.setFont(fs.f18);
 
         JComboBox categoryField = new JComboBox(fs.categoryArr);  // 카테고리 콤보 박스
-        categoryField.setBounds(255, 3, 100, 30);
+        categoryField.setSelectedItem(boardInfoMoreResponse.category());
+        categoryField.setBounds(247, 3, 100, 30);
         categoryField.setFont(fs.f16);
 
-        JLabel peopleNumLabel = new JLabel("인원: ");  // 인원 수 라벨
-        peopleNumLabel.setBounds(365, 3, 50, 30);
+        JLabel peopleNumLabel = new JLabel("인원: " + boardInfoMoreResponse.peopleNum());  // 인원 수 라벨
+        peopleNumLabel.setBounds(362, 3, 100, 30);
         peopleNumLabel.setFont(fs.f18);
 
-        JTextField peopleNumField = new JTextField();
-        peopleNumField.setBounds(410, 3, 25, 30);
-        peopleNumField.setFont(fs.f18);
-
         JTextArea contentArea = new JTextArea(445, 250);  // 내용 작성 필드
+        contentArea.setText(boardInfoMoreResponse.content());
         contentArea.setFont(fs.f16);
 
         JScrollPane contentScroll = new JScrollPane(contentArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -86,7 +88,7 @@ public class ModifyMyPost extends MainPage{
         contentScroll.setBorder(null);
 
         RoundedButton modifyBtn = new RoundedButton("올리기");  // 수정 버튼
-        modifyBtn.setBounds(200, 480, 90, 50);
+        modifyBtn.setBounds(200, 470, 90, 50);
         modifyBtn.setFont(fs.fb16);
 
         modifyBtn.addActionListener(new ActionListener() {  // 수정 버튼 클릭 시
@@ -95,14 +97,33 @@ public class ModifyMyPost extends MainPage{
                 String title = titleField.getText();
                 String region = (String) regionField.getSelectedItem();
                 String category = (String) categoryField.getSelectedItem();
-                String peopleNum = peopleNumField.getText();
                 String content = contentArea.getText();
 
-                if(modifyErrorCheck(title, region, category, peopleNum, content)) { // 오류 검출 후 DB 넘기기
-                    System.out.println("수정: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");
+                if(modifyErrorCheck(title, region, category, content)) { // 오류 검출 후 DB 넘기기
+                    System.out.println("수정: [" + title + ", " + region + ", " + category + ", " + content + "]");
 
-                    modifyFrame.dispose();
-                    setSuccessPopUpFrame();
+                    try (Socket clientSocket = new Socket("localhost", 1025);
+                         OutputStream outputStream = clientSocket.getOutputStream();
+                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                         InputStream inputStream = clientSocket.getInputStream();
+                         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+                    ){
+                        ModifyMyPostRequest modifyMyPostRequest = new ModifyMyPostRequest(port, title, region, category, content);
+
+                        objectOutputStream.writeObject(modifyMyPostRequest);
+
+                        ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+                        if (responseCode.getKey() == ResponseCode.MODIFY_MY_BOARD_SUCCESS.getKey()) {
+//                            수정 성공 GUI
+                            modifyFrame.dispose();
+                            setSuccessPopUpFrame();
+                        } else {
+                            fs.showErrorDialog(responseCode.getValue());
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
             }
         });
@@ -116,34 +137,24 @@ public class ModifyMyPost extends MainPage{
         whitePanel.add(categoryLabel);
         whitePanel.add(categoryField);
         whitePanel.add(peopleNumLabel);
-        whitePanel.add(peopleNumField);
         c.add(contentScroll);
         c.add(modifyBtn);
 
         modifyFrame.setVisible(true);
     }
 
-    private boolean modifyErrorCheck(String title, String region, String category, String peopleNum, String content) {  // 빈칸 있는 지 확인 후 올리기
-        System.out.println("오류 검사: [" + title + ", " + region + ", " + category + ", " + peopleNum + ", " + content + "]");  // 테스트
+    private boolean modifyErrorCheck(String title, String region, String category, String content) {  // 빈칸 있는 지 확인 후 올리기
+        System.out.println("오류 검사: [" + title + ", " + region + ", " + category + ", " + content + "]");  // 테스트
 
         boolean checkBlank = false;  // 빈 칸 & 공백 확인
-        boolean checkPeopleNum = false;  // 인원 수 입력 조건 확인
 
         if (title.isBlank()) fs.showErrorDialog("제목을 입력해주세요.");
         else if (region.equals(" --")) fs.showErrorDialog("지역을 선택해주세요.");
         else if (category.equals(" --")) fs.showErrorDialog("카테고리를 선택해주세요.");
-        else if (peopleNum.isBlank()) fs.showErrorDialog("인원 수를 입력해주세요.");
         else if (content.isBlank()) fs.showErrorDialog("내용을 입력해주세요.");
-        else {
-            try {
-                if (Integer.parseInt(peopleNum) > 30) fs.showErrorDialog("인원은 30명까지 입력 가능합니다.");
-                else if (Integer.parseInt(peopleNum) <= 1) fs.showErrorDialog("인원은 2명부터 입력 가능합니다.");
-                else checkPeopleNum = true;
-            } catch (NumberFormatException e) { fs.showErrorDialog("인원은 숫자만 입력 가능합니다."); }
-            checkBlank = true;
-        }
+        else checkBlank = true;
 
-        if(checkBlank && checkPeopleNum) return true;  // 마지막 오류 검출
+        if(checkBlank) return true;  // 마지막 오류 검출
         else return false;
     }
 

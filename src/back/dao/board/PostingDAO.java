@@ -10,24 +10,25 @@ import java.sql.ResultSet;
 public class PostingDAO {
     Connection conn = null;
     PreparedStatement pt = null;
-    ResultSet rs = null;
 
-    public void posting(PostBoardRequest Post_BoardInfo, int port) {
-        conn = DBConnector.getConnection();
+    public boolean posting(PostBoardRequest postBoardRequest, int port) {
+        boolean isPosted = false;
         String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
+            conn = DBConnector.getConnection();
             pt = conn.prepareStatement(insertSQL);
-            pt.setString(1, Post_BoardInfo.title());
-            pt.setString(2, Post_BoardInfo.region());
-            pt.setString(3, Post_BoardInfo.category());
-            pt.setString(4, Post_BoardInfo.peopleNum());
-            pt.setString(5, Post_BoardInfo.content());
-            pt.setString(6, Post_BoardInfo.uuid());
+            pt.setString(1, postBoardRequest.title());
+            pt.setString(2, postBoardRequest.region());
+            pt.setString(3, postBoardRequest.category());
+            pt.setString(4, postBoardRequest.peopleNum());
+            pt.setString(5, postBoardRequest.content());
+            pt.setString(6, postBoardRequest.uuid());
             pt.setInt(7, 0);
             pt.setInt(8, 1);
             pt.setInt(9, port);
 
             if (!pt.execute()) {
+                isPosted = true;
                 System.out.println("게시 성공.");
             }
             pt.close();
@@ -36,5 +37,6 @@ public class PostingDAO {
             System.out.println("게시 실패.");
             e.printStackTrace();
         }
+        return isPosted;
     }
 }
