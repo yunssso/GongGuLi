@@ -75,12 +75,6 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-        } finally {
-            try {
-                objectInputStream.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         }
     }
 
