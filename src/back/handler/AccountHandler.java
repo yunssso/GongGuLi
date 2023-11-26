@@ -28,6 +28,12 @@ public class AccountHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (IOException exception) {
             exception.printStackTrace();
+
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
         }
 	}
 
@@ -49,7 +55,7 @@ public class AccountHandler extends Thread {
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
-		} finally {
+
 			try {
 				objectInputStream.close();
 			} catch (IOException ioException) {

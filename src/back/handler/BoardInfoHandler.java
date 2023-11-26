@@ -27,7 +27,7 @@ public class BoardInfoHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
-        } finally {
+
             try {
                 objectInputStream.close();
             } catch (IOException ioException) {
@@ -51,12 +51,12 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             //exception.printStackTrace(); <- 여기서 계속 이상한 버그 터지는데 무시해도 될 듯
-        } finally {
-            try {
+
+            /*try {
                 objectInputStream.close();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -75,6 +75,12 @@ public class BoardInfoHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
