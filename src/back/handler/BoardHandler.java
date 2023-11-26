@@ -27,6 +27,12 @@ public class BoardHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
+
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -45,7 +51,7 @@ public class BoardHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-        } finally {
+
             try {
                 objectInputStream.close();
             } catch (IOException ioException) {

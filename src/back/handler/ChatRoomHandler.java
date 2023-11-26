@@ -8,10 +8,7 @@ import back.request.chatroom.JoinChatRoomRequest;
 import back.response.chatroom.GetChattingRoomResponse;
 import back.response.chatroom.JoinChatRoomResponse;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
@@ -21,7 +18,6 @@ public class ChatRoomHandler extends Thread {
 
     public ChatRoomHandler(Socket clientSocket) {
         try {
-
             InputStream inputStream = clientSocket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
@@ -29,6 +25,12 @@ public class ChatRoomHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
+
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -44,6 +46,12 @@ public class ChatRoomHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -63,6 +71,12 @@ public class ChatRoomHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -81,6 +95,12 @@ public class ChatRoomHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 }
