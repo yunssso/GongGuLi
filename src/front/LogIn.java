@@ -48,7 +48,7 @@ public class LogIn extends JFrame {
         leftPanel.setBounds(0, 0, 560, 700);
         leftPanel.setBackground(c1);
 
-        ImageIcon imageIcon = new ImageIcon("C:\\Users\\user\\Desktop\\찐공구리.png");
+        ImageIcon imageIcon = new ImageIcon("img/logo.png");
         Image image = imageIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(image);
 

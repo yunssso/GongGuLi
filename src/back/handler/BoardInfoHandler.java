@@ -27,6 +27,7 @@ public class BoardInfoHandler extends Thread {
             objectOutputStream = new ObjectOutputStream(outputStream);
         } catch (Exception exception) {
             exception.printStackTrace();
+
             try {
                 objectInputStream.close();
             } catch (IOException ioException) {
