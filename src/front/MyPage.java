@@ -4,6 +4,7 @@ import back.dao.CheckDAO;
 import back.UserDTO;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.mypage.MyBoardInfoMoreResponse;
+import front.MainPage.MainPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,8 +53,7 @@ public class MyPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-//                MainPage lf = new MainPage(userDTO);
-//                lf.setListFrame();
+                new MainPage(uuid);
             }
         });
 

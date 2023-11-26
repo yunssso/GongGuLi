@@ -23,12 +23,13 @@ public class ReadMorePost {
     private String uuid = null;
     private JTable t;
     private BoardInfoMoreResponse boardInfoMoreResponse;
-    private int port = boardInfoMoreResponse.port();
+    private int port = 0;
 
     public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
+        this.port = boardInfoMoreResponse.port();
         if (boardInfoMoreResponse.authority()) {
             readMoreMyPost();
         } else {
