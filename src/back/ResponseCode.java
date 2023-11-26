@@ -33,8 +33,8 @@ public enum ResponseCode {
 
     // COMMON BOARD
 
-    // POST BOARD
-    POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
+                                                                                                                                                                                // POST BOARD
+                                                                                                                                                                                POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
     TITLE_MISSING(301, "제목을 입력해주세요."),
     REGION_NOT_SELECTED(302, "지역을 선택해주세요."),
     CATEGORY_NOT_SELECTED(303, "카테고리를 선택해주세요."),

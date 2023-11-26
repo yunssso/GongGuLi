@@ -72,8 +72,6 @@ public class ChattingList {
                 java.util.List<GetChattingRoomResponse> getChattingRoomResponse = (List<GetChattingRoomResponse>) objectInputStream.readObject();
 
                 setChattingRoomListDB(getChattingRoomResponse);
-
-                System.out.println(fs.getmainPageDB());
             } else { // 채팅방 목록 갱신 실패
                 fs.showErrorDialog(responseCode.getValue());
             }

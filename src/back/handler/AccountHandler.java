@@ -52,7 +52,6 @@ public class AccountHandler extends Thread {
 			} else if (readObj instanceof FindUserPasswordRequest findUserPasswordRequest) {
 				FindUserPasswordMethod(findUserPasswordRequest);
 			}
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 

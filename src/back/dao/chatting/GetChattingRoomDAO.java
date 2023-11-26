@@ -57,7 +57,7 @@ public class GetChattingRoomDAO {
         List portList = new ArrayList();
         try {
             conn = DBConnector.getConnection();
-            String selectSQL = "SELECT port FROM chattingMember WHERE uuid = ?";
+            String selectSQL = "SELECT port FROM chattingMember WHERE memberUuid = ?";
             pt = conn.prepareStatement(selectSQL);
             pt.setString(1, uuid);
             rs = pt.executeQuery();
