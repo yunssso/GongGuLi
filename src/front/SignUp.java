@@ -206,7 +206,7 @@ public class SignUp extends JDialog{
 
     private void setBackButton() {
         // 이미지 아이콘 생성
-        ImageIcon backButtonIcon = new ImageIcon("C:\\Users\\user\\Desktop\\뒤로가기.png");
+        ImageIcon backButtonIcon = new ImageIcon("img/뒤로가기.png");
 
         //원본 이미지 가져오기
         JLabel backButtonLabel = new JLabel(backButtonIcon);

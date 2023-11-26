@@ -34,6 +34,7 @@ public class ChatRoomHandler extends Thread {
         }
     }
 
+    /*사용자의 Request를 받는 메소드*/
     @Override
     public void run() {
         try {
@@ -55,17 +56,17 @@ public class ChatRoomHandler extends Thread {
         }
     }
 
-    /*채팅방 입장을 수행하는 메소드*/
+    /*채팅방 입장 Response를 보내는 메소드*/
     private void joinChatRoomMethod(JoinChatRoomRequest joinChatRoomRequest) {
         try {
             GetInfoDAO getInfoDAO = new GetInfoDAO();
 
             String nickName = getInfoDAO.getnickNameMethod(joinChatRoomRequest.uuid());
-            int chatPort = getInfoDAO.getchatPortMethod(joinChatRoomRequest.selectRow());
+            int port = joinChatRoomRequest.port();
 
-            if (chatPort != -1) {
+            if (port != -1) {
                 objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
-                objectOutputStream.writeObject(new JoinChatRoomResponse(nickName, chatPort));
+                objectOutputStream.writeObject(new JoinChatRoomResponse(nickName, port));
             } else {
                 objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
             }
@@ -80,7 +81,7 @@ public class ChatRoomHandler extends Thread {
         }
     }
 
-    /*사용자가 들어있는 채팅방 목록*/
+    /*채팅방 목록 갱신 Response를 보내는 메소드*/
     private void getChattingRoomMethod(GetChattingRoomRequest getChattingRoomRequest) {
         try {
             GetChattingRoomDAO getChattingRoomDAO = new GetChattingRoomDAO();
