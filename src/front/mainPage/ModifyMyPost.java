@@ -17,17 +17,16 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ModifyMyPost{
-    private JPanel centerPanel;
     int port;
     BoardInfoMoreResponse boardInfoMoreResponse;
     FrontSetting fs = new FrontSetting();
 
-    public ModifyMyPost(JPanel centerPanel, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
-        this.centerPanel = centerPanel;
+    public ModifyMyPost(int port, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = port;
         modifyMyPost();
     }
+
     private void modifyMyPost() {  // 글 수정하기
         JFrame modifyFrame = new JFrame("수정하기");   // 수정 프레임
         modifyFrame.setSize(500, 600);
@@ -180,8 +179,6 @@ public class ModifyMyPost{
             @Override
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
-                centerPanel.revalidate();
-                centerPanel.repaint();
                 System.out.println("수정완");  // 수정 필요함
             }
         });

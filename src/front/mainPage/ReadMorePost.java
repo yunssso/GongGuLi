@@ -20,15 +20,13 @@ import java.net.Socket;
 
 public class ReadMorePost {
     FrontSetting frontSetting = new FrontSetting();
-    private String uuid = null;
-    private JPanel centerPanel;
+    private String uuid;
     private JTable t;
     private BoardInfoMoreResponse boardInfoMoreResponse;
     private int port = 0;
 
-    public ReadMorePost(String uuid, JPanel centerPanel, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
+    public ReadMorePost(String uuid, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
-        this.centerPanel = centerPanel;
         this.t = t;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = boardInfoMoreResponse.port();
@@ -167,7 +165,7 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost(centerPanel, port, boardInfoMoreResponse);
+                new ModifyMyPost(port, boardInfoMoreResponse);
             }
         });
 
