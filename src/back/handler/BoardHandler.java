@@ -75,14 +75,14 @@ public class BoardHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.REGION_NOT_SELECTED);
             } else if (postBoardRequest.category().equals(" --")) {
                 objectOutputStream.writeObject(ResponseCode.CATEGORY_NOT_SELECTED);
-            } else if (postBoardRequest.peopleNum().isBlank()) {
+            } else if (postBoardRequest.maxPeopleNum().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_MISSING);
             } else if (postBoardRequest.content().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.CONTENT_MISSING);
             } else {
-                if (Integer.parseInt(postBoardRequest.peopleNum()) > 30) {
+                if (Integer.parseInt(postBoardRequest.maxPeopleNum()) > 30) {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_OVER_LIMIT);
-                } else if (Integer.parseInt(postBoardRequest.peopleNum()) <= 1) {
+                } else if (Integer.parseInt(postBoardRequest.maxPeopleNum()) <= 1) {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
                     int port = joinChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.

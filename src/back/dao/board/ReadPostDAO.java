@@ -32,7 +32,7 @@ public class ReadPostDAO {
             ResultSet rs1 = pt.executeQuery();
 
             if (rs1.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
+                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
 
                 BoardInfoMoreResponse boardInfoMoreResponse = new BoardInfoMoreResponse(
                         rs.getInt("port"),
@@ -74,7 +74,7 @@ public class ReadPostDAO {
         pt.setInt(1, selectRow);
         rs = pt.executeQuery();
         if (rs.next()) {
-            String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("peopleNum");
+            String peoplenum = rs.getInt("nowPeopleNum") +"/"+ rs.getString("maxPeopleNum");
 
             MyBoardInfoMoreResponse myBoardInfoMoreResponse = new MyBoardInfoMoreResponse(
                     rs.getInt("port"),

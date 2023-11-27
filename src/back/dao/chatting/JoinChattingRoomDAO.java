@@ -1,6 +1,6 @@
 package back.dao.chatting;
 
-import back.ChatServer;
+import serverStructure.ChatServer;
 
 import java.net.ServerSocket;
 import java.util.Random;

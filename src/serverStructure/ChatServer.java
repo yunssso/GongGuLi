@@ -1,4 +1,4 @@
-package back;
+package serverStructure;
 
 import back.handler.ChatServerHandler;
 
