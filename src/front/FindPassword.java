@@ -30,58 +30,63 @@ class FindPassword extends JDialog {
         setSize(400, 300);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parentFrame); // 부모 프레임 중앙에 표시
+        setResizable(false);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBackground(c1);
 
         // 이름 입력 필드
-        JLabel nameLabel = new JLabel("이름:");
-        nameLabel.setBounds(30, 20, 100, 30);
+        JLabel nameLabel = new JLabel("이름");
+        nameLabel.setBounds(30, 30, 100, 30);
         panel.add(nameLabel);
         nameLabel.setFont(f1);
+        nameLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         nameText = new JTextField(20);
-        nameText.setBounds(150, 20, 200, 30);
+        nameText.setBounds(160, 30, 180, 30);
         panel.add(nameText);
         nameText.setFont(f2);
 
         // 아이디 입력 필드
-        JLabel idLabel = new JLabel("아이디:");
+        JLabel idLabel = new JLabel("아이디");
         idLabel.setBounds(30, 70, 100, 30);
         panel.add(idLabel);
         idLabel.setFont(f1);
+        idLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         idText = new JTextField(20);
-        idText.setBounds(150, 70, 200, 30);
+        idText.setBounds(160, 70, 180, 30);
         panel.add(idText);
         idText.setFont(f2);
 
         // 생년월일 입력 필드
-        JLabel birthLabel = new JLabel("생년월일:");
-        birthLabel.setBounds(30, 120, 100, 30);
+        JLabel birthLabel = new JLabel("생년월일");
+        birthLabel.setBounds(30, 110, 100, 30);
         panel.add(birthLabel);
         birthLabel.setFont(f1);
+        birthLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         birthText = new JTextField(20);
-        birthText.setBounds(150, 120, 200, 30);
+        birthText.setBounds(160, 110, 180, 30);
         panel.add(birthText);
         birthText.setFont(f2);
 
         // 핸드폰 번호 입력 필드
-        JLabel phoneNumberLabel = new JLabel("핸드폰 번호:");
-        phoneNumberLabel.setBounds(30, 170, 100, 30);
+        JLabel phoneNumberLabel = new JLabel("핸드폰 번호");
+        phoneNumberLabel.setBounds(30, 150, 100, 30);
         panel.add(phoneNumberLabel);
         phoneNumberLabel.setFont(f1);
+        phoneNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         phoneNumberText = new JTextField(20);
-        phoneNumberText.setBounds(150, 170, 200, 30);
+        phoneNumberText.setBounds(160, 150, 180, 30);
         panel.add(phoneNumberText);
         phoneNumberText.setFont(f2);
 
         //비밀번호 찾기 버튼
         JButton FindpwButton = new RoundedButton("비밀번호 찾기");
-        FindpwButton.setBounds(30, 220, 150, 30);
+        FindpwButton.setBounds(208, 200, 130, 30);
         panel.add(FindpwButton);
         FindpwButton.setFont(f1);
 

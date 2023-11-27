@@ -6,6 +6,7 @@ import back.request.board.BoardInfoRequest;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.board.BoardInfoResponse;
 import front.*;
+import front.myPage.MyPage;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,6 +29,8 @@ public class MainPage extends JFrame{
     private JTable postTable = null;
     private JPanel centerPanel;
     private String uuid = null;
+
+    private JFrame mainFrame = this;
 
     public MainPage() {
 
@@ -142,6 +145,7 @@ public class MainPage extends JFrame{
         leftPanel.add(categoryLabel);
         leftPanel.add(regionBtn);
         leftPanel.add(categoryBtn);
+
     }
 
     /*게시글 패널*/
@@ -159,15 +163,31 @@ public class MainPage extends JFrame{
         searchBtn.setBorder(null);
         searchBtn.setBounds(702, 40, 30, 30 );
 
-        String searchFilter[] =  {"제목", "작성자"};
+        String searchFilter[] = {"제목", "작성자"};
         JComboBox searchFilterBox = new JComboBox(searchFilter);
         searchFilterBox.setBounds(460, 40, 80, 30);
 
+        // 검색창 엔터 이벤트
+        searchField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                System.out.println(searchField.getText());
+            }
+        });
         /*검색창에 입력 후 검색 버튼 누르면 텍스트 출력*/
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(searchField.getText());
+            }
+        });
+
+
+        // 제목/작성자 검색 필터
+        searchField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
 
@@ -183,7 +203,6 @@ public class MainPage extends JFrame{
         };
         frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);  // postTable 세팅
 
-//        자세히 보기
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -205,8 +224,8 @@ public class MainPage extends JFrame{
 
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
                             BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
-
-                            new ReadMorePost(uuid, postTable, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
+                            boolean isMainFrame = true;
+                            new ReadMorePost(isMainFrame, uuid, mainFrame, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
                         }
@@ -248,6 +267,7 @@ public class MainPage extends JFrame{
 
         add(rightPanel);
     }
+
     public void refreshTable() {
         getBoardInfoMethod();
         model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
