@@ -1,10 +1,10 @@
-package front.mainPage;
+package front;
 
 import back.ResponseCode;
 import back.request.board.ModifyMyPostRequest;
 import back.response.board.BoardInfoMoreResponse;
-import front.FrontSetting;
-import front.RoundedButton;
+import front.mainPage.MainPage;
+import front.myPage.MyPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +17,29 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ModifyMyPost{
+
+    private FrontSetting fs = new FrontSetting();
     int port;
     BoardInfoMoreResponse boardInfoMoreResponse;
-    FrontSetting fs = new FrontSetting();
 
-    public ModifyMyPost(int port, BoardInfoMoreResponse boardInfoMoreResponse) {
+    private String uuid;
+    private JFrame frame;
+    private boolean isMainFrame;
+
+    public ModifyMyPost(JFrame myFrame, String uuid, BoardInfoMoreResponse boardInfoMoreResponse) {
+        this.frame = myFrame;
+        this.uuid = uuid;
+        this.isMainFrame = false;
+        this.boardInfoMoreResponse = boardInfoMoreResponse;
+        modifyMyPost();
+    }
+
+    public ModifyMyPost(JFrame mainframe, String uuid, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
+        this.frame = mainframe;
+        this.uuid = uuid;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = port;
+        this.isMainFrame = true;
         modifyMyPost();
     }
 
@@ -114,9 +130,15 @@ public class ModifyMyPost{
                         ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.MODIFY_MY_BOARD_SUCCESS.getKey()) {
-//                            수정 성공 GUI
+                            frame.dispose();
+                            if(isMainFrame) new MainPage(uuid);
+                            else new MyPage(uuid);
+
                             modifyFrame.dispose();
+
                             setSuccessPopUpFrame();
+
+                            System.out.println("수정완");
                         } else {
                             fs.showErrorDialog(responseCode.getValue());
                         }
@@ -179,10 +201,8 @@ public class ModifyMyPost{
             @Override
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
-                System.out.println("수정완");  // 수정 필요함
             }
         });
-
         c.add(successLabel);
         c.add(okBtn);
 
