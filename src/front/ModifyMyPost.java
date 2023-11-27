@@ -5,6 +5,7 @@ import back.request.board.ModifyMyPostRequest;
 import back.response.board.BoardInfoMoreResponse;
 import front.FrontSetting;
 import front.RoundedButton;
+import front.myPage.MyPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,15 +18,28 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class ModifyMyPost{
-    private JPanel centerPanel;
+
+    private FrontSetting fs = new FrontSetting();
     int port;
     BoardInfoMoreResponse boardInfoMoreResponse;
-    FrontSetting fs = new FrontSetting();
 
-    public ModifyMyPost(JPanel centerPanel, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
-        this.centerPanel = centerPanel;
+    private String uuid;
+    private JFrame frame;
+    private boolean isMainframe;
+
+    public ModifyMyPost(JFrame myFrame, String uuid) {
+        this.frame = myFrame;
+        this.uuid = uuid;
+        this.isMainframe = false;
+        modifyMyPost();
+    }
+
+    public ModifyMyPost(JFrame frame, String uuid, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
+        this.frame = frame;
+        this.uuid = uuid;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = port;
+        this.isMainframe = true;
         modifyMyPost();
     }
     private void modifyMyPost() {  // 글 수정하기
@@ -115,9 +129,15 @@ public class ModifyMyPost{
                         ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.MODIFY_MY_BOARD_SUCCESS.getKey()) {
-//                            수정 성공 GUI
+                            frame.dispose();
+                            if(isMainframe)  new MainPage(uuid);
+                            else new MyPage(uuid);
+
                             modifyFrame.dispose();
+
                             setSuccessPopUpFrame();
+
+                            System.out.println("수정완");
                         } else {
                             fs.showErrorDialog(responseCode.getValue());
                         }
@@ -180,12 +200,8 @@ public class ModifyMyPost{
             @Override
             public void actionPerformed(ActionEvent e) {
                 notifyFrame.dispose();
-                centerPanel.revalidate();
-                centerPanel.repaint();
-                System.out.println("수정완");  // 수정 필요함
             }
         });
-
         c.add(successLabel);
         c.add(okBtn);
 

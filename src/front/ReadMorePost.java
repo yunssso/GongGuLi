@@ -1,6 +1,7 @@
 package front.mainPage;
 
 import back.ResponseCode;
+import back.request.board.DeleteBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.chatroom.JoinChatRoomResponse;
@@ -21,15 +22,15 @@ import java.net.Socket;
 public class ReadMorePost {
     FrontSetting frontSetting = new FrontSetting();
     private String uuid = null;
-    private JPanel centerPanel;
-    private JTable t;
+
     private BoardInfoMoreResponse boardInfoMoreResponse;
     private int port = 0;
 
-    public ReadMorePost(String uuid, JPanel centerPanel, JTable t, BoardInfoMoreResponse boardInfoMoreResponse) {
+    private JFrame mainFrame;
+
+    public ReadMorePost(String uuid, JFrame mainFrame, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
-        this.centerPanel = centerPanel;
-        this.t = t;
+        this.mainFrame = mainFrame;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = boardInfoMoreResponse.port();
         if (boardInfoMoreResponse.authority()) {
@@ -167,7 +168,7 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost(centerPanel, port, boardInfoMoreResponse);
+                new ModifyMyPost(mainFrame, uuid, port, boardInfoMoreResponse);
             }
         });
 
@@ -184,7 +185,26 @@ public class ReadMorePost {
             public void actionPerformed(ActionEvent e) {
                 int answer = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
-                    System.out.println("삭제");
+                    try (Socket clientSocket = new Socket("localhost", 1025);
+                         OutputStream outputStream = clientSocket.getOutputStream();
+                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                         InputStream inputStream = clientSocket.getInputStream();
+                         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+                    ){
+                        DeleteBoardRequest deleteBoardRequest = new DeleteBoardRequest(port);
+                        objectOutputStream.writeObject(deleteBoardRequest);
+
+                        ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+                        if (responseCode.getKey() == ResponseCode.DELETE_MY_BOARD_SUCCESS.getKey()) {
+//                            삭제 완료 GUI
+                            System.out.println("삭제완");
+                        } else {
+                            frontSetting.showErrorDialog(responseCode.getValue());
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 } else System.out.println("삭제 안함");
             }
         });
