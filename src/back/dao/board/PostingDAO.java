@@ -13,14 +13,14 @@ public class PostingDAO {
 
     public boolean posting(PostBoardRequest postBoardRequest, int port) {
         boolean isPosted = false;
-        String insertSQL = "INSERT INTO board(title, region, category, peopleNum, content, uuid, view, nowPeopleNum, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO board(title, region, category, maxPeopleNum, content, uuid, view, nowPeopleNum, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = DBConnector.getConnection();
             pt = conn.prepareStatement(insertSQL);
             pt.setString(1, postBoardRequest.title());
             pt.setString(2, postBoardRequest.region());
             pt.setString(3, postBoardRequest.category());
-            pt.setString(4, postBoardRequest.peopleNum());
+            pt.setString(4, postBoardRequest.maxPeopleNum());
             pt.setString(5, postBoardRequest.content());
             pt.setString(6, postBoardRequest.uuid());
             pt.setInt(7, 0);

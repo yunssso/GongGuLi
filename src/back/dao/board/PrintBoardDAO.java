@@ -46,7 +46,7 @@ public class PrintBoardDAO {
             String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?";
 
             while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
+                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
 
                 PreparedStatement pt1 = conn.prepareStatement(nickNameSQL);
                 pt1.setString(1, rs.getString("uuid"));
@@ -87,7 +87,7 @@ public class PrintBoardDAO {
             pt.setString(1, userDTO.getNickName());
             rs = pt.executeQuery();
             while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
+                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
 
                 /*BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs.getString("title"));
@@ -131,7 +131,7 @@ public class PrintBoardDAO {
             pt.setString(1, userDTO.getNickName());
             rs = pt.executeQuery();
             while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
+                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
 
                 /*BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setTitle(rs.getString("title"));

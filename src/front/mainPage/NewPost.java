@@ -101,12 +101,12 @@ public class NewPost extends JFrame{
                     String title = titleField.getText();
                     String region = (String) regionField.getSelectedItem();
                     String category = (String) categoryField.getSelectedItem();
-                    String peopleNum = peopleNumField.getText();
+                    String maxPeopleNum = peopleNumField.getText();
                     String content = contentArea.getText();
 
-                    PostBoardRequest Post_BoardInfo = new PostBoardRequest(title, region, category, peopleNum, content, uuid);
+                    PostBoardRequest PostBoardRequest = new PostBoardRequest(title, region, category, maxPeopleNum, content, uuid);
 
-                    objectOutputStream.writeObject(Post_BoardInfo);
+                    objectOutputStream.writeObject(PostBoardRequest);
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
@@ -115,6 +115,8 @@ public class NewPost extends JFrame{
                         new MainPage(uuid);
                         setSuccessPopUpFrame(" 글 작성 성공");
 
+//                        여기서 게시글을 만들때 할당 된 포트값을 받아와야 되는데 1시간동안 막 바꿔보다 안돼서 포기함
+//                        건우건우야 부탁해
                         objectOutputStream.writeObject(new JoinChatRoomRequest(0, uuid));
 
                         responseCode = (ResponseCode) objectInputStream.readObject();
