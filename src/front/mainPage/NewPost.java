@@ -21,9 +21,9 @@ public class NewPost extends JFrame{
     private JFrame mainFrame;
 
 
-    public NewPost(String uuid, JFrame frame) {
+    public NewPost(String uuid, JFrame mainframe) {
         this.uuid = uuid;
-        this.mainFrame = frame;
+        this.mainFrame = mainframe;
         setPosting(uuid);
     }
     private void setPosting(String uuid) {

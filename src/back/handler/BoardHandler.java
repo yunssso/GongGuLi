@@ -1,6 +1,7 @@
 package back.handler;
 
 import back.ResponseCode;
+import back.dao.board.DeleteBoardDAO;
 import back.dao.board.ModifyMyPostDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.dao.board.PostingDAO;
@@ -125,7 +126,7 @@ public class BoardHandler extends Thread {
         }
     }
 
-    /*게시글 수정 Response를 보내는 메소드*/
+    /*게시글을 수정하는 메소드*/
     private void modifyMyPostMethod(ModifyMyPostRequest modifyMyPostRequest) {
         try {
             ModifyMyPostDAO modifyMyPostDAO = new ModifyMyPostDAO();
@@ -140,8 +141,18 @@ public class BoardHandler extends Thread {
         }
     }
 
-    /*게시글 삭제 Reponse를 보내는 메소드*/
+    /*게시글을 삭제하는 메소드*/
     private void deleteBoardMethod(DeleteBoardRequest deleteBoardRequest) {
-
+        try {
+            DeleteBoardDAO deleteBoardDAO = new DeleteBoardDAO();
+            boolean isDeleted = deleteBoardDAO.deleteBoardMethod(deleteBoardRequest.port());
+            if (isDeleted) {
+                objectOutputStream.writeObject(ResponseCode.DELETE_MY_BOARD_SUCCESS);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

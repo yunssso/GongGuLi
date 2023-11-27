@@ -1,10 +1,9 @@
-package front.mainPage;
+package front;
 
 import back.ResponseCode;
 import back.request.board.ModifyMyPostRequest;
 import back.response.board.BoardInfoMoreResponse;
-import front.FrontSetting;
-import front.RoundedButton;
+import front.mainPage.MainPage;
 import front.myPage.MyPage;
 
 import javax.swing.*;
@@ -25,23 +24,25 @@ public class ModifyMyPost{
 
     private String uuid;
     private JFrame frame;
-    private boolean isMainframe;
+    private boolean isMainFrame;
 
-    public ModifyMyPost(JFrame myFrame, String uuid) {
+    public ModifyMyPost(JFrame myFrame, String uuid, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.frame = myFrame;
         this.uuid = uuid;
-        this.isMainframe = false;
+        this.isMainFrame = false;
+        this.boardInfoMoreResponse = boardInfoMoreResponse;
         modifyMyPost();
     }
 
-    public ModifyMyPost(JFrame frame, String uuid, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
-        this.frame = frame;
+    public ModifyMyPost(JFrame mainframe, String uuid, int port, BoardInfoMoreResponse boardInfoMoreResponse) {
+        this.frame = mainframe;
         this.uuid = uuid;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = port;
-        this.isMainframe = true;
+        this.isMainFrame = true;
         modifyMyPost();
     }
+
     private void modifyMyPost() {  // 글 수정하기
         JFrame modifyFrame = new JFrame("수정하기");   // 수정 프레임
         modifyFrame.setSize(500, 600);
@@ -130,7 +131,7 @@ public class ModifyMyPost{
 
                         if (responseCode.getKey() == ResponseCode.MODIFY_MY_BOARD_SUCCESS.getKey()) {
                             frame.dispose();
-                            if(isMainframe)  new MainPage(uuid);
+                            if(isMainFrame) new MainPage(uuid);
                             else new MyPage(uuid);
 
                             modifyFrame.dispose();

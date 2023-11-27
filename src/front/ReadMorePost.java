@@ -1,13 +1,12 @@
-package front.mainPage;
+package front;
 
 import back.ResponseCode;
 import back.request.board.DeleteBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.chatroom.JoinChatRoomResponse;
-import front.ChatClient;
-import front.FrontSetting;
-import front.RoundedButton;
+import front.mainPage.MainPage;
+import front.myPage.MyPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,11 +25,15 @@ public class ReadMorePost {
     private BoardInfoMoreResponse boardInfoMoreResponse;
     private int port = 0;
 
-    private JFrame mainFrame;
+    private JFrame frame;
+    private JFrame readMoreFrame;
+    private boolean isMainFrame;
 
-    public ReadMorePost(String uuid, JFrame mainFrame, BoardInfoMoreResponse boardInfoMoreResponse) {
+
+    public ReadMorePost(boolean isMainFrame, String uuid, JFrame frame, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
-        this.mainFrame = mainFrame;
+        this.frame = frame;
+        this.isMainFrame = isMainFrame;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = boardInfoMoreResponse.port();
         if (boardInfoMoreResponse.authority()) {
@@ -123,7 +126,7 @@ public class ReadMorePost {
 
     /*테이블 값 더블 클릭 시 자세히보기(작성자 본인)*/
     public void readMoreMyPost() {
-        JFrame readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
+        readMoreFrame = new JFrame(boardInfoMoreResponse.title());  // 자세히보기 팝업창 프레임
         readMoreFrame.setSize(500, 600);
         frontSetting.FrameSetting(readMoreFrame);
 
@@ -168,11 +171,12 @@ public class ReadMorePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
-                new ModifyMyPost(mainFrame, uuid, port, boardInfoMoreResponse);
+                if (isMainFrame) new ModifyMyPost(frame, uuid, port, boardInfoMoreResponse);
+                else new ModifyMyPost(frame, uuid, boardInfoMoreResponse);
             }
         });
 
-//        게시글 삭제
+        // 게시글 삭제
         JButton deletePostBtn = new JButton("삭제하기");
         deletePostBtn.setBounds(400, 440, 70, 20);
         deletePostBtn.setBackground(null);
@@ -180,6 +184,7 @@ public class ReadMorePost {
         deletePostBtn.setFont(frontSetting.f14);
         deletePostBtn.setForeground(frontSetting.c3);
 
+        // 게시글 삭제 기능
         deletePostBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -199,6 +204,10 @@ public class ReadMorePost {
                         if (responseCode.getKey() == ResponseCode.DELETE_MY_BOARD_SUCCESS.getKey()) {
 //                            삭제 완료 GUI
                             System.out.println("삭제완");
+                            readMoreFrame.dispose();
+                            frame.dispose();
+                            if(isMainFrame)  new MainPage(uuid);
+                            else new MyPage(uuid);
                         } else {
                             frontSetting.showErrorDialog(responseCode.getValue());
                         }

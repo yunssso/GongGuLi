@@ -70,10 +70,11 @@ public class LogIn extends JFrame {
         add(panel);
 
         // 아이디 입력 필드
-        JLabel idLabel = new JLabel("아이디:");
-        idLabel.setBounds(600, 365, 100, 30);
+        JLabel idLabel = new JLabel("아이디");
+        idLabel.setBounds(600, 365, 80, 30);
         panel.add(idLabel);
         idLabel.setFont(f1);
+        idLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         idText = new JTextField(20);
         idText.setBounds(700, 365, 200, 30);
@@ -81,10 +82,11 @@ public class LogIn extends JFrame {
         idText.setFont(f2);
 
         // 비밀번호 입력 필드
-        JLabel passwordLabel = new JLabel("비밀번호:");
-        passwordLabel.setBounds(600, 405, 100, 30);
+        JLabel passwordLabel = new JLabel("비밀번호");
+        passwordLabel.setBounds(600, 405, 80, 30);
         panel.add(passwordLabel);
         passwordLabel.setFont(f1);
+        passwordLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         passwordText = new JPasswordField(20);
         passwordText.setBounds(700, 405, 200, 30);
