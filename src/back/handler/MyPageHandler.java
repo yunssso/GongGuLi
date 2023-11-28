@@ -4,8 +4,10 @@ import back.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.board.PrintBoardDAO;
 import back.request.mypage.MyBoardInfoRequest;
+import back.request.mypage.MyHistoryInfoRequest;
 import back.request.mypage.UserInfoRequest;
 import back.response.mypage.MyBoardInfoResponse;
+import back.response.mypage.MyHistoryInfoResponse;
 import back.response.mypage.UserInfoResponse;
 
 import java.io.*;
@@ -44,6 +46,8 @@ public class MyPageHandler extends Thread {
                 sendUserInfo(userInfoRequest);
             } else if (readObj instanceof MyBoardInfoRequest myBoardInfoRequest) {
                 sendMyBoardInfo(myBoardInfoRequest);
+            } else if (readObj instanceof MyHistoryInfoRequest myHistoryInfoRequest) {
+                sendMyHistoryInfo(myHistoryInfoRequest);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -67,7 +71,6 @@ public class MyPageHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_BOARD_INFO_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_BOARD_INFO_SUCCESS);
-
                 objectOutputStream.writeObject(list);
             }
         } catch (Exception exception) {
@@ -92,12 +95,32 @@ public class MyPageHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.GET_USERINFO_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.GET_USERINFO_SUCCESS);
-
                 objectOutputStream.writeObject(userInfoResponse);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    private void sendMyHistoryInfo(MyHistoryInfoRequest myHistoryInfoRequest) {
+        try {
+            PrintBoardDAO printBoardDAO = new PrintBoardDAO();
+            List<MyHistoryInfoResponse> list = printBoardDAO.printMyHistoryBoard(myHistoryInfoRequest.uuid());
+            if (list == null) {
+                objectOutputStream.writeObject(ResponseCode.GET_MY_HISTORY_INFO_FAILURE);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.GET_MY_HISTORY_INFO_SUCCESS);
+                objectOutputStream.writeObject(list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             try {
                 objectInputStream.close();
             } catch (IOException ioException) {

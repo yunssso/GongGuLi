@@ -305,9 +305,9 @@ public class MainPage extends JFrame{
                 //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
                 List <BoardInfoResponse> boardList = (List <BoardInfoResponse>) objectInputStream.readObject();
 
-                frontSetting.setmainPageDB(boardList);
+                frontSetting.setMainPageDB(boardList);
 
-                System.out.println(frontSetting.getmainPageDB());
+                System.out.println(frontSetting.getMainPageDB());
             } else { //게시글 갱신 실패
                 showErrorDialog(responseCode.getValue());
             }

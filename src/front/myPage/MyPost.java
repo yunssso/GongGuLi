@@ -27,7 +27,7 @@ public class MyPost extends JFrame{
     public MyPost(JPanel centerPanel, String uuid, JFrame myframe) {
         this.uuid = uuid;
         this.myFrame = myframe;
-        getBoardInfoMethod();
+        getMyPostInfoMethod();
 
         setMyPostingPanel(centerPanel);
     }
@@ -97,7 +97,7 @@ public class MyPost extends JFrame{
     }
 
     /*내가 쓴 글을 서버에서 받아오는 메소드*/
-    private void getBoardInfoMethod() {
+    private void getMyPostInfoMethod() {
         try (Socket clientSocket = new Socket("localhost", 1028);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -113,7 +113,7 @@ public class MyPost extends JFrame{
             if (responseCode.getKey() == ResponseCode.GET_MY_BOARD_INFO_SUCCESS.getKey()) { // 내가 쓴 글 갱신 성공
                 java.util.List<MyBoardInfoResponse> myBoardInfoResponseList = (List<MyBoardInfoResponse>) objectInputStream.readObject(); // 서버에서 내가 쓴 글을 받아옴
 
-                frontSetting.setmyPageDB(myBoardInfoResponseList);
+                frontSetting.setMyPageDB(myBoardInfoResponseList);
             } else { // 내가 쓴 글 갱신 실패
             }
         } catch (Exception exception) {

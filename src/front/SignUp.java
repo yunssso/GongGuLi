@@ -38,7 +38,7 @@ public class SignUp extends JDialog{
 
     private void setLeftPanel() {
         JPanel leftPanel = new JPanel(null);
-        leftPanel.setBounds(0, 0, 300, 700);
+        leftPanel.setBounds(0, 0, 560, 700);
         leftPanel.setBackground(c1);
 
         // BackButton을 leftPanel 위에 추가
@@ -67,9 +67,9 @@ public class SignUp extends JDialog{
 
         // 아이디 입력 필드
         JLabel idLabel = new JLabel("아이디:");
-        idLabel.setBounds(538, 195, 100, 30);
+        idLabel.setBounds(695, 195, 100, 30);
         idText = new JTextField(20);
-        idText.setBounds(638, 195, 200, 30);
+        idText.setBounds(758, 195, 200, 30);
 
         panel.add(idLabel);
         idLabel.setFont(f1);
@@ -78,29 +78,27 @@ public class SignUp extends JDialog{
 
         // 비밀번호 입력 필드
         JLabel passwordLabel = new JLabel("비밀번호:");
-        passwordLabel.setBounds(521, 235, 100, 30);
+        passwordLabel.setBounds(682, 235, 100, 30);
         passwordText = new JPasswordField(20);
-        passwordText.setBounds(638, 235, 200, 30);
+        passwordText.setBounds(758, 235, 200, 30);
         panel.add(passwordLabel);
         passwordLabel.setFont(f1);
         panel.add(passwordText);
-        passwordText.setFont(f2);
 
         // 비밀번호 확인 입력 필드
         JLabel pwCheckLabel = new JLabel("비밀번호 확인:");
-        pwCheckLabel.setBounds(486, 275, 150, 30);
+        pwCheckLabel.setBounds(652, 275, 150, 30);
         pwCheckText = new JPasswordField(20);
-        pwCheckText.setBounds(638, 275, 200, 30);
+        pwCheckText.setBounds(758, 275, 200, 30);
         panel.add(pwCheckLabel);
         pwCheckLabel.setFont(f1);
         panel.add(pwCheckText);
-        pwCheckText.setFont(f2);
 
         // 이름 입력 필드
         JLabel nameLabel = new JLabel("이름:");
-        nameLabel.setBounds(556, 315, 100, 30);
+        nameLabel.setBounds(771, 315, 100, 30);
         nameText = new JTextField(20);
-        nameText.setBounds(638, 315, 200, 30);
+        nameText.setBounds(758, 315, 200, 30);
         panel.add(nameLabel);
         nameLabel.setFont(f1);
         panel.add(nameText);
@@ -108,9 +106,9 @@ public class SignUp extends JDialog{
 
         // 생일 입력 필드
         JLabel birthLabel = new JLabel("생년월일:");
-        birthLabel.setBounds(525, 395, 100, 30);
+        birthLabel.setBounds(686, 395, 100, 30);
         birthText = new JTextField(20);
-        birthText.setBounds(638, 395, 200, 30);
+        birthText.setBounds(758, 395, 200, 30);
         panel.add(birthLabel);
         birthLabel.setFont(f1);
         panel.add(birthText);
@@ -118,9 +116,9 @@ public class SignUp extends JDialog{
 
         // 폰 번호 입력 필드
         JLabel phoneNumberLabel = new JLabel("핸드폰 번호:");
-        phoneNumberLabel.setBounds(505, 435, 100, 30);
+        phoneNumberLabel.setBounds(670, 435, 100, 30);
         phoneNumberText = new JTextField(20);
-        phoneNumberText.setBounds(638, 435, 200, 30);
+        phoneNumberText.setBounds(758, 435, 200, 30);
         panel.add(phoneNumberLabel);
         phoneNumberLabel.setFont(f1);
         panel.add(phoneNumberText);
@@ -128,9 +126,9 @@ public class SignUp extends JDialog{
 
         // 닉네임 입력 필드
         JLabel nickNameLabel = new JLabel("닉네임:");
-        nickNameLabel.setBounds(538, 355, 100, 30);
+        nickNameLabel.setBounds(697, 355, 100, 30);
         nickNameText = new JTextField(20);
-        nickNameText.setBounds(638, 355, 200, 30);
+        nickNameText.setBounds(758, 355, 200, 30);
         panel.add(nickNameLabel);
         nickNameLabel.setFont(f1);
         panel.add(nickNameText);
@@ -138,16 +136,16 @@ public class SignUp extends JDialog{
 
         // 거주 지역 입력 컴포넌트
         JLabel residenceLabel = new JLabel("거주 지역:");
-        residenceLabel.setBounds(520, 475, 100, 30);
+        residenceLabel.setBounds(681, 475, 100, 30);
         residenceList = new JComboBox<>(new String[]{"서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"});
-        residenceList.setBounds(638, 475, 200, 30);
+        residenceList.setBounds(758, 475, 200, 30);
         panel.add(residenceLabel);
         residenceLabel.setFont(f1);
         panel.add(residenceList);
 
         // 회원가입 버튼
         JButton signUpButton = new RoundedButton("회원가입");
-        signUpButton.setBounds(638, 535, 200, 30);
+        signUpButton.setBounds(758, 535, 200, 30);
         panel.add(signUpButton);
         signUpButton.setFont(f1);
 

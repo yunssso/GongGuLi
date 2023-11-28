@@ -139,7 +139,7 @@ public class MyPage extends JFrame {
         add(centerPanel);
 
         new MyPost(centerPanel, uuid, this);
-        new MyHistory(centerPanel);
+        new MyHistory(centerPanel, uuid);
     }
 
     private void setRightPanel() {
