@@ -115,20 +115,11 @@ public class NewPost extends JFrame{
                         new MainPage(uuid);
                         setSuccessPopUpFrame(" 글 작성 성공");
 
-//                        여기서 게시글을 만들때 할당 된 포트값을 받아와야 되는데 1시간동안 막 바꿔보다 안돼서 포기함
-//                        건우건우야 부탁해
-                        objectOutputStream.writeObject(new JoinChatRoomRequest(0, uuid));
+                        int port = (int) objectInputStream.readObject();
 
-                        responseCode = (ResponseCode) objectInputStream.readObject();
-
-                        if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
-                            JoinChatRoomResponse joinChatRoomResponse = (JoinChatRoomResponse) objectInputStream.readObject();
-
-                            new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
-                        } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { // 채팅방 입장 실패
-                            showErrorDialog(responseCode.getValue());
-                        }
                         newPostFrame.dispose();
+
+                        new ChatClient("TEST", port, uuid);
                     } else { //게시글 생성 실패
                         showErrorDialog(responseCode.getValue());
                     }
