@@ -66,88 +66,107 @@ public class SignUp extends JDialog{
         setContentPane(panel);
 
         // 아이디 입력 필드
-        JLabel idLabel = new JLabel("아이디:");
-        idLabel.setBounds(695, 195, 100, 30);
+        JLabel idLabel = new JLabel("아이디");
+        idLabel.setBounds(635, 195, 100, 30);
+        idLabel.setFont(f1);
+        idLabel.setHorizontalAlignment(JLabel.RIGHT);
         idText = new JTextField(20);
         idText.setBounds(758, 195, 200, 30);
-
-        panel.add(idLabel);
-        idLabel.setFont(f1);
-        panel.add(idText);
         idText.setFont(f2);
 
+        panel.add(idLabel);
+        panel.add(idText);
+
+
         // 비밀번호 입력 필드
-        JLabel passwordLabel = new JLabel("비밀번호:");
-        passwordLabel.setBounds(682, 235, 100, 30);
+        JLabel passwordLabel = new JLabel("비밀번호");
+        passwordLabel.setBounds(635, 235, 100, 30);
+        passwordLabel.setFont(f1);
         passwordText = new JPasswordField(20);
         passwordText.setBounds(758, 235, 200, 30);
+        passwordLabel.setHorizontalAlignment(JLabel.RIGHT);
+
         panel.add(passwordLabel);
-        passwordLabel.setFont(f1);
         panel.add(passwordText);
 
         // 비밀번호 확인 입력 필드
-        JLabel pwCheckLabel = new JLabel("비밀번호 확인:");
-        pwCheckLabel.setBounds(652, 275, 150, 30);
+        JLabel pwCheckLabel = new JLabel("비밀번호 확인");
+        pwCheckLabel.setBounds(635, 275, 100, 30);
+        pwCheckLabel.setHorizontalAlignment(JLabel.RIGHT);
+        pwCheckLabel.setFont(f1);
         pwCheckText = new JPasswordField(20);
         pwCheckText.setBounds(758, 275, 200, 30);
+
         panel.add(pwCheckLabel);
-        pwCheckLabel.setFont(f1);
         panel.add(pwCheckText);
 
         // 이름 입력 필드
-        JLabel nameLabel = new JLabel("이름:");
-        nameLabel.setBounds(771, 315, 100, 30);
+        JLabel nameLabel = new JLabel("이름");
+        nameLabel.setBounds(635, 315, 100, 30);
+        nameLabel.setFont(f1);
+        nameLabel.setHorizontalAlignment(JLabel.RIGHT);
         nameText = new JTextField(20);
         nameText.setBounds(758, 315, 200, 30);
-        panel.add(nameLabel);
-        nameLabel.setFont(f1);
-        panel.add(nameText);
+
         nameText.setFont(f2);
-
-        // 생일 입력 필드
-        JLabel birthLabel = new JLabel("생년월일:");
-        birthLabel.setBounds(686, 395, 100, 30);
-        birthText = new JTextField(20);
-        birthText.setBounds(758, 395, 200, 30);
-        panel.add(birthLabel);
-        birthLabel.setFont(f1);
-        panel.add(birthText);
-        birthText.setFont(f2);
-
-        // 폰 번호 입력 필드
-        JLabel phoneNumberLabel = new JLabel("핸드폰 번호:");
-        phoneNumberLabel.setBounds(670, 435, 100, 30);
-        phoneNumberText = new JTextField(20);
-        phoneNumberText.setBounds(758, 435, 200, 30);
-        panel.add(phoneNumberLabel);
-        phoneNumberLabel.setFont(f1);
-        panel.add(phoneNumberText);
-        phoneNumberText.setFont(f2);
+        panel.add(nameLabel);
+        panel.add(nameText);
 
         // 닉네임 입력 필드
-        JLabel nickNameLabel = new JLabel("닉네임:");
-        nickNameLabel.setBounds(697, 355, 100, 30);
+        JLabel nickNameLabel = new JLabel("닉네임");
+        nickNameLabel.setBounds(635, 355, 100, 30);
+        nickNameLabel.setHorizontalAlignment(JLabel.RIGHT);
+        nickNameLabel.setFont(f1);
         nickNameText = new JTextField(20);
         nickNameText.setBounds(758, 355, 200, 30);
-        panel.add(nickNameLabel);
-        nickNameLabel.setFont(f1);
-        panel.add(nickNameText);
         nickNameText.setFont(f2);
 
+        panel.add(nickNameLabel);
+        panel.add(nickNameText);
+
+
+        // 생일 입력 필드
+        JLabel birthLabel = new JLabel("생년월일");
+        birthLabel.setBounds(635, 395, 100, 30);
+        birthLabel.setHorizontalAlignment(JLabel.RIGHT);
+        birthLabel.setFont(f1);
+        birthText = new JTextField(20);
+        birthText.setBounds(758, 395, 200, 30);
+        birthText.setFont(f2);
+        panel.add(birthLabel);
+        panel.add(birthText);
+
+
+        // 폰 번호 입력 필드
+        JLabel phoneNumberLabel = new JLabel("핸드폰 번호");
+        phoneNumberLabel.setBounds(635, 435, 100, 30);
+        phoneNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
+        phoneNumberLabel.setFont(f1);
+        phoneNumberText = new JTextField(20);
+        phoneNumberText.setBounds(758, 435, 200, 30);
+        phoneNumberText.setFont(f2);
+
+        panel.add(phoneNumberLabel);
+        panel.add(phoneNumberText);
+
+
         // 거주 지역 입력 컴포넌트
-        JLabel residenceLabel = new JLabel("거주 지역:");
-        residenceLabel.setBounds(681, 475, 100, 30);
+        JLabel residenceLabel = new JLabel("거주 지역");
+        residenceLabel.setBounds(635, 475, 100, 30);
+        residenceLabel.setHorizontalAlignment(JLabel.RIGHT);
+        residenceLabel.setFont(f1);
         residenceList = new JComboBox<>(new String[]{"서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"});
         residenceList.setBounds(758, 475, 200, 30);
+
         panel.add(residenceLabel);
-        residenceLabel.setFont(f1);
         panel.add(residenceList);
 
         // 회원가입 버튼
         JButton signUpButton = new RoundedButton("회원가입");
         signUpButton.setBounds(758, 535, 200, 30);
-        panel.add(signUpButton);
         signUpButton.setFont(f1);
+        panel.add(signUpButton);
+
 
         // 회원가입 버튼 클릭 시
         signUpButton.addActionListener(new ActionListener() {
