@@ -80,6 +80,7 @@ public class NewPost extends JFrame{
 
         JTextArea contentArea = new JTextArea(445, 250);  // 내용 작성 필드
         contentArea.setFont(frontSetting.f16);
+        contentArea.setLineWrap(true);
 
         JScrollPane contentScroll = new JScrollPane(contentArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contentScroll.setBounds(20, 185, 445, 250);
