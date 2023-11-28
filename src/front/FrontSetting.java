@@ -34,7 +34,7 @@ public class FrontSetting extends JFrame{
                     //{"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
 
     public String myPageHeader[] =  {"지역", "카테고리", "제목", "현황"};
-    public String myPageDB[][] = null;
+    public String myPageDB[][] = {{"", "", "", ""}};
 
     public String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
     public String chattinglistHeader[] = {"카테고리", "제목", "작성자", "참여하기"};

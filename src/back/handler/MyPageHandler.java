@@ -65,6 +65,7 @@ public class MyPageHandler extends Thread {
 
             if (list == null) {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_BOARD_INFO_FAILURE);
+                System.out.println("listlist");
             } else {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_BOARD_INFO_SUCCESS);
 

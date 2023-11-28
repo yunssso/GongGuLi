@@ -105,5 +105,4 @@ public class MyHistory {
 
         readMoreFrame.setVisible(true);
     }
-
 }

@@ -73,7 +73,7 @@ class FindUserId extends JDialog {
 
         // 아이디 찾기 버튼
         JButton findIdButton = new RoundedButton("아이디 찾기");
-        findIdButton.setBounds(208, 195, 130, 30);
+        findIdButton.setBounds(208, 190, 130, 30);
         panel.add(findIdButton);
         findIdButton.setFont(f1);
 

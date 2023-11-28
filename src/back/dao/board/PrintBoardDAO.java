@@ -106,11 +106,11 @@ public class PrintBoardDAO {
             rs.close();
             pt.close();
             conn.close();
+            return list;
         } catch (Exception exception) {
             exception.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     // 내가 참여한 공동구매 (마이페이지)
