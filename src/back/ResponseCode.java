@@ -76,7 +76,14 @@ public enum ResponseCode {
     // GET CHATROOM INFO
     GET_CHATROOM_SUCCESS(530, "채팅방 정보를 가져오는데 완료하였습니다."),
     GET_CHATROOM_FAILURE(531, "채팅방 정보를 가져오는데 실패하였습니다."),
-    ;
+
+    // GET USER INFO
+    GET_USERINFO_SUCCESS(600, "유저정보를 가져오는데 완료하였습니다."),
+    GET_USERINFO_FAILURE(601, "유저정보를 가져오는데 실패하였습니다."),
+
+    // GET MY BOARD INFO
+    GET_MY_BOARD_INFO_SUCCESS(610, "내가 쓴 글 갱신이 완료되었습니다."),
+    GET_MY_BOARD_INFO_FAILURE(611, "내가 쓴 글 갱신이 실패되었습니다.");
 
     private final int code;
     private final String message;

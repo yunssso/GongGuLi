@@ -11,19 +11,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class MyPage extends JFrame {
     private UserInfo userInfo;
-    String uuid = null;
+    String uuid;
     UserDTO userDTO = null;
     CheckDAO checkDAO = new CheckDAO();
     FrontSetting fs = new FrontSetting();
 
     public MyPage(String uuid) {  // 생성자
         this.uuid = uuid;
-        this.userInfo = new UserInfo();
+        this.userInfo = new UserInfo(uuid);
+
         setMyPage();
         setLeftPanel();
         setCenterPanel();
@@ -58,7 +57,7 @@ public class MyPage extends JFrame {
             }
         });
 
-        JLabel nickNameLabel = new JLabel("test" + " 님");  // 닉네임 라벨
+        JLabel nickNameLabel = new JLabel(userInfo.getnickName() + " 님");  // 닉네임 라벨
         nickNameLabel.setFont(fs.fb20);
         nickNameLabel.setForeground(fs.c3);
         nickNameLabel.setBounds(100, 30, 150, 50);
