@@ -2,8 +2,11 @@ package back.dao.board;
 
 import back.BoardDTO;
 import back.UserDTO;
+import back.dao.GetInfoDAO;
 import back.request.mypage.MyBoardInfoRequest;
+import back.request.mypage.MyHistoryInfoRequest;
 import back.response.mypage.MyBoardInfoResponse;
+import back.response.mypage.MyHistoryInfoResponse;
 import database.DBConnector;
 import back.response.board.BoardInfoResponse;
 
@@ -114,46 +117,64 @@ public class PrintBoardDAO {
     }
 
     // 내가 참여한 공동구매 (마이페이지)
-    public String[][] printMyHistoryBoard(UserDTO userDTO) {
+    public List<MyHistoryInfoResponse> printMyHistoryBoard(String uuid) {
         // 역순으로 리스트에 담기
-        List<BoardDTO> list = new ArrayList<>();
+        List<MyHistoryInfoResponse> list = new ArrayList<>();
         conn = DBConnector.getConnection();
-        String selectSQL = "SELECT * FROM board WHERE nickName = ? ORDER BY postingTime DESC;";
+        List<Integer> myHistoryPort = getMyHistoryPort(uuid);
+        if (myHistoryPort != null) {
+            try {
+                GetInfoDAO getInfoDAO = new GetInfoDAO();
+                for (int i = 0; i < myHistoryPort.size(); i++) {
+                    int port = myHistoryPort.get(i);
+                    String selectSQL = "SELECT * FROM board WHERE port = ?;";
+
+                    pt = conn.prepareStatement(selectSQL);
+                    pt.setInt(1, port);
+                    rs = pt.executeQuery();
+
+                    if (rs.next()) {
+                        String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
+                        String writer = getInfoDAO.getnickNameMethod(rs.getString("uuid"));
+
+                        MyHistoryInfoResponse myHistoryInfoResponse = new MyHistoryInfoResponse(
+                                rs.getString("region"),
+                                rs.getString("category"),
+                                rs.getString("title"),
+                                writer,
+                                peoplenum
+                        );
+
+                        list.add(myHistoryInfoResponse);
+                    }
+                }
+
+                rs.close();
+                pt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("내 글 ArrayList 저장 중 오류 발생.");
+            }
+        }
+        return list;
+    }
+
+    public ArrayList<Integer> getMyHistoryPort(String uuid) {
+        ArrayList<Integer> portList = new ArrayList<Integer>();
         try {
-            pt = conn.prepareStatement(selectSQL);
-            pt.setString(1, userDTO.getNickName());
+            String getPortSQL = "SELECT port FROM chattingmember WHERE memberUuid = ?";
+            pt = conn.prepareStatement(getPortSQL);
+            pt.setString(1, uuid);
             rs = pt.executeQuery();
             while (rs.next()) {
-                String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("peopleNum");
-
-                /*BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setTitle(rs.getString("title"));
-                boardDTO.setRegion(rs.getString("region"));
-                boardDTO.setCategory(rs.getString("category"));
-                boardDTO.setNickName(rs.getString("nickName"));
-                boardDTO.setPeopleNum(peoplenum);
-                boardDTO.setContent(rs.getString("content"));
-
-                list.add(boardDTO);*/
+                int port = rs.getInt(1);
+                portList.add(port);
             }
-            System.out.println("내 글 데이터 ArrayList에 저장 완료.");
-
-            rs.close();
-            pt.close();
-            conn.close();
-        } catch (SQLException e) {
-            System.out.println("내 글 ArrayList 저장 중 오류 발생.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            portList = null;
         }
-
-        String[][] data = new String[list.size()][];    // ArrayList에 저장한 데이터들 2차원 배열로 변환해주기.
-
-        for (int i = 0; i < list.size(); i++) {
-            BoardDTO boardDTO = list.get(i);
-            data[i] = new String[]{boardDTO.getRegion(), boardDTO.getCategory(), boardDTO.getTitle(), boardDTO.getNickName(), boardDTO.getPeopleNum()};
-        }
-
-        System.out.println("내가 참여한 공구 내역 출력 완료.");
-
-        return data;
+        return portList;
     }
 }

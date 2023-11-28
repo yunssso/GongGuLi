@@ -91,7 +91,6 @@ public class LogIn extends JFrame {
         passwordText = new JPasswordField(20);
         passwordText.setBounds(700, 405, 200, 30);
         panel.add(passwordText);
-        passwordText.setFont(f2);
 
         // 로그인 버튼
         JButton loginButton = new RoundedButton("로그인");

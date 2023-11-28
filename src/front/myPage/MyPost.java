@@ -113,7 +113,7 @@ public class MyPost extends JFrame{
             if (responseCode.getKey() == ResponseCode.GET_MY_BOARD_INFO_SUCCESS.getKey()) { // 내가 쓴 글 갱신 성공
                 java.util.List<MyBoardInfoResponse> myBoardInfoResponseList = (List<MyBoardInfoResponse>) objectInputStream.readObject(); // 서버에서 내가 쓴 글을 받아옴
 
-                frontSetting.setmyPageDB(myBoardInfoResponseList);
+                frontSetting.setMyPageDB(myBoardInfoResponseList);
             } else { // 내가 쓴 글 갱신 실패
             }
         } catch (Exception exception) {

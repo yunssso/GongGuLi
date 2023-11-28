@@ -1,19 +1,30 @@
 package front.myPage;
 
+import back.ResponseCode;
+import back.request.mypage.MyHistoryInfoRequest;
 import back.response.board.BoardInfoMoreResponse;
+import back.response.mypage.MyHistoryInfoResponse;
 import front.FrontSetting;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.List;
 
 public class MyHistory {
     private FrontSetting fs = new FrontSetting();
+    private String uuid;
 
-    public MyHistory(JPanel centerPanel) {
+    public MyHistory(JPanel centerPanel, String uuid) {
+        this.uuid = uuid;
+        getMyHistoryInfoMethod();
         setMyHistoryPanel(centerPanel);
-
     }
 
     private void setMyHistoryPanel(JPanel centerPanel) {
@@ -25,7 +36,7 @@ public class MyHistory {
         myHistoryPanel.setBounds(400, 120, 340, 480);
         myHistoryPanel.setBackground(Color.WHITE);
 
-        JTable myHistoryTable = new JTable(fs.mainPageDB, fs.mainPageHeader) { // 셀 내용 수정 불가
+        JTable myHistoryTable = new JTable(fs.myHistoryDB, fs.mainPageHeader) { // 셀 내용 수정 불가
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -104,5 +115,30 @@ public class MyHistory {
         c.add(viewCountLabel);
 
         readMoreFrame.setVisible(true);
+    }
+
+    /*내가 참여한 글을 서버에서 받아오는 메소드*/
+    private void getMyHistoryInfoMethod() {
+        try (Socket clientSocket = new Socket("localhost", 1028);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ){
+            MyHistoryInfoRequest myHistoryInfoRequest = new MyHistoryInfoRequest(uuid); // uuid를 Request 객체로 만듦
+
+            objectOutputStream.writeObject(myHistoryInfoRequest); // uuid를 서버에 보내서 내가 쓴 글 요청
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject(); // 서버에서 응답 코드를 받아옴
+
+            if (responseCode.getKey() == ResponseCode.GET_MY_HISTORY_INFO_SUCCESS.getKey()) { // 내가 쓴 글 갱신 성공
+                java.util.List<MyHistoryInfoResponse> myHistoryInfoResponseList = (List<MyHistoryInfoResponse>) objectInputStream.readObject(); // 서버에서 내가 참여한 거래를 받아옴
+
+                fs.setMyHistoryDB(myHistoryInfoResponseList);
+            } else { // 내가 쓴 글 갱신 실패
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

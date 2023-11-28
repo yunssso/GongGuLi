@@ -2,6 +2,7 @@ package front;
 
 import back.response.board.BoardInfoResponse;
 import back.response.mypage.MyBoardInfoResponse;
+import back.response.mypage.MyHistoryInfoResponse;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,6 +30,7 @@ public class FrontSetting extends JFrame{
     public String mmmDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
             {"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
     public String mainPageDB[][] = {{"", "", "", "", ""}};
+    public String myHistoryDB[][] = {{"", "", "", "", ""}};
 
             //{{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},
                     //{"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
@@ -82,7 +84,7 @@ public class FrontSetting extends JFrame{
         JOptionPane.showMessageDialog(null, message, "", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void setmainPageDB(List<BoardInfoResponse> boardInfoResponseList) {
+    public void setMainPageDB(List<BoardInfoResponse> boardInfoResponseList) {
         mainPageDB = new String[boardInfoResponseList.size()][5];
 
         for (int i = 0; i < boardInfoResponseList.size(); i++) {
@@ -95,7 +97,7 @@ public class FrontSetting extends JFrame{
         }
     }
 
-    public void setmyPageDB(List<MyBoardInfoResponse> myBoardInfoResponseList) {
+    public void setMyPageDB(List<MyBoardInfoResponse> myBoardInfoResponseList) {
         myPageDB = new String[myBoardInfoResponseList.size()][4];
 
         for (int i = 0; i < myBoardInfoResponseList.size(); i++) {
@@ -107,11 +109,24 @@ public class FrontSetting extends JFrame{
         }
     }
 
-    public int getmainPageDB() {
+    public void setMyHistoryDB(List<MyHistoryInfoResponse> myHistoryInfoResponseList) {
+        myHistoryDB = new String[myHistoryInfoResponseList.size()][5];
+
+        for (int i = 0; i < myHistoryInfoResponseList.size(); i++) {
+            MyHistoryInfoResponse myHistoryInfoResponse = myHistoryInfoResponseList.get(i);
+            myHistoryDB[i][0] = myHistoryInfoResponse.region();
+            myHistoryDB[i][1] = myHistoryInfoResponse.category();
+            myHistoryDB[i][2] = myHistoryInfoResponse.title();
+            myHistoryDB[i][3] = myHistoryInfoResponse.writer();
+            myHistoryDB[i][4] = myHistoryInfoResponse.peopleNum();
+        }
+    }
+
+    public int getMainPageDB() {
         return mainPageDB.length;
     }
 
-    public int getmyPageDB() {
+    public int getMyPageDB() {
         return myPageDB.length;
     }
 }

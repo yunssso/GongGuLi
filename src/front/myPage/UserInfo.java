@@ -213,7 +213,7 @@ public class UserInfo {
         c.add(modifyUserInfoBtn);
     }
 
-    /*nickName, name, userId, region, phoneNum, birth를 서버에서 받아오는 메소드*/
+    /*writer, name, userId, region, phoneNum, birth를 서버에서 받아오는 메소드*/
     private void getUserInfo() {
         try (Socket clientSocket = new Socket("localhost", 1028);
              OutputStream outputStream = clientSocket.getOutputStream();
