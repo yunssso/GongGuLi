@@ -89,23 +89,10 @@ public class BoardHandler extends Thread {
 
                     if (postingDAO.posting(postBoardRequest, port)) {   //  DB로 게시글 생성 요청
                         objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS); // 게시글 생성 성공 응답을 보낸다.
+
+                        objectOutputStream.writeObject(port);
                     } else {
                         objectOutputStream.writeObject(ResponseCode.POST_BOARD_FAILURE);
-                    }
-
-                    Object readObj = objectInputStream.readObject(); // 채팅방 입장 요청을 받는다.
-
-                    if (readObj instanceof JoinChatRoomRequest joinChatRoomRequest) { // 채팅방 입장 요청일 경우
-                        String nickName = getInfoDAO.getnickNameMethod(joinChatRoomRequest.uuid()); // uuid에 일치하는 닉네임을 가져옴
-
-                        if (nickName != null) {
-                            objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
-                            objectOutputStream.writeObject(new JoinChatRoomResponse(nickName, port)); // 닉네임, 채팅방 port 정보를 보낸다.
-                        } else {
-                            objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
-                        }
-                    } else { // 그외의 요청이 들어올 경우
-                        objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
                     }
                 }
             }
