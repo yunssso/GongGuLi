@@ -1,6 +1,7 @@
 package front;
 
 import back.response.board.BoardInfoResponse;
+import back.response.mypage.MyBoardInfoResponse;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -33,8 +34,7 @@ public class FrontSetting extends JFrame{
                     //{"충청남도", "OTT", "얏호", "윤솢이", "3/4"}};
 
     public String myPageHeader[] =  {"지역", "카테고리", "제목", "현황"};
-    public String myPageDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "1/4"},
-            {"충청남도", "OTT", "얏호", "3/4"}};
+    public String myPageDB[][] = null;
 
     public String userInfoHeader[] = {"이름", "아이디", "지역", "휴대폰 번호", "생년월일"};
     public String chattinglistHeader[] = {"카테고리", "제목", "작성자", "참여하기"};
@@ -82,11 +82,11 @@ public class FrontSetting extends JFrame{
         JOptionPane.showMessageDialog(null, message, "", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void setmainPageDB(List<BoardInfoResponse> boardList) {
-        mainPageDB = new String[boardList.size()][5];
+    public void setmainPageDB(List<BoardInfoResponse> boardInfoResponseList) {
+        mainPageDB = new String[boardInfoResponseList.size()][5];
 
-        for (int i = 0; i < boardList.size(); i++) {
-            BoardInfoResponse boardInfo = boardList.get(i);
+        for (int i = 0; i < boardInfoResponseList.size(); i++) {
+            BoardInfoResponse boardInfo = boardInfoResponseList.get(i);
             mainPageDB[i][0] = boardInfo.region();
             mainPageDB[i][1] = boardInfo.category();
             mainPageDB[i][2] = boardInfo.title();
@@ -95,7 +95,23 @@ public class FrontSetting extends JFrame{
         }
     }
 
+    public void setmyPageDB(List<MyBoardInfoResponse> myBoardInfoResponseList) {
+        myPageDB = new String[myBoardInfoResponseList.size()][4];
+
+        for (int i = 0; i < myBoardInfoResponseList.size(); i++) {
+            MyBoardInfoResponse myBoardInfoResponse = myBoardInfoResponseList.get(i);
+            myPageDB[i][0] = myBoardInfoResponse.region();
+            myPageDB[i][1] = myBoardInfoResponse.category();
+            myPageDB[i][2] = myBoardInfoResponse.title();
+            myPageDB[i][3] = myBoardInfoResponse.peopleNum();
+        }
+    }
+
     public int getmainPageDB() {
         return mainPageDB.length;
+    }
+
+    public int getmyPageDB() {
+        return myPageDB.length;
     }
 }
