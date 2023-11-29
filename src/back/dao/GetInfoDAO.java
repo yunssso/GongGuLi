@@ -33,6 +33,7 @@ public class GetInfoDAO {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
         return null;
     }
 

@@ -42,7 +42,7 @@ public class ChatServerHandler extends Thread {
 		try {
 			JoinMessageChatRoomRequest joinMessageChatRoomRequest = (JoinMessageChatRoomRequest) objectInputStream.readObject();
 
-			sendAll(new JoinMessageChatRoomResponse(joinMessageChatRoomRequest.nickName(), "이(가) 입장했습니다."));
+			sendAll(new JoinMessageChatRoomResponse(joinMessageChatRoomRequest.nickName(), "이(가) 입장했습니다.\n"));
 
 			if (list.size() == 1) { //처음으로 접속한 사람 즉 글쓴이에게 방장 권한 부여
 				master = true;
@@ -55,14 +55,14 @@ public class ChatServerHandler extends Thread {
 					if (master) { // 방장이 메세지를 보냈을 때
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
 								messageChatRoomRequest.nickName() + "(방장)",
-								messageChatRoomRequest.message()
+								messageChatRoomRequest.message() + "\n"
 						);
 
 						sendAll(messageChatRoomResponse);
 					} else { // 이외 사용자가 메세지를 보냈을 때
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
 								messageChatRoomRequest.nickName(),
-								messageChatRoomRequest.message()
+								messageChatRoomRequest.message() + "\n"
 						);
 
 						sendAll(messageChatRoomResponse);
@@ -71,7 +71,7 @@ public class ChatServerHandler extends Thread {
 					if (master) { // 방장일 경우에만 강퇴 요청을 accept
 						for (ChatServerHandler handler : list) {
 							if (kickChatRoomRequest.target_nickName().equals(handler.getnickName())) {
-								sendAll(new MessageChatRoomResponse("", kickChatRoomRequest.target_nickName() + "이(가) 강제퇴장 당했습니다."));
+								sendAll(new MessageChatRoomResponse("", kickChatRoomRequest.target_nickName() + "이(가) 강제퇴장 당했습니다.\n"));
 
 								handler.objectInputStream.close();
 								list.remove(handler);

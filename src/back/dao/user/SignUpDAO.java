@@ -11,7 +11,7 @@ public class SignUpDAO {
     Connection conn = null;
     PreparedStatement pt = null;
 
-    public void signUp(SignUpRequest signUpInfo) {
+    public boolean signUp(SignUpRequest signUpInfo) {
         String uuid = UUID.randomUUID().toString();
         String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -28,14 +28,15 @@ public class SignUpDAO {
             pt.setString(8, uuid);
 
             if (!pt.execute()) {
-                System.out.println("회원가입 완료.");
+                return true;
             }
 
             pt.close();
             conn.close();
-        } catch (Exception e) {
-            System.out.println("회원가입 실패.");
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 }

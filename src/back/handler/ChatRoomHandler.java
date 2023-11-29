@@ -62,13 +62,14 @@ public class ChatRoomHandler extends Thread {
             GetInfoDAO getInfoDAO = new GetInfoDAO();
 
             String nickName = getInfoDAO.getnickNameMethod(joinChatRoomRequest.uuid());
-            int port = joinChatRoomRequest.port();
 
-            if (port != -1) {
-                objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
-                objectOutputStream.writeObject(new JoinChatRoomResponse(nickName, port));
-            } else {
+            if (nickName == null) {
                 objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
+
+                JoinChatRoomResponse joinChatRoomResponse = new JoinChatRoomResponse(nickName);
+                objectOutputStream.writeObject(joinChatRoomResponse);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -92,6 +93,7 @@ public class ChatRoomHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.GET_CHATROOM_FAILURE);
             } else { // 채팅방 목록 갱신 성공
                 objectOutputStream.writeObject(ResponseCode.GET_CHATROOM_SUCCESS);
+
                 objectOutputStream.writeObject(chattingRoomList);
             }
         } catch (Exception exception) {

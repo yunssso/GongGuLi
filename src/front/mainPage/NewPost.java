@@ -3,6 +3,7 @@ package front.mainPage;
 import back.ResponseCode;
 import back.request.board.PostBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
+import back.response.board.PostBoardResponse;
 import back.response.chatroom.JoinChatRoomResponse;
 import front.ChatClient;
 import front.FrontSetting;
@@ -111,18 +112,18 @@ public class NewPost extends JFrame{
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-                    if (responseCode.getKey() == ResponseCode.POST_BOARD_SUCCESS.getKey()) { // 게시글 생성 성공
+                    if (responseCode.getKey() != ResponseCode.POST_BOARD_SUCCESS.getKey()) { // 게시글 생성 실패
+                        showErrorDialog(responseCode.getValue());
+                    } else { //게시글 생성 성공
+                        PostBoardResponse postBoardResponse = (PostBoardResponse) objectInputStream.readObject();
+
                         mainFrame.dispose();
                         new MainPage(uuid);
                         setSuccessPopUpFrame(" 글 작성 성공");
 
-                        int port = (int) objectInputStream.readObject();
-
                         newPostFrame.dispose();
 
-                        new ChatClient("TEST", port, uuid);
-                    } else { //게시글 생성 실패
-                        showErrorDialog(responseCode.getValue());
+                        new ChatClient(postBoardResponse.nickName(), postBoardResponse.port(), uuid);
                     }
 
                 } catch (Exception exception) {

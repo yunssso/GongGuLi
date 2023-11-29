@@ -1,17 +1,17 @@
 package back.handler;
 
 import back.ResponseCode;
+import back.dao.GetInfoDAO;
 import back.dao.board.DeleteBoardDAO;
 import back.dao.board.ModifyMyPostDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.dao.board.PostingDAO;
-import back.dao.GetInfoDAO;
 
 import back.request.board.DeleteBoardRequest;
 import back.request.board.ModifyMyPostRequest;
 import back.request.board.PostBoardRequest;
-import back.request.chatroom.JoinChatRoomRequest;
-import back.response.chatroom.JoinChatRoomResponse;
+import back.response.board.PostBoardResponse;
+import serverStructure.ChatServer;
 
 import java.io.*;
 import java.net.Socket;
@@ -86,13 +86,15 @@ public class BoardHandler extends Thread {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
                     int port = joinChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
+                    String nickName = getInfoDAO.getnickNameMethod(postBoardRequest.uuid());
 
-                    if (postingDAO.posting(postBoardRequest, port)) {   //  DB로 게시글 생성 요청
+                    if (!postingDAO.posting(postBoardRequest, port) || nickName == null) {   //  DB로 게시글 생성 요청
+                        objectOutputStream.writeObject(ResponseCode.POST_BOARD_FAILURE); // 게시글 생성 실패 응답을 보낸다.
+                    } else {
                         objectOutputStream.writeObject(ResponseCode.POST_BOARD_SUCCESS); // 게시글 생성 성공 응답을 보낸다.
 
-                        objectOutputStream.writeObject(port);
-                    } else {
-                        objectOutputStream.writeObject(ResponseCode.POST_BOARD_FAILURE);
+                        PostBoardResponse postBoardResponse = new PostBoardResponse(nickName, port);
+                        objectOutputStream.writeObject(postBoardResponse);
                     }
                 }
             }
@@ -117,14 +119,22 @@ public class BoardHandler extends Thread {
     private void modifyMyPostMethod(ModifyMyPostRequest modifyMyPostRequest) {
         try {
             ModifyMyPostDAO modifyMyPostDAO = new ModifyMyPostDAO();
+
             boolean isModified = modifyMyPostDAO.modifyMyPost(modifyMyPostRequest); //  DB로 수정 요청
-            if (isModified) {
-                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_SUCCESS); // 게시글 수정 성공 응답을 보낸다.
+
+            if (!isModified) {
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE); // 게시글 수정 실패 응답을 보낸다.
             } else {
-                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE);
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_SUCCESS); // 게시글 수정 성공 응답을 보낸다.
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -132,14 +142,22 @@ public class BoardHandler extends Thread {
     private void deleteBoardMethod(DeleteBoardRequest deleteBoardRequest) {
         try {
             DeleteBoardDAO deleteBoardDAO = new DeleteBoardDAO();
-            boolean isDeleted = deleteBoardDAO.deleteBoardMethod(deleteBoardRequest.port());
-            if (isDeleted) {
-                objectOutputStream.writeObject(ResponseCode.DELETE_MY_BOARD_SUCCESS);
+
+            boolean isDeleted = deleteBoardDAO.deleteBoardMethod(deleteBoardRequest.port()); // DB로 삭제 요청
+
+            if (!isDeleted) {
+                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE); // 게시글 삭제 실패 응답을 보낸다.
             } else {
-                objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE);
+                objectOutputStream.writeObject(ResponseCode.DELETE_MY_BOARD_SUCCESS); // 게시글 삭제 성공 응답을 보낸다.
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 }

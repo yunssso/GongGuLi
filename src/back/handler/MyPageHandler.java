@@ -108,18 +108,21 @@ public class MyPageHandler extends Thread {
         }
     }
 
+    /*공구내역 갱신 Response를 보내는 메소드*/
     private void sendMyHistoryInfo(MyHistoryInfoRequest myHistoryInfoRequest) {
         try {
             PrintBoardDAO printBoardDAO = new PrintBoardDAO();
+
             List<MyHistoryInfoResponse> list = printBoardDAO.printMyHistoryBoard(myHistoryInfoRequest.uuid());
+
             if (list == null) {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_HISTORY_INFO_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.GET_MY_HISTORY_INFO_SUCCESS);
                 objectOutputStream.writeObject(list);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }finally {
             try {
                 objectInputStream.close();

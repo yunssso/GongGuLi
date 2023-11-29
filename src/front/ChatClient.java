@@ -2,6 +2,7 @@ package front;
 
 import back.ResponseCode;
 import back.request.chatroom.GetParticipantsChatRoomRequest;
+import back.request.chatroom.JoinMessageChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
 import back.request.chatroom.MessageChatRoomRequest;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
@@ -67,7 +68,7 @@ public class ChatClient extends JFrame implements Runnable{
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            objectOutputStream.writeObject(new MessageChatRoomRequest(nickName, null, uuid));
+            objectOutputStream.writeObject(new JoinMessageChatRoomRequest(nickName));
 
             Thread thread = new Thread(this);
             thread.start();
@@ -172,7 +173,7 @@ public class ChatClient extends JFrame implements Runnable{
                     if (readObj instanceof MessageChatRoomResponse messageChatRoomResponse) {
                         getMessage(messageChatRoomResponse);
                     } else if (readObj instanceof JoinMessageChatRoomResponse joinMessageChatRoomResponse) {
-                        getParticipants();
+                        //getParticipants();
 
                         getMessage(joinMessageChatRoomResponse);
                     } else if (readObj instanceof GetParticipantsChatRoomResponse getParticipantsChatRoomResponse) {
@@ -193,7 +194,7 @@ public class ChatClient extends JFrame implements Runnable{
         try {
             String message = tf.getText();
 
-            if (objectOutputStream != null) {
+            if (!message.isBlank()) {
                 MessageChatRoomRequest messageChatRoomRequest = new MessageChatRoomRequest(nickName, message, uuid);
 
                 objectOutputStream.writeObject(messageChatRoomRequest);
@@ -207,7 +208,7 @@ public class ChatClient extends JFrame implements Runnable{
 
     /*메세지 출력 메소드*/
     private void getMessage(MessageChatRoomResponse messageChatRoomResponse) {
-        chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message() + "\n");
+        chatTextArea.append(messageChatRoomResponse.nickName() + " : " + messageChatRoomResponse.message());
     }
 
     /*새로운 참여자 관련 메소드*/

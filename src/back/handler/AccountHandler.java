@@ -26,7 +26,7 @@ public class AccountHandler extends Thread {
 
             OutputStream outputStream = clientSocket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
 
 			try {
@@ -94,8 +94,11 @@ public class AccountHandler extends Thread {
 			} else if (signUpRequest.region().equals("거주 지역")) {
 				objectOutputStream.writeObject(ResponseCode.RESIDENCE_AREA_NOT_SELECTED);
 			} else {
-				signUpDAO.signUp(signUpRequest);
-				objectOutputStream.writeObject(ResponseCode.SIGNUP_SUCCESS);
+				if (!signUpDAO.signUp(signUpRequest)) {
+					objectOutputStream.writeObject(ResponseCode.SIGNUP_FAILURE);
+				} else {
+					objectOutputStream.writeObject(ResponseCode.SIGNUP_SUCCESS);
+				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -119,13 +122,16 @@ public class AccountHandler extends Thread {
 				objectOutputStream.writeObject(ResponseCode.PASSWORD_MISSING);
 			} else {
 				String logInCheckResult = logInDAO.logIn(loginRequest);
+
 				if (logInCheckResult.equals("Password Does Not Match")) {
 					objectOutputStream.writeObject(ResponseCode.PASSWORD_MISMATCH_LOGIN);
 				} else if (logInCheckResult.equals("Id Does Not Exist")) {
 					objectOutputStream.writeObject(ResponseCode.ID_NOT_EXIST);
 				} else if (!logInCheckResult.equals("Database or SQL Error")) {
 					objectOutputStream.writeObject(ResponseCode.LOGIN_SUCCESS);
-					objectOutputStream.writeObject(new LoginResponse(logInCheckResult));
+
+					LoginResponse loginResponse = new LoginResponse(logInCheckResult);
+					objectOutputStream.writeObject(loginResponse);
 				}
 			}
 		} catch (Exception exception) {
@@ -151,13 +157,14 @@ public class AccountHandler extends Thread {
 			} else if (findUserIdRequest.phoneNumber().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				FindUserIdResponse findUserIdResponse = new FindUserIdResponse(findUserDAO.findID(findUserIdRequest));
+				FindUserIdResponse findUserIdResponse = findUserDAO.findID(findUserIdRequest);
 
-				if (!findUserIdResponse.userId().isEmpty()) {
-					objectOutputStream.writeObject(ResponseCode.FIND_ID_SUCCESS);
-					objectOutputStream.writeObject(findUserIdResponse);
-				} else {
+				if (findUserIdResponse == null) {
 					objectOutputStream.writeObject(ResponseCode.NO_MATCHING_USER);
+				} else {
+					objectOutputStream.writeObject(ResponseCode.FIND_ID_SUCCESS);
+
+					objectOutputStream.writeObject(findUserIdResponse);
 				}
 			}
 		} catch (Exception exception) {
@@ -185,13 +192,14 @@ public class AccountHandler extends Thread {
 			} else if (findUserPasswordRequest.phoneNumber().isBlank()) {
 				objectOutputStream.writeObject(ResponseCode.PHONE_NUMBER_MISSING);
 			} else {
-				FindUserPasswordResponse findUserPasswordResponse = new FindUserPasswordResponse(findUserDAO.findPassword(findUserPasswordRequest));
+				FindUserPasswordResponse findUserPasswordResponse = findUserDAO.findPassword(findUserPasswordRequest);
 
-				if (!findUserPasswordResponse.password().isEmpty()) {
-					objectOutputStream.writeObject(ResponseCode.FIND_PASSWORD_SUCCESS);
-					objectOutputStream.writeObject(findUserPasswordResponse);
-				} else {
+				if (findUserPasswordResponse == null) {
 					objectOutputStream.writeObject(ResponseCode.NO_MATCHING_USER);
+				} else {
+					objectOutputStream.writeObject(ResponseCode.FIND_PASSWORD_SUCCESS);
+
+					objectOutputStream.writeObject(findUserPasswordResponse);
 				}
 			}
 		} catch (Exception exception) {
