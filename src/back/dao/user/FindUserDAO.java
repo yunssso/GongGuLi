@@ -2,6 +2,8 @@ package back.dao.user;
 
 import back.request.account.FindUserIdRequest;
 import back.request.account.FindUserPasswordRequest;
+import back.response.account.FindUserIdResponse;
+import back.response.account.FindUserPasswordResponse;
 import database.DBConnector;
 
 import java.sql.Connection;
@@ -13,7 +15,7 @@ public class FindUserDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-    public String findID(FindUserIdRequest findUserIdInfo) {
+    public FindUserIdResponse findID(FindUserIdRequest findUserIdInfo) {
     conn = DBConnector.getConnection();
     String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
     try {
@@ -23,16 +25,16 @@ public class FindUserDAO {
         pt.setString(3, findUserIdInfo.phoneNumber());
         rs = pt.executeQuery();
         if (rs.next()) {
-            return rs.getString(1);
+            return new FindUserIdResponse(rs.getString(1));
         }
     } catch (Exception exception) {
         exception.printStackTrace();
     }
 
-    return "";
+    return null;
 }
 
-    public String findPassword(FindUserPasswordRequest findUserPasswordRequest) {
+    public FindUserPasswordResponse findPassword(FindUserPasswordRequest findUserPasswordRequest) {
         conn = DBConnector.getConnection();
         String selectsql = "select password from user where name = ? and userID = ? and birth = ? and phoneNum= ?;";
         try {
@@ -43,12 +45,12 @@ public class FindUserDAO {
             pt.setString(4, findUserPasswordRequest.phoneNumber());
             rs = pt.executeQuery();
             if (rs.next()) {
-                return rs.getString(1);
+                return new FindUserPasswordResponse(rs.getString(1));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
-        return "";
+        return null;
     }
 }

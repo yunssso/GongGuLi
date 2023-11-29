@@ -36,6 +36,7 @@ public class ReadMorePost {
         this.isMainFrame = isMainFrame;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         this.port = boardInfoMoreResponse.port();
+
         if (boardInfoMoreResponse.authority()) {
             readMoreMyPost();
         } else {
@@ -95,18 +96,18 @@ public class ReadMorePost {
                      InputStream inputStream = clientSocket.getInputStream();
                      ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                 ){
-                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(port, uuid);
+                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(uuid);
 
                     objectOutputStream.writeObject(joinChatroomRequest);
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-                    if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) { //채팅방 입장 성공
+                    if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { //채팅방 입장 실패
+                        showErrorDialog(responseCode.getValue());
+                    } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()){ //채팅방 입장 성공
                         JoinChatRoomResponse joinChatRoomResponse = (JoinChatRoomResponse) objectInputStream.readObject();
 
-                        new ChatClient(joinChatRoomResponse.nickName(), joinChatRoomResponse.chatPort(), uuid);
-                    } else { //채팅방 입장 실패
-                        showErrorDialog(responseCode.getValue());
+                        new ChatClient(joinChatRoomResponse.nickName(), port, uuid);
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

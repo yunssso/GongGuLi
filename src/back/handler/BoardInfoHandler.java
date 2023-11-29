@@ -50,7 +50,7 @@ public class BoardInfoHandler extends Thread {
                 myBoardInfoMoreMethod(myBoardInfoMoreRequest);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            //exception.printStackTrace();
 
             try {
                 objectInputStream.close();
@@ -71,6 +71,7 @@ public class BoardInfoHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_SUCCESS);
+
                 objectOutputStream.writeObject(boardList);
             }
         } catch (Exception exception) {
@@ -95,6 +96,7 @@ public class BoardInfoHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
+
                 objectOutputStream.writeObject(boardInfoMoreResponse);
             }
         } catch (Exception exception) {
@@ -119,6 +121,7 @@ public class BoardInfoHandler extends Thread {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
+
                 objectOutputStream.writeObject(myBoardInfoMoreRequest);
             }
         } catch (Exception exception) {
