@@ -66,7 +66,7 @@ public class ReadPostDAO {
     //    내가 쓴 글 자세히 보기 (마이페이지)
     public MyBoardInfoMoreResponse readMoreMyPost(int selectRow, String uuid) {
         selectRow++;
-        String updateViewSQL = "CREATE OR REPLACE VIEW boardView AS SELECT row_number() OVER (ORDER BY postingTime DESC) AS num, title, region, category, uuid, maxPeopleNum, nowPeopleNum, content, postingTime, view, port FROM board WHERE uuid = ?;";
+        String updateViewSQL = "CREATE OR REPLACE VIEW myBoardView AS SELECT row_number() OVER (ORDER BY postingTime DESC) AS num, title, region, category, uuid, maxPeopleNum, nowPeopleNum, content, postingTime, view, port FROM board WHERE uuid = ?;";
         String selectSQL = "SELECT * FROM boardView WHERE num = ?;";
         String updateSQL = "UPDATE board SET view = view + 1 WHERE port = ?;";
         try {

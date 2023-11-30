@@ -3,9 +3,12 @@ package front.myPage;
 import back.ResponseCode;
 import back.UserDTO;
 import back.dao.CheckDAO;
+import back.request.account.ModifyUserInfoRequest;
 import back.request.mypage.MyBoardInfoRequest;
+import back.request.mypage.MyHistoryInfoRequest;
 import back.request.mypage.UserInfoRequest;
 import back.response.mypage.MyBoardInfoResponse;
+import back.response.mypage.MyHistoryInfoResponse;
 import back.response.mypage.UserInfoResponse;
 import front.FrontSetting;
 import front.ImagePanel;
@@ -75,14 +78,14 @@ public class UserInfo {
         JLabel userNameLabel = new JLabel("이름");
         userNameLabel.setBounds(35, 20, 300, 30);
         userNameLabel.setFont(frontSetting.f16);
-        JLabel userName = new JLabel("test");
+        JLabel userName = new JLabel(userInfo[1]);
         userName.setBounds(160, 20, 300, 30);
         userName.setFont(frontSetting.f16);
 
         JLabel userIDLabel = new JLabel("아이디");
         userIDLabel.setBounds(35, 52, 300, 30);
         userIDLabel.setFont(frontSetting.f16);
-        JLabel userID = new JLabel("test");
+        JLabel userID = new JLabel(userInfo[2]);
         userID.setBounds(160, 52, 300, 30);
         userID.setFont(frontSetting.f16);
 
@@ -90,7 +93,7 @@ public class UserInfo {
         userNickNameLabel.setBounds(35, 84, 70, 30);
         userNickNameLabel.setFont(frontSetting.f16);
 
-        JTextField userNickNameField = new JTextField("test");
+        JTextField userNickNameField = new JTextField(userInfo[0]);
         userNickNameField.setBounds(160, 84, 85, 30);
 
         RoundedButtonR NickDupBtn = new RoundedButtonR("확인");
@@ -158,10 +161,12 @@ public class UserInfo {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 닉네임 중복 확인 기능 필요
+                String nickName = userNickNameField.getText();
                 char[] userPW = userPWField.getPassword();
                 char[] userPWC = userPWCheckField.getPassword();
                 String userPWStr = String.valueOf(userPW);
-
+//                String region = userRegionBtn.getSelectedItem();
+//                이거 지역 String으로 어케 받나요
                 boolean changeNick = false;
                 boolean checkModify = false;
 
@@ -182,6 +187,7 @@ public class UserInfo {
                 else checkModify = true;
 
                 if (checkModify) {
+//                    modifyUserInfoMethod(nickName, userPWStr, region);
                     System.out.println("수정하기");
                     checkNickDup = false;
                     frontSetting.showCompleteDialog("수정이 완료되었습니다.");
@@ -237,6 +243,28 @@ public class UserInfo {
                 userInfo[4] = userInfoResponse.phoneNum();
                 userInfo[5] = userInfoResponse.birth();
             } else { // 유저정보 갱신 실패
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void modifyUserInfoMethod(String nickName, String password, String region) {
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ) {
+            ModifyUserInfoRequest modifyUserInfoRequest = new ModifyUserInfoRequest(nickName, password, region, uuid);
+
+            objectOutputStream.writeObject(modifyUserInfoRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.MODIFY_USER_INFO_SUCCESS.getKey()) { // 유저 정보 수정 성공
+
+            } else { // 유저 정보 수정 실패
             }
         } catch (Exception exception) {
             exception.printStackTrace();
