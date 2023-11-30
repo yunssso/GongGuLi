@@ -39,18 +39,14 @@ public class ChatClient extends JFrame implements Runnable{
     private DefaultListModel<String> participantListModel;
     private JScrollPane participantsscrollPane = null;
 
-
     // 서버에서 각 클라이언트 이름을 받아오는 리스트
     private ArrayList<String> nameList = null;
-    // 클라이언트 사용자 이름
-    private String nickName = null;
     // 사용자 uuid
     private String uuid = null;
 
     // 처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
-    public ChatClient(String nickName, int port, String uuid) {
+    public ChatClient(int port, String uuid) {
         try {
-            this.nickName = nickName;
             //포트 정보
             this.uuid = uuid;
 
@@ -68,7 +64,7 @@ public class ChatClient extends JFrame implements Runnable{
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
 
-            objectOutputStream.writeObject(new JoinMessageChatRoomRequest(nickName));
+            objectOutputStream.writeObject(new JoinMessageChatRoomRequest(uuid));
 
             Thread thread = new Thread(this);
             thread.start();
@@ -195,7 +191,7 @@ public class ChatClient extends JFrame implements Runnable{
             String message = tf.getText();
 
             if (!message.isBlank()) {
-                MessageChatRoomRequest messageChatRoomRequest = new MessageChatRoomRequest(nickName, message, uuid);
+                MessageChatRoomRequest messageChatRoomRequest = new MessageChatRoomRequest(message, uuid);
 
                 objectOutputStream.writeObject(messageChatRoomRequest);
 

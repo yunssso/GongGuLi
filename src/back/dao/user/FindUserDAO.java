@@ -16,10 +16,10 @@ public class FindUserDAO {
     ResultSet rs = null;
 
     public FindUserIdResponse findID(FindUserIdRequest findUserIdInfo) {
-    conn = DBConnector.getConnection();
-    String selectsql = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
     try {
-        pt = conn.prepareStatement(selectsql);
+        conn = DBConnector.getConnection();
+        String selectSQL = "select userId from user where name = ? and birth = ? and phoneNum= ?;";
+        pt = conn.prepareStatement(selectSQL);
         pt.setString(1, findUserIdInfo.name());
         pt.setString(2, findUserIdInfo.birth());
         pt.setString(3, findUserIdInfo.phoneNumber());

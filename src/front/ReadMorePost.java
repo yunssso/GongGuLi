@@ -96,18 +96,19 @@ public class ReadMorePost {
                      InputStream inputStream = clientSocket.getInputStream();
                      ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
                 ){
-                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(uuid);
+                    JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(port, uuid);
 
                     objectOutputStream.writeObject(joinChatroomRequest);
 
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-                    if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) { //채팅방 입장 실패
+                    if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) {
+                        new ChatClient(port, uuid);
+                    } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) {
                         showErrorDialog(responseCode.getValue());
-                    } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()){ //채팅방 입장 성공
-                        JoinChatRoomResponse joinChatRoomResponse = (JoinChatRoomResponse) objectInputStream.readObject();
-
-                        new ChatClient(joinChatRoomResponse.nickName(), port, uuid);
+                    } else if (responseCode.getKey() == ResponseCode.CHATROOM_FULL.getKey()) {
+//                        채팅방 가득 참
+                        System.out.println("채팅방이 가득 참");
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

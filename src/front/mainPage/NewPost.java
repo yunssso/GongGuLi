@@ -123,7 +123,7 @@ public class NewPost extends JFrame{
 
                         newPostFrame.dispose();
 
-                        new ChatClient(postBoardResponse.nickName(), postBoardResponse.port(), uuid);
+                        new ChatClient(postBoardResponse.port(), uuid);
                     }
 
                 } catch (Exception exception) {

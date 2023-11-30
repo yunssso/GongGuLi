@@ -203,6 +203,7 @@ public class MainPage extends JFrame{
         };
         frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);  // postTable 세팅
 
+//        자세히 보기
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
             @Override
             public void mouseClicked(MouseEvent e) {
