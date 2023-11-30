@@ -1,6 +1,5 @@
 package back.dao;
 
-import back.response.mypage.UserInfoResponse;
 import database.DBConnector;
 
 import java.sql.Connection;
@@ -12,7 +11,7 @@ public class GetInfoDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-    public String getnickNameMethod(String uuid) {
+    public String getNickNameMethod(String uuid) {
         try {
             conn = DBConnector.getConnection();
             String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?;";

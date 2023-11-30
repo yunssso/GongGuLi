@@ -2,8 +2,10 @@ package front.myPage;
 
 import back.ResponseCode;
 import back.request.board.BoardInfoMoreRequest;
+import back.request.mypage.MyBoardInfoMoreRequest;
 import back.request.mypage.MyBoardInfoRequest;
 import back.response.board.BoardInfoMoreResponse;
+import back.response.mypage.MyBoardInfoMoreResponse;
 import back.response.mypage.MyBoardInfoResponse;
 import front.FrontSetting;
 import front.ReadMorePost;
@@ -67,16 +69,16 @@ public class MyPost extends JFrame{
                     if(e.getClickCount() == 2) {
                         int selectRow = postTable.getSelectedRow();
 
-                        BoardInfoMoreRequest boardInfoMoreRequest = new BoardInfoMoreRequest(selectRow, uuid);
+                        MyBoardInfoMoreRequest myBoardInfoMoreRequest = new MyBoardInfoMoreRequest(selectRow, uuid);
 
-                        objectOutputStream.writeObject(boardInfoMoreRequest);
+                        objectOutputStream.writeObject(myBoardInfoMoreRequest);
 
                         ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                         if (responseCode.getKey() == ResponseCode.BOARD_INFO_MORE_SUCCESS.getKey()) { //게시글 자세히 보기 성공
-                            BoardInfoMoreResponse boardInfoMoreResponse = (BoardInfoMoreResponse) objectInputStream.readObject();
+                            MyBoardInfoMoreResponse myBoardInfoMoreResponse = (MyBoardInfoMoreResponse) objectInputStream.readObject();
                             boolean isMainFrame = false;
-                            new ReadMorePost(isMainFrame, uuid, myFrame, boardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
+                            new ReadMorePost(isMainFrame, uuid, myFrame, myBoardInfoMoreResponse);   // 작성자 본인인지 아닌지는 생성자에서 판단.
                         } else { //게시글 자세히 보기 실패
                             showErrorDialog(responseCode.getValue());
                         }

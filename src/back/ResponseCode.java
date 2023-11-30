@@ -90,6 +90,10 @@ public enum ResponseCode {
     // GET MY HISTORY INFO
     GET_MY_HISTORY_INFO_SUCCESS(620, "내가 참여한 거래 목록 갱신이 완료되었습니다."),
     GET_MY_HISTORY_INFO_FAILURE(621, "내가 참여한 거래 목록 갱신이 완료되었습니다."),
+
+    // GET MY NICKNAME
+    GET_UUID_NICKNAME_SUCCESS(630, "UUID에 따른 닉네임 가져오기를 완료했습니다."),
+    GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다."),
     ;
 
     private final int code;

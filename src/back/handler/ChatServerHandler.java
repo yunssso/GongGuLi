@@ -48,7 +48,7 @@ public class ChatServerHandler extends Thread {
 			JoinMessageChatRoomRequest joinMessageChatRoomRequest = (JoinMessageChatRoomRequest) objectInputStream.readObject();
 			IsMasterDAO isMasterDAO = new IsMasterDAO();
 			GetInfoDAO getInfoDAO = new GetInfoDAO();
-			String nickName = getInfoDAO.getnickNameMethod(joinMessageChatRoomRequest.uuid());
+			String nickName = getInfoDAO.getNickNameMethod(joinMessageChatRoomRequest.uuid());
 
 			sendAll(new JoinMessageChatRoomResponse(nickName, "이(가) 입장했습니다.\n"));
 

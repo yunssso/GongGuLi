@@ -1,10 +1,6 @@
 package back.dao.board;
 
-import back.BoardDTO;
-import back.UserDTO;
 import back.dao.GetInfoDAO;
-import back.request.mypage.MyBoardInfoRequest;
-import back.request.mypage.MyHistoryInfoRequest;
 import back.response.mypage.MyBoardInfoResponse;
 import back.response.mypage.MyHistoryInfoResponse;
 import database.DBConnector;
@@ -135,7 +131,7 @@ public class PrintBoardDAO {
 
                     if (rs.next()) {
                         String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
-                        String writer = getInfoDAO.getnickNameMethod(rs.getString("uuid"));
+                        String writer = getInfoDAO.getNickNameMethod(rs.getString("uuid"));
 
                         MyHistoryInfoResponse myHistoryInfoResponse = new MyHistoryInfoResponse(
                                 rs.getString("region"),

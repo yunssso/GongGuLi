@@ -115,14 +115,15 @@ public class BoardInfoHandler extends Thread {
         try {
             ReadPostDAO readPostDAO = new ReadPostDAO();
 
-            MyBoardInfoMoreResponse myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow());
+            MyBoardInfoMoreResponse myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow(), myBoardInfoMoreRequest.uuid());
+            System.out.println(myBoardInfoMoreRequest.selectRow());
 
             if (myBoardInfoMoreResponse == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
             } else {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_SUCCESS);
 
-                objectOutputStream.writeObject(myBoardInfoMoreRequest);
+                objectOutputStream.writeObject(myBoardInfoMoreResponse);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
