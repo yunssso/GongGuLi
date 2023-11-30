@@ -94,11 +94,8 @@ public class AccountHandler extends Thread {
 			} else if (signUpRequest.region().equals("거주 지역")) {
 				objectOutputStream.writeObject(ResponseCode.RESIDENCE_AREA_NOT_SELECTED);
 			} else {
-				if (!signUpDAO.signUp(signUpRequest)) {
-					objectOutputStream.writeObject(ResponseCode.SIGNUP_FAILURE);
-				} else {
-					objectOutputStream.writeObject(ResponseCode.SIGNUP_SUCCESS);
-				}
+				ResponseCode responseCode = signUpDAO.signUp(signUpRequest);
+				objectOutputStream.writeObject(responseCode);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
