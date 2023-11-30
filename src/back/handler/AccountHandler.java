@@ -5,6 +5,7 @@ import java.net.Socket;
 
 import back.ResponseCode;
 import back.dao.GetInfoDAO;
+import back.dao.user.AccountDAO;
 import back.dao.user.FindUserDAO;
 import back.dao.user.LogInDAO;
 import back.dao.user.SignUpDAO;
@@ -51,6 +52,8 @@ public class AccountHandler extends Thread {
 				FindUserPasswordMethod(findUserPasswordRequest);
 			} else if (readObj instanceof GetNickNameRequest getNickNameRequest) {
 				getNickNameMethod(getNickNameRequest);
+			} else if (readObj instanceof ModifyUserInfoRequest modifyUserInfoRequest) {
+				modifyUserInfo(modifyUserInfoRequest);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -220,6 +223,20 @@ public class AccountHandler extends Thread {
 			} else {
 				objectOutputStream.writeObject(ResponseCode.GET_UUID_NICKNAME_SUCCESS);
 				objectOutputStream.writeObject(getNickNameResponse);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void modifyUserInfo(ModifyUserInfoRequest modifyUserInfoRequest) {
+		try {
+			AccountDAO accountDAO = new AccountDAO();
+			int result = accountDAO.modifyUserInfo(modifyUserInfoRequest);
+			if (result == 1) {
+				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_SUCCESS);
+			} else {
+				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_FAILURE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

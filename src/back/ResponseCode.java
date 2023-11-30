@@ -94,6 +94,10 @@ public enum ResponseCode {
     // GET MY NICKNAME
     GET_UUID_NICKNAME_SUCCESS(630, "UUID에 따른 닉네임 가져오기를 완료했습니다."),
     GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다."),
+
+    // MODIFY USER INFO
+    MODIFY_USER_INFO_SUCCESS(640, "유저 정보 수정을 완료했습니다."),
+    MODIFY_USER_INFO_FAILURE(641, "유저 정보 수정을 실패했습니다."),
     ;
 
     private final int code;

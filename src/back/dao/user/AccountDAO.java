@@ -1,5 +1,6 @@
 package back.dao.user;
 
+import back.request.account.ModifyUserInfoRequest;
 import back.response.mypage.UserInfoResponse;
 import database.DBConnector;
 
@@ -42,9 +43,24 @@ public class AccountDAO {
         return null;
     }
 
-//    내 정보 수정
-    public void modifyUserInfo() {
-
+    //    내 정보 수정
+    public int modifyUserInfo(ModifyUserInfoRequest modifyUserInfoRequest) {
+        try {
+            conn = DBConnector.getConnection();
+            String updateSQL = "UPDATE user SET nickName = ?, password = ?, region = ? where uuid = ?";
+            pt = conn.prepareStatement(updateSQL);
+            pt.setString(1, modifyUserInfoRequest.nickName());
+            pt.setString(2, modifyUserInfoRequest.password());
+            pt.setString(3, modifyUserInfoRequest.region());
+            pt.setString(4, modifyUserInfoRequest.uuid());
+            if (!pt.execute()) {
+                return 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("정보 수정 DB 오류");
+        }
+        return 0;
     }
 
 //    회원 탈퇴
