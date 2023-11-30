@@ -101,7 +101,7 @@ public class UserInfo {
         NickDupBtn.addActionListener(new ActionListener() {  // 닉네임 중복 확인 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (checkDAO.nickNameCheck(userNickNameField.getText())) {
+                if (true) {
                     // 닉네임 변경 가능.
                     frontSetting.showCompleteDialog("해당 닉네임은 사용 가능합니다.");
                     checkNickDup = true;
@@ -132,7 +132,7 @@ public class UserInfo {
         userRegionLabel.setFont(frontSetting.f16);
 
         JComboBox userRegionBtn = new JComboBox(frontSetting.regionArr);
-        userRegionBtn.setSelectedItem(userDTO.getRegion());
+        userRegionBtn.setSelectedItem("test");
         userRegionBtn.setBounds(160, 180, 95, 30);
         userRegionBtn.setFont(frontSetting.f16);
 
@@ -146,7 +146,7 @@ public class UserInfo {
         JLabel userBirthLabel = new JLabel("생년월일");
         userBirthLabel.setBounds(35, 244, 300, 30);
         userBirthLabel.setFont(frontSetting.f16);
-        JLabel userBirth = new JLabel(userDTO.getBirth());
+        JLabel userBirth = new JLabel("test");
         userBirth.setBounds(160, 244, 300, 30);
         userBirth.setFont(frontSetting.f16);
 
@@ -165,7 +165,7 @@ public class UserInfo {
                 boolean changeNick = false;
                 boolean checkModify = false;
 
-                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;
+                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;      //  이게 뭔지 모르겠는데 설명좀
 
                 if (userPWField.getText().isBlank() || userPWCheckField.getText().isBlank())
                     frontSetting.showErrorDialog("비밀번호를 입력해주세요.");

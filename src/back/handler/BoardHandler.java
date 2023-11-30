@@ -11,7 +11,6 @@ import back.request.board.DeleteBoardRequest;
 import back.request.board.ModifyMyPostRequest;
 import back.request.board.PostBoardRequest;
 import back.response.board.PostBoardResponse;
-import serverStructure.ChatServer;
 
 import java.io.*;
 import java.net.Socket;
@@ -86,7 +85,7 @@ public class BoardHandler extends Thread {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
                     int port = joinChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
-                    String nickName = getInfoDAO.getnickNameMethod(postBoardRequest.uuid());
+                    String nickName = getInfoDAO.getNickNameMethod(postBoardRequest.uuid());
 
                     if (!postingDAO.posting(postBoardRequest, port) || nickName == null) {   //  DB로 게시글 생성 요청
                         objectOutputStream.writeObject(ResponseCode.POST_BOARD_FAILURE); // 게시글 생성 실패 응답을 보낸다.

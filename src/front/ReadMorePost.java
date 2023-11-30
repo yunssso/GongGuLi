@@ -1,10 +1,14 @@
 package front;
 
 import back.ResponseCode;
+import back.request.account.GetNickNameRequest;
 import back.request.board.DeleteBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
+import back.request.mypage.MyBoardInfoMoreRequest;
+import back.response.account.GetNickNameResponse;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.chatroom.JoinChatRoomResponse;
+import back.response.mypage.MyBoardInfoMoreResponse;
 import front.mainPage.MainPage;
 import front.myPage.MyPage;
 
@@ -23,6 +27,7 @@ public class ReadMorePost {
     private String uuid = null;
 
     private BoardInfoMoreResponse boardInfoMoreResponse;
+    private MyBoardInfoMoreResponse myBoardInfoMoreResponse;
     private int port = 0;
 
     private JFrame frame;
@@ -42,6 +47,17 @@ public class ReadMorePost {
         } else {
             readMorePost();
         }
+    }
+
+    public ReadMorePost(boolean isMainFrame, String uuid, JFrame frame, MyBoardInfoMoreResponse myBoardInfoMoreResponse) {
+        this.uuid = uuid;
+        this.frame = frame;
+        this.isMainFrame = isMainFrame;
+        this.port = myBoardInfoMoreResponse.port();
+        String nickName = "";
+        boardInfoMoreResponse = new BoardInfoMoreResponse(myBoardInfoMoreResponse.port(), myBoardInfoMoreResponse.title(), myBoardInfoMoreResponse.region(), myBoardInfoMoreResponse.category(), nickName, myBoardInfoMoreResponse.peopleNum(), myBoardInfoMoreResponse.content(), myBoardInfoMoreResponse.view(), true);
+
+        readMoreMyPost();
     }
 
     /*테이블 값 더블 클릭 시 자세히 보기(작성자 타인)*/
@@ -230,6 +246,30 @@ public class ReadMorePost {
         c.add(viewCountLabel);
 
         readMoreFrame.setVisible(true);
+    }
+
+    private String getNickNameMethod(String uuid) {
+        String nickName = "";
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ){
+            GetNickNameRequest getNickNameRequest = new GetNickNameRequest(uuid);
+            objectOutputStream.writeObject(getNickNameRequest);
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.GET_UUID_NICKNAME_SUCCESS.getKey()) { // 닉네임 가져오기 성공
+                GetNickNameResponse getNickNameResponse = (GetNickNameResponse) objectInputStream.readObject();
+                nickName = getNickNameResponse.nickName();
+            } else { // 닉네임 가져오기 실패
+                showErrorDialog(responseCode.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nickName;
     }
 
     private void showErrorDialog(String message) {
