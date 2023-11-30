@@ -3,6 +3,7 @@ package back.handler;
 import back.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.board.PrintBoardDAO;
+import back.dao.user.AccountDAO;
 import back.request.mypage.MyBoardInfoRequest;
 import back.request.mypage.MyHistoryInfoRequest;
 import back.request.mypage.UserInfoRequest;
@@ -87,9 +88,8 @@ public class MyPageHandler extends Thread {
     /*유저정보 갱신 Response를 보내는 메소드*/
     private void sendUserInfo(UserInfoRequest userInfoRequest) {
         try {
-            GetInfoDAO getInfoDAO = new GetInfoDAO();
-
-            UserInfoResponse userInfoResponse = getInfoDAO.getUserInfo(userInfoRequest.uuid());
+            AccountDAO accountDAO = new AccountDAO();
+            UserInfoResponse userInfoResponse = accountDAO.getMyInfo(userInfoRequest.uuid());
 
             if (userInfoResponse == null) {
                 objectOutputStream.writeObject(ResponseCode.GET_USERINFO_FAILURE);

@@ -1,6 +1,8 @@
 package back.handler;
 
 import back.ResponseCode;
+import back.dao.GetInfoDAO;
+import back.dao.chatting.IsMasterDAO;
 import back.request.chatroom.GetParticipantsChatRoomRequest;
 import back.request.chatroom.JoinMessageChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
@@ -19,11 +21,14 @@ public class ChatServerHandler extends Thread {
 
 	private ArrayList<ChatServerHandler> list = null;
 
+	private int port;
+
 	private Boolean master = false; //방장 권한
 
 	public ChatServerHandler(Socket socket, ArrayList<ChatServerHandler> list) {
 		try {
 			this.list = list;
+			port = socket.getLocalPort();
 
 			//서버 -> 클라이언트 Output Stream
 			OutputStream outputStream = socket.getOutputStream();
@@ -41,10 +46,13 @@ public class ChatServerHandler extends Thread {
 	public void run() {
 		try {
 			JoinMessageChatRoomRequest joinMessageChatRoomRequest = (JoinMessageChatRoomRequest) objectInputStream.readObject();
+			IsMasterDAO isMasterDAO = new IsMasterDAO();
+			GetInfoDAO getInfoDAO = new GetInfoDAO();
+			String nickName = getInfoDAO.getnickNameMethod(joinMessageChatRoomRequest.uuid());
 
-			sendAll(new JoinMessageChatRoomResponse(joinMessageChatRoomRequest.nickName(), "이(가) 입장했습니다.\n"));
+			sendAll(new JoinMessageChatRoomResponse(nickName, "이(가) 입장했습니다.\n"));
 
-			if (list.size() == 1) { //처음으로 접속한 사람 즉 글쓴이에게 방장 권한 부여
+			if (isMasterDAO.isMaster(port, joinMessageChatRoomRequest.uuid())) {	//	해당 채팅방의 방장인지 판단하는 DAO
 				master = true;
 			}
 
@@ -54,14 +62,14 @@ public class ChatServerHandler extends Thread {
 				if (readObj instanceof MessageChatRoomRequest messageChatRoomRequest) { //클라이언트 -> 서버 메세지 요청
 					if (master) { // 방장이 메세지를 보냈을 때
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
-								messageChatRoomRequest.nickName() + "(방장)",
+								nickName + "(방장)",
 								messageChatRoomRequest.message() + "\n"
 						);
 
 						sendAll(messageChatRoomResponse);
 					} else { // 이외 사용자가 메세지를 보냈을 때
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
-								messageChatRoomRequest.nickName(),
+								nickName,
 								messageChatRoomRequest.message() + "\n"
 						);
 
@@ -70,7 +78,7 @@ public class ChatServerHandler extends Thread {
 				} else if (readObj instanceof KickChatRoomRequest kickChatRoomRequest) { // 클라이언트 -> 서버 강퇴 요청
 					if (master) { // 방장일 경우에만 강퇴 요청을 accept
 						for (ChatServerHandler handler : list) {
-							if (kickChatRoomRequest.target_nickName().equals(handler.getnickName())) {
+							if (kickChatRoomRequest.target_nickName().equals(handler.getnickName())) {	//	???? getNickName() 이게 왜 필요한거??? -민재
 								sendAll(new MessageChatRoomResponse("", kickChatRoomRequest.target_nickName() + "이(가) 강제퇴장 당했습니다.\n"));
 
 								handler.objectInputStream.close();

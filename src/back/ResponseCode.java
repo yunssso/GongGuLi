@@ -65,6 +65,7 @@ public enum ResponseCode {
     // JOIN CHATROOM
     JOIN_CHATROOM_SUCCESS(500, "채팅방 입장이 완료되었습니다."),
     JOIN_CHATROOM_FAILURE(501, "채팅방 입장이 실패하였습니다."),
+    CHATROOM_FULL(502, "채팅방 인원이 가득 찼습니다."),
 
     // LEAVE CHATROOM
     LEAVE_CHATROOM_SUCCESS(510, "채팅방 퇴장이 완료되었습니다."),

@@ -26,13 +26,13 @@ public class LogInDAO {
                 rs = pt.executeQuery();
                 rs.next();
                 logInResult = rs.getString(1);   // 로그인 성공
+                pt.close();
+                conn.close();
             } else if (logInCheckResult == 2) {
                 logInResult = "Password Does Not Match";        // 비밀번호 틀림
             } else if (logInCheckResult == 3) {
                 logInResult = "Id Does Not Exist";      // 아이디가 존재하지 않음
             }
-            pt.close();
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

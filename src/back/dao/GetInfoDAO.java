@@ -13,10 +13,9 @@ public class GetInfoDAO {
     ResultSet rs = null;
 
     public String getnickNameMethod(String uuid) {
-        String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?;";
-
         try {
             conn = DBConnector.getConnection();
+            String nickNameSQL = "SELECT nickName FROM user WHERE uuid = ?;";
             pt = conn.prepareStatement(nickNameSQL);
             pt.setString(1, uuid);
             rs = pt.executeQuery();
@@ -40,10 +39,9 @@ public class GetInfoDAO {
     public int getchatPortMethod(int selectRow) {
         selectRow++;
 
-        String selectSQL = "SELECT chatPort FROM boardView WHERE num = ?;";
-
         try {
             conn = DBConnector.getConnection();
+            String selectSQL = "SELECT chatPort FROM boardView WHERE num = ?;";
             pt = conn.prepareStatement(selectSQL);
             pt.setInt(1, selectRow);
             rs = pt.executeQuery();
@@ -63,33 +61,47 @@ public class GetInfoDAO {
         return -1; // chatPort를 가져오지 못했을 때의 반환값, 적절한 값으로 변경 필요
     }
 
-    public UserInfoResponse getUserInfo(String uuid) {
-        String userInfoSQL = "SELECT nickName, name, userId, region, phoneNum, birth FROM user WHERE uuid = ?;";
-
+    //    채팅방의 현재 인원수를 가져오는 함수
+    public int getNowPeopleNum(int port) {
         try {
             conn = DBConnector.getConnection();
-            pt = conn.prepareStatement(userInfoSQL);
-            pt.setString(1, uuid);
+            String selectSQL = "SELECT nowPeopleNum FROM chattingRoom WHERE port = ?;";
+            pt = conn.prepareStatement(selectSQL);
+            pt.setInt(1, port);
             rs = pt.executeQuery();
-
             if (rs.next()) {
-                UserInfoResponse userInfoResponse = new UserInfoResponse(
-                        rs.getString("nickName"),
-                        rs.getString("name"),
-                        rs.getString("userId"),
-                        rs.getString("region"),
-                        rs.getString("phoneNum"),
-                        rs.getString("birth"));
+                int nowPeopleNum = Integer.parseInt(rs.getString(1));
 
                 rs.close();
                 pt.close();
                 conn.close();
 
-                return userInfoResponse;
+                return nowPeopleNum;
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return -1;
+    }
+    public int getMaxPeopleNum(int port) {
+        try {
+            conn = DBConnector.getConnection();
+            String selectSQL = "SELECT maxPeopleNum FROM chattingRoom WHERE port = ?;";
+            pt = conn.prepareStatement(selectSQL);
+            pt.setInt(1, port);
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                int maxPeopleNum = Integer.parseInt(rs.getString(1));
+
+                rs.close();
+                pt.close();
+                conn.close();
+
+                return maxPeopleNum;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

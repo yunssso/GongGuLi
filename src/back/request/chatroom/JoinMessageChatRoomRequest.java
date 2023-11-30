@@ -2,4 +2,4 @@ package back.request.chatroom;
 
 import java.io.Serializable;
 
-public record JoinMessageChatRoomRequest(String nickName) implements Serializable {}
+public record JoinMessageChatRoomRequest(String uuid) implements Serializable {}

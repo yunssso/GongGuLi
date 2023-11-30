@@ -1,17 +1,19 @@
 package back.dao.user;
 
+import back.ResponseCode;
 import back.request.account.SignUpRequest;
 import database.DBConnector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.UUID;
 
 public class SignUpDAO {
     Connection conn = null;
     PreparedStatement pt = null;
 
-    public boolean signUp(SignUpRequest signUpInfo) {
+    public ResponseCode signUp(SignUpRequest signUpInfo) {
         String uuid = UUID.randomUUID().toString();
         String signInSQL = "INSERT INTO user (nickName, name, userId, password, region, phoneNum, birth, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -28,15 +30,20 @@ public class SignUpDAO {
             pt.setString(8, uuid);
 
             if (!pt.execute()) {
-                return true;
+                return ResponseCode.SIGNUP_SUCCESS;   //  회원가입 성공
             }
 
             pt.close();
             conn.close();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (SQLIntegrityConstraintViolationException sqlE) {
+            if (sqlE.getErrorCode() == 40) {
+                return ResponseCode.ID_DUPLICATE;   //  닉네임 중복
+            } else if (sqlE.getErrorCode() == 41) {
+                return ResponseCode.PHONE_NUMBER_DUPLICATE;   //  핸드폰 번호 중복
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        return false;
+        return ResponseCode.SIGNUP_FAILURE;
     }
 }
