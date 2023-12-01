@@ -85,11 +85,14 @@ public class ChatClient extends JFrame implements Runnable{
         chatTextArea = new JTextArea();
         chatTextArea.setEditable(false); // 편집 불가능하도록 설정
         chatTextArea.setForeground(Color.BLACK);
+        chatTextArea.setLineWrap(true);
+        chatTextArea.setBackground(c3);
         scrollPane = new JScrollPane(chatTextArea);
 
         tf = new JTextField("");
-        tf.setBounds(20, 500, 280, 50);
+        tf.setPreferredSize(new Dimension(300, 50));
         tf.setBackground(c1);
+        tf.setBorder(BorderFactory.createLineBorder(new Color(200,200,200)));
 
         //Enter를 입력할 경우에 sendMessage 실행
         tf.addActionListener(new ActionListener() {
@@ -102,7 +105,6 @@ public class ChatClient extends JFrame implements Runnable{
         // 참가자 문구 생성
         participantsButton = new JButton("참가자 : 0");
         participantsButton.setHorizontalAlignment(JButton.RIGHT);
-
         participantsButton.setBackground(c1);
 
         participantsButton.addActionListener(new ActionListener() {
@@ -157,7 +159,6 @@ public class ChatClient extends JFrame implements Runnable{
 
         participantsFrame.setVisible(true);
     }
-
     /*서버 Response를 받는 메소드*/
     @Override
     public void run() {
