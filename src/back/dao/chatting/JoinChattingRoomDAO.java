@@ -59,7 +59,11 @@ public class JoinChattingRoomDAO {
             try {
                 ServerSocket serversocket = new ServerSocket(port);
                 System.out.println(port); // 생성된 채팅방 포트 확인용
-                new ChatServer(serversocket).start();
+
+                MakeChattingRoomDAO makeChattingRoomDAO = new MakeChattingRoomDAO();
+                if (makeChattingRoomDAO.makeChattingRoom() == 1) {
+                    new ChatServer(serversocket).start();
+                }
                 break; // 유효한 포트를 찾으면 루프 종료
             } catch (Exception exception) {
                 exception.printStackTrace();

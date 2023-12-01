@@ -50,6 +50,7 @@ public class ReadMorePost {
     }
 
     public ReadMorePost(boolean isMainFrame, String uuid, JFrame frame, MyBoardInfoMoreResponse myBoardInfoMoreResponse) {
+//        마이페이지에서 자세히 보기 할 때 이 생성자 사용
         this.uuid = uuid;
         this.frame = frame;
         this.isMainFrame = isMainFrame;
