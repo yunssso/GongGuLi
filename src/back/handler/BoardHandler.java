@@ -7,6 +7,7 @@ import back.dao.board.ModifyMyPostDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.dao.board.PostingDAO;
 
+import back.dao.chatting.MakeChattingRoomDAO;
 import back.request.board.DeleteBoardRequest;
 import back.request.board.ModifyMyPostRequest;
 import back.request.board.PostBoardRequest;
@@ -67,6 +68,7 @@ public class BoardHandler extends Thread {
             PostingDAO postingDAO = new PostingDAO();
             GetInfoDAO getInfoDAO = new GetInfoDAO();
             JoinChattingRoomDAO joinChattingRoomDAO = new JoinChattingRoomDAO();
+            MakeChattingRoomDAO makeChattingRoomDAO = new MakeChattingRoomDAO();
 
             if (postBoardRequest.title().isBlank()) {
                 objectOutputStream.writeObject(ResponseCode.TITLE_MISSING);
@@ -84,7 +86,13 @@ public class BoardHandler extends Thread {
                 } else if (Integer.parseInt(postBoardRequest.maxPeopleNum()) <= 1) {
                     objectOutputStream.writeObject(ResponseCode.PEOPLE_NUM_UNDER_LIMIT);
                 } else {
-                    int port = joinChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
+                    int port = makeChattingRoomDAO.assignChatRoomPort(); // 랜덤한 채팅방 포트를 할당한다.
+                    if (makeChattingRoomDAO.makeChattingRoom(port, postBoardRequest) == 1) {
+                        System.out.println("채팅방 생성 성공");
+                    } else {
+                        System.out.println("채팅방 생성 실패");
+                    }
+
                     String nickName = getInfoDAO.getNickNameMethod(postBoardRequest.uuid());
 
                     if (!postingDAO.posting(postBoardRequest, port) || nickName == null) {   //  DB로 게시글 생성 요청

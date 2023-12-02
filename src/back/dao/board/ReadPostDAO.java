@@ -81,7 +81,6 @@ public class ReadPostDAO {
                 if (rs.next()) {
                     String peoplenum = rs.getInt("nowPeopleNum") + "/" + rs.getString("maxPeopleNum");
 
-                    System.out.println("?");
                     MyBoardInfoMoreResponse myBoardInfoMoreResponse = new MyBoardInfoMoreResponse(
                             rs.getInt("port"),
                             rs.getString("title"),
