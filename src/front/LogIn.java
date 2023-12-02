@@ -18,7 +18,7 @@ public class LogIn extends JFrame {
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
-    private Font f2 = new Font("SUITE", Font.BOLD, 9);
+    private Font f2 = new Font("SUITE", Font.PLAIN, 11);
 
     private JTextField idText;
     private JPasswordField passwordText;
@@ -45,12 +45,12 @@ public class LogIn extends JFrame {
         leftPanel.setBounds(0, 0, 560, 700);
         leftPanel.setBackground(c1);
 
-        ImageIcon imageIcon = new ImageIcon("img/logo.png");
-        Image image = imageIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
+        ImageIcon imageIcon = new ImageIcon("img/메인로고.png");
+        Image image = imageIcon.getImage().getScaledInstance(452, 285, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(image);
 
         JLabel imageLabel = new JLabel(scaledImageIcon);
-        imageLabel.setBounds(25, 10, 300, 300);
+        imageLabel.setBounds(40, 120, 456, 300);
         leftPanel.add(imageLabel);
         add(leftPanel);
     }
@@ -118,7 +118,7 @@ public class LogIn extends JFrame {
         verticalLineLabel.setBounds(799, 484, 100, 30);
 
         // 비밀번호 찾기 버튼
-        JButton pwSearchButton = new JButton("비밀번호 찾기");
+        JButton pwSearchButton = new JButton("  비밀번호 찾기");
         pwSearchButton.setBounds(800, 485, 100, 30);
         pwSearchButton.setFont(f2);
         pwSearchButton.setOpaque(false);

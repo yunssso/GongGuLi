@@ -14,7 +14,7 @@ public class SignUp extends JDialog{
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
-    private Font f2 = new Font("SUITE", Font.BOLD, 10);
+    private Font f2 = new Font("SUITE", Font.BOLD, 14);
     
     private JTextField idText;
     private JPasswordField passwordText;
@@ -157,6 +157,7 @@ public class SignUp extends JDialog{
         residenceLabel.setFont(f1);
         residenceList = new JComboBox<>(new String[]{"서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"});
         residenceList.setBounds(758, 475, 200, 30);
+        residenceList.setFont(f2);
 
         panel.add(residenceLabel);
         panel.add(residenceList);
@@ -238,7 +239,7 @@ public class SignUp extends JDialog{
         backButtonLabel.setIcon(resizedIcon);
 
         // 라벨의 위치와 크기 설정
-        backButtonLabel.setBounds(150, 50, newWidth, newHeight);
+        backButtonLabel.setBounds(50, 40, newWidth, newHeight);
 
         // 프레임에 라벨 추가
         add(backButtonLabel);
