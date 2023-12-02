@@ -1,7 +1,6 @@
 package back.handler;
 
-import back.ResponseCode;
-import back.dao.GetInfoDAO;
+import back.response.ResponseCode;
 import back.dao.board.PrintBoardDAO;
 import back.dao.user.AccountDAO;
 import back.request.mypage.MyBoardInfoRequest;

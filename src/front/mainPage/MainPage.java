@@ -1,6 +1,6 @@
 package front.mainPage;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.board.BoardInfoMoreRequest;
 import back.request.board.BoardInfoRequest;
 import back.response.board.BoardInfoMoreResponse;

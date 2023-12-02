@@ -1,10 +1,8 @@
 package front.myPage;
 
-import back.ResponseCode;
-import back.request.board.BoardInfoMoreRequest;
+import back.response.ResponseCode;
 import back.request.mypage.MyBoardInfoMoreRequest;
 import back.request.mypage.MyBoardInfoRequest;
-import back.response.board.BoardInfoMoreResponse;
 import back.response.mypage.MyBoardInfoMoreResponse;
 import back.response.mypage.MyBoardInfoResponse;
 import front.FrontSetting;

@@ -1,6 +1,6 @@
 package back.handler;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.board.DeleteBoardDAO;
 import back.dao.board.ModifyMyPostDAO;

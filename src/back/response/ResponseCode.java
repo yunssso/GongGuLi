@@ -1,4 +1,4 @@
-package back;
+package back.response;
 
 public enum ResponseCode {
     // COMMON ACCOUNT
@@ -95,9 +95,13 @@ public enum ResponseCode {
     GET_UUID_NICKNAME_SUCCESS(630, "UUID에 따른 닉네임 가져오기를 완료했습니다."),
     GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다."),
 
+    // NICKNAME CHECK
+    NICKNAME_CHECK_POSSIBLE(700, "닉네임 변경이 가능합니다."),
+    NICKNAME_CHECK_IMPOSSIBLE(701, "닉네임 변경이 불가능합니다."),
+
     // MODIFY USER INFO
-    MODIFY_USER_INFO_SUCCESS(640, "유저 정보 수정을 완료했습니다."),
-    MODIFY_USER_INFO_FAILURE(641, "유저 정보 수정을 실패했습니다."),
+    MODIFY_USER_INFO_SUCCESS(800, "유저 정보 수정을 완료했습니다."),
+    MODIFY_USER_INFO_FAILURE(801, "유저 정보 수정을 실패했습니다."),
     ;
 
     private final int code;

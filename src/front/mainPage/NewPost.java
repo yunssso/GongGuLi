@@ -1,10 +1,8 @@
 package front.mainPage;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.board.PostBoardRequest;
-import back.request.chatroom.JoinChatRoomRequest;
 import back.response.board.PostBoardResponse;
-import back.response.chatroom.JoinChatRoomResponse;
 import front.ChatClient;
 import front.FrontSetting;
 import front.RoundedButton;

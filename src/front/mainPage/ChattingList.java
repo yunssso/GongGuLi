@@ -1,6 +1,6 @@
 package front.mainPage;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.chatroom.GetChattingRoomRequest;
 import back.response.chatroom.GetChattingRoomResponse;
 import front.FrontSetting;

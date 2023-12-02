@@ -1,12 +1,11 @@
 package front;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.chatroom.GetParticipantsChatRoomRequest;
 import back.request.chatroom.JoinMessageChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
 import back.request.chatroom.MessageChatRoomRequest;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
-import back.response.chatroom.JoinChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
 

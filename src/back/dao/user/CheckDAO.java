@@ -1,4 +1,4 @@
-package back.dao;
+package back.dao.user;
 
 import database.DBConnector;
 
@@ -25,7 +25,7 @@ public class CheckDAO {
                 int cnt = rs.getInt("cnt");
                 System.out.println(cnt);
                 if (cnt == 0) {
-                    nickNameCheck = true;
+                    nickNameCheck = true;   //  닉네임 변경 가능
                 }
             }
         } catch (Exception e) {
