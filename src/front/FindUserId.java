@@ -1,6 +1,6 @@
 package front;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.account.FindUserIdRequest;
 import back.response.account.FindUserIdResponse;
 

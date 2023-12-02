@@ -1,13 +1,11 @@
 package front;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.account.GetNickNameRequest;
 import back.request.board.DeleteBoardRequest;
 import back.request.chatroom.JoinChatRoomRequest;
-import back.request.mypage.MyBoardInfoMoreRequest;
 import back.response.account.GetNickNameResponse;
 import back.response.board.BoardInfoMoreResponse;
-import back.response.chatroom.JoinChatRoomResponse;
 import back.response.mypage.MyBoardInfoMoreResponse;
 import front.mainPage.MainPage;
 import front.myPage.MyPage;
@@ -33,7 +31,6 @@ public class ReadMorePost {
     private JFrame frame;
     private JFrame readMoreFrame;
     private boolean isMainFrame;
-
 
     public ReadMorePost(boolean isMainFrame, String uuid, JFrame frame, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;

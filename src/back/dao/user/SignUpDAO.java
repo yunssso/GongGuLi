@@ -1,6 +1,6 @@
 package back.dao.user;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.account.SignUpRequest;
 import database.DBConnector;
 

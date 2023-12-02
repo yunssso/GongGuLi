@@ -1,13 +1,11 @@
 package back.handler;
 
-import back.ResponseCode;
-import back.dao.GetInfoDAO;
+import back.response.ResponseCode;
 import back.dao.chatting.GetChatRoomListDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.request.chatroom.GetChattingRoomRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.chatroom.GetChattingRoomResponse;
-import back.response.chatroom.JoinChatRoomResponse;
 
 import java.io.*;
 import java.net.Socket;

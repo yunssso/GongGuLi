@@ -1,9 +1,7 @@
 package front.myPage;
 
-import back.dao.CheckDAO;
+import back.dao.user.CheckDAO;
 import back.UserDTO;
-import back.response.board.BoardInfoMoreResponse;
-import back.response.mypage.MyBoardInfoMoreResponse;
 import front.*;
 import front.mainPage.MainPage;
 

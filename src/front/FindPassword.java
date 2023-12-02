@@ -1,6 +1,6 @@
 package front;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.account.FindUserPasswordRequest;
 import back.response.account.FindUserPasswordResponse;
 

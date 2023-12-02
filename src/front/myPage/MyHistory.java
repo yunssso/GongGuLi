@@ -1,6 +1,6 @@
 package front.myPage;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.mypage.MyHistoryInfoRequest;
 import back.response.board.BoardInfoMoreResponse;
 import back.response.mypage.MyHistoryInfoResponse;

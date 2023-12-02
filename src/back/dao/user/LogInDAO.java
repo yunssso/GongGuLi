@@ -1,6 +1,5 @@
 package back.dao.user;
 
-import back.dao.CheckDAO;
 import back.request.account.LoginRequest;
 import database.DBConnector;
 

@@ -3,7 +3,8 @@ package back.handler;
 import java.io.*;
 import java.net.Socket;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
+import back.dao.user.CheckDAO;
 import back.dao.GetInfoDAO;
 import back.dao.user.AccountDAO;
 import back.dao.user.FindUserDAO;
@@ -54,6 +55,8 @@ public class AccountHandler extends Thread {
 				getNickNameMethod(getNickNameRequest);
 			} else if (readObj instanceof ModifyUserInfoRequest modifyUserInfoRequest) {
 				modifyUserInfo(modifyUserInfoRequest);
+			} else if (readObj instanceof NickNameCheckRequest nickNameCheckRequest) {
+				nickNameCheckMethod(nickNameCheckRequest);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -237,6 +240,19 @@ public class AccountHandler extends Thread {
 				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_SUCCESS);
 			} else {
 				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_FAILURE);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void nickNameCheckMethod(NickNameCheckRequest nickNameCheckRequest) {
+		try {
+			CheckDAO checkDAO = new CheckDAO();
+			if (checkDAO.nickNameCheck(nickNameCheckRequest.inpNickName())) {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_POSSIBLE);
+			} else {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_IMPOSSIBLE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

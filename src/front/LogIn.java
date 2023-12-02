@@ -1,6 +1,6 @@
 package front;
 
-import back.ResponseCode;
+import back.response.ResponseCode;
 import back.request.account.LoginRequest;
 import back.response.account.LoginResponse;
 import front.mainPage.MainPage;

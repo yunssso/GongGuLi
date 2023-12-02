@@ -1,14 +1,11 @@
 package front.myPage;
 
-import back.ResponseCode;
+import back.request.account.NickNameCheckRequest;
+import back.response.ResponseCode;
 import back.UserDTO;
-import back.dao.CheckDAO;
+import back.dao.user.CheckDAO;
 import back.request.account.ModifyUserInfoRequest;
-import back.request.mypage.MyBoardInfoRequest;
-import back.request.mypage.MyHistoryInfoRequest;
 import back.request.mypage.UserInfoRequest;
-import back.response.mypage.MyBoardInfoResponse;
-import back.response.mypage.MyHistoryInfoResponse;
 import back.response.mypage.UserInfoResponse;
 import front.FrontSetting;
 import front.ImagePanel;
@@ -24,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.List;
 
 public class UserInfo {
     private FrontSetting frontSetting = new FrontSetting();
@@ -105,7 +101,7 @@ public class UserInfo {
         NickDupBtn.addActionListener(new ActionListener() {  // 닉네임 중복 확인 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (true) {
+                if (isCheckNickDup(userNickNameField.getText())) {
                     // 닉네임 변경 가능.
                     frontSetting.showCompleteDialog("해당 닉네임은 사용 가능합니다.");
                     checkNickDup = true;
@@ -159,7 +155,6 @@ public class UserInfo {
         modifyUserInfoBtn.addActionListener(new ActionListener() {  // 원래 본인 지역 먼저 뜨게 가능한지
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 닉네임 중복 확인 기능 필요
                 String nickName = userNickNameField.getText();
                 char[] userPW = userPWField.getPassword();
                 char[] userPWC = userPWCheckField.getPassword();
@@ -168,31 +163,32 @@ public class UserInfo {
                 boolean changeNick = false;
                 boolean checkModify = false;
 
-                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;      //  이게 뭔지 모르겠는데 설명좀
+//                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;      //  기존 닉네임이랑 같은지 확인하는건가???
 
-                if (userPWField.getText().isBlank() || userPWCheckField.getText().isBlank())
-                    frontSetting.showErrorDialog("비밀번호를 입력해주세요.");
-                else if (!userPWField.getText().equals(userPWCheckField.getText()))
-                    frontSetting.showErrorDialog("비밀번호가 일치하지 않습니다.");
-                else if (userPWStr.length() < 8 ||
-                        !userPWStr.matches(".*[a-zA-Z].*") || // 영어 포함
-                        !userPWStr.matches(".*\\d.*") ||      // 숫자 포함
-                        !userPWStr.matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
-                    frontSetting.showErrorDialog("비밀번호는 영어, 숫자, 특수문자를 포함하고 8글자 이상이어야 합니다.");
-                } else if (userRegionBtn.getSelectedItem().equals(" --")) frontSetting.showErrorDialog("지역을 선택해주세요.");
-                else if (userNickNameField.getText().isBlank()) frontSetting.showErrorDialog("닉네임을 입력해주세요.");
-                else if (changeNick && !checkNickDup) frontSetting.showErrorDialog("닉네임 중복확인을 해주세요.");
-                else checkModify = true;
+                    if (userPWField.getText().isBlank() || userPWCheckField.getText().isBlank())
+                        frontSetting.showErrorDialog("비밀번호를 입력해주세요.");
+                    else if (!userPWField.getText().equals(userPWCheckField.getText()))
+                        frontSetting.showErrorDialog("비밀번호가 일치하지 않습니다.");
+                    else if (userPWStr.length() < 8 ||
+                            !userPWStr.matches(".*[a-zA-Z].*") || // 영어 포함
+                            !userPWStr.matches(".*\\d.*") ||      // 숫자 포함
+                            !userPWStr.matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
+                        frontSetting.showErrorDialog("비밀번호는 영어, 숫자, 특수문자를 포함하고 8글자 이상이어야 합니다.");
+                    } else if (userRegionBtn.getSelectedItem().equals(" --"))
+                        frontSetting.showErrorDialog("지역을 선택해주세요.");
+                    else if (userNickNameField.getText().isBlank()) frontSetting.showErrorDialog("닉네임을 입력해주세요.");
+                    else if (changeNick && !checkNickDup) frontSetting.showErrorDialog("닉네임 중복확인을 해주세요.");
+                    else checkModify = true;
 
-                if (checkModify) {
-                    modifyUserInfoMethod(nickName, userPWStr, region);
-                    System.out.println("수정하기");
-                    checkNickDup = false;
-                    frontSetting.showCompleteDialog("수정이 완료되었습니다.");
-                    modifyUserInfoFrame.dispose();
-                    // DB 비밀번호, 지역 수정
+                    if (checkModify) {
+                        modifyUserInfoMethod(nickName, userPWStr, region);
+                        System.out.println("수정하기");
+                        checkNickDup = false;
+                        frontSetting.showCompleteDialog("수정이 완료되었습니다.");
+                        modifyUserInfoFrame.dispose();
+                        // DB 비밀번호, 지역 수정
+                    }
                 }
-            }
         });
 
         c.add(modifyUserInfoLabel);
@@ -215,6 +211,29 @@ public class UserInfo {
         whitePanel.add(userBirthLabel);
         whitePanel.add(userBirth);
         c.add(modifyUserInfoBtn);
+    }
+
+    private boolean isCheckNickDup(String inpNickName) {
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ) {
+            NickNameCheckRequest nickNameCheckRequest = new NickNameCheckRequest(inpNickName);
+
+            objectOutputStream.writeObject(nickNameCheckRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_POSSIBLE.getKey()) {
+                return true;    //  닉네임 변경 가능
+            } else {
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;   //  닉네임 변경 불가능
     }
 
     /*writer, name, userId, region, phoneNum, birth를 서버에서 받아오는 메소드*/

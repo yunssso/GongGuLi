@@ -1,5 +1,6 @@
 package back.dao.board;
 
+import back.dao.chatting.JoinChattingRoomDAO;
 import back.request.board.PostBoardRequest;
 import database.DBConnector;
 
@@ -31,12 +32,17 @@ public class PostingDAO {
                 isPosted = true;
                 System.out.println("게시 성공.");
             }
+
+            JoinChattingRoomDAO joinChattingRoomDAO = new JoinChattingRoomDAO();
+            joinChattingRoomDAO.joinChattingRoom(port, postBoardRequest.uuid());
+
             pt.close();
             conn.close();
         } catch (Exception e) {
             System.out.println("게시 실패.");
             e.printStackTrace();
         }
+
         return isPosted;
     }
 }
