@@ -14,8 +14,9 @@ public class SignUp extends JDialog{
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
-    private Font f2 = new Font("SUITE", Font.BOLD, 14);
-    
+    private Font f2 = new Font("SUITE", Font.BOLD, 13);
+    private Font f3 = new Font("SUITE", Font.PLAIN, 13);
+
     private JTextField idText;
     private JPasswordField passwordText;
     private JPasswordField pwCheckText;
@@ -72,7 +73,7 @@ public class SignUp extends JDialog{
         idLabel.setHorizontalAlignment(JLabel.RIGHT);
         idText = new JTextField(20);
         idText.setBounds(758, 195, 200, 30);
-        idText.setFont(f2);
+        idText.setFont(f3);
 
         panel.add(idLabel);
         panel.add(idText);
@@ -108,7 +109,7 @@ public class SignUp extends JDialog{
         nameText = new JTextField(20);
         nameText.setBounds(758, 315, 200, 30);
 
-        nameText.setFont(f2);
+        nameText.setFont(f3);
         panel.add(nameLabel);
         panel.add(nameText);
 
@@ -119,7 +120,7 @@ public class SignUp extends JDialog{
         nickNameLabel.setFont(f1);
         nickNameText = new JTextField(20);
         nickNameText.setBounds(758, 355, 200, 30);
-        nickNameText.setFont(f2);
+        nickNameText.setFont(f3);
 
         panel.add(nickNameLabel);
         panel.add(nickNameText);
@@ -132,19 +133,19 @@ public class SignUp extends JDialog{
         birthLabel.setFont(f1);
         birthText = new JTextField(20);
         birthText.setBounds(758, 395, 200, 30);
-        birthText.setFont(f2);
+        birthText.setFont(f3);
         panel.add(birthLabel);
         panel.add(birthText);
 
 
         // 폰 번호 입력 필드
-        JLabel phoneNumberLabel = new JLabel("핸드폰 번호");
+        JLabel phoneNumberLabel = new JLabel("휴대폰 번호");
         phoneNumberLabel.setBounds(635, 435, 100, 30);
         phoneNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         phoneNumberLabel.setFont(f1);
         phoneNumberText = new JTextField(20);
         phoneNumberText.setBounds(758, 435, 200, 30);
-        phoneNumberText.setFont(f2);
+        phoneNumberText.setFont(f3);
 
         panel.add(phoneNumberLabel);
         panel.add(phoneNumberText);
@@ -157,7 +158,7 @@ public class SignUp extends JDialog{
         residenceLabel.setFont(f1);
         residenceList = new JComboBox<>(new String[]{"서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"});
         residenceList.setBounds(758, 475, 200, 30);
-        residenceList.setFont(f2);
+        residenceList.setFont(f3);
 
         panel.add(residenceLabel);
         panel.add(residenceList);

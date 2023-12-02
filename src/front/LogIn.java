@@ -18,7 +18,9 @@ public class LogIn extends JFrame {
     private Color c3 = new Color(255, 255, 255);
 
     private Font f1 = new Font("SUITE", Font.BOLD, 16);
-    private Font f2 = new Font("SUITE", Font.PLAIN, 11);
+    private Font f2 = new Font("SUITE", Font.PLAIN, 13);
+    private Font f3 = new Font("SUITE", Font.PLAIN, 11);
+
 
     private JTextField idText;
     private JPasswordField passwordText;
@@ -107,7 +109,7 @@ public class LogIn extends JFrame {
         // 아이디 찾기 버튼
         JButton idSearchButton = new JButton("아이디 찾기");
         idSearchButton.setBounds(700, 485, 100, 30);
-        idSearchButton.setFont(f2);
+        idSearchButton.setFont(f3);
         idSearchButton.setOpaque(false);
         idSearchButton.setContentAreaFilled(false);
         idSearchButton.setBorderPainted(false);
@@ -120,7 +122,7 @@ public class LogIn extends JFrame {
         // 비밀번호 찾기 버튼
         JButton pwSearchButton = new JButton("  비밀번호 찾기");
         pwSearchButton.setBounds(800, 485, 100, 30);
-        pwSearchButton.setFont(f2);
+        pwSearchButton.setFont(f3);
         pwSearchButton.setOpaque(false);
         pwSearchButton.setContentAreaFilled(false);
         pwSearchButton.setBorderPainted(false);

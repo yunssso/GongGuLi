@@ -81,7 +81,7 @@ public class MainPage extends JFrame{
 
         RoundedButton chattingListBtn = new RoundedButton("채팅 목록");  // 채팅 목록 버튼
         chattingListBtn.setBounds(120, 35, 130, 40);
-        chattingListBtn.setFont(frontSetting.f16);
+        chattingListBtn.setFont(frontSetting.fb16);
 
         /*채팅 목록 버튼 클릭 시*/
         chattingListBtn.addActionListener(new ActionListener() {
@@ -212,7 +212,7 @@ public class MainPage extends JFrame{
                      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                      InputStream inputStream = clientSocket.getInputStream();
                      ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-                     ){
+                ){
 
                     if(e.getClickCount() == 2) {
                         int selectRow = postTable.getSelectedRow();
@@ -243,7 +243,7 @@ public class MainPage extends JFrame{
 
         RoundedButtonR newPostBtn = new RoundedButtonR("새 글");  // 새 글 작성 버튼
         newPostBtn.setBounds(638, 600, 90, 40);
-        newPostBtn.setFont(frontSetting.f16);
+        newPostBtn.setFont(frontSetting.fb16);
 
         newPostBtn.addActionListener(new ActionListener() {  // 새 글 버튼 클릭 시
             @Override
@@ -293,7 +293,7 @@ public class MainPage extends JFrame{
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
+        ){
 
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
             BoardInfoRequest boardInfoRequest = new BoardInfoRequest(region, category, uuid);
