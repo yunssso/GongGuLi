@@ -164,8 +164,7 @@ public class UserInfo {
                 char[] userPW = userPWField.getPassword();
                 char[] userPWC = userPWCheckField.getPassword();
                 String userPWStr = String.valueOf(userPW);
-//                String region = userRegionBtn.getSelectedItem();
-//                이거 지역 String으로 어케 받나요
+                String region = (String) userRegionBtn.getSelectedItem();
                 boolean changeNick = false;
                 boolean checkModify = false;
 
@@ -186,7 +185,7 @@ public class UserInfo {
                 else checkModify = true;
 
                 if (checkModify) {
-//                    modifyUserInfoMethod(nickName, userPWStr, region);
+                    modifyUserInfoMethod(nickName, userPWStr, region);
                     System.out.println("수정하기");
                     checkNickDup = false;
                     frontSetting.showCompleteDialog("수정이 완료되었습니다.");

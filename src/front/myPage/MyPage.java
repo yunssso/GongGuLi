@@ -64,7 +64,7 @@ public class MyPage extends JFrame {
 
         RoundedButton modifyInfoBtn = new RoundedButton("정보 수정");
         modifyInfoBtn.setBounds(35, 350, 100, 30);
-        modifyInfoBtn.setFont(fs.f16);
+        modifyInfoBtn.setFont(fs.fb16);
 
         modifyInfoBtn.addActionListener(new ActionListener() {  // 정보 수정 버튼 클릭 시
             @Override
