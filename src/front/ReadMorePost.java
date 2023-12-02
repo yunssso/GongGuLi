@@ -32,7 +32,6 @@ public class ReadMorePost {
     private JFrame readMoreFrame;
     private boolean isMainFrame;
 
-
     public ReadMorePost(boolean isMainFrame, String uuid, JFrame frame, BoardInfoMoreResponse boardInfoMoreResponse) {
         this.uuid = uuid;
         this.frame = frame;
