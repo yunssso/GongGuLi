@@ -95,6 +95,7 @@ public class UserInfo {
 
         JTextField userNickNameField = new JTextField(userInfo[0]);
         userNickNameField.setBounds(160, 84, 85, 30);
+        userNickNameField.setFont(frontSetting.f14);
 
         RoundedButtonR NickDupBtn = new RoundedButtonR("확인");
         NickDupBtn.setBounds(250, 84, 48, 30);
@@ -120,7 +121,6 @@ public class UserInfo {
 
         JPasswordField userPWField = new JPasswordField(20);
         userPWField.setBounds(160, 116, 140, 30);
-        userPWField.setFont(frontSetting.f16);
 
         JLabel userPWCheckLabel = new JLabel("비밀번호 확인");
         userPWCheckLabel.setBounds(35, 148, 150, 30);
@@ -128,7 +128,6 @@ public class UserInfo {
 
         JPasswordField userPWCheckField = new JPasswordField(20);
         userPWCheckField.setBounds(160, 148, 140, 30);
-        userPWCheckField.setFont(frontSetting.f16);
 
         JLabel userRegionLabel = new JLabel("지역");
         userRegionLabel.setBounds(35, 180, 150, 30);
