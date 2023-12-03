@@ -1,5 +1,6 @@
 package back.handler;
 
+import back.request.board.SearchBoardInfoRequest;
 import back.response.ResponseCode;
 import back.dao.board.PrintBoardDAO;
 import back.dao.board.ReadPostDAO;
@@ -48,6 +49,8 @@ public class BoardInfoHandler extends Thread {
                 boardInfoMoreMethod(boardInfoMoreRequest);
             } else if (readObj instanceof MyBoardInfoMoreRequest myBoardInfoMoreRequest) {
                 myBoardInfoMoreMethod(myBoardInfoMoreRequest);
+            } else if (readObj instanceof SearchBoardInfoRequest searchBoardInfoRequest) {
+                searchBoardInfoMethod(searchBoardInfoRequest);
             }
         } catch (Exception exception) {
             //exception.printStackTrace();
@@ -116,7 +119,6 @@ public class BoardInfoHandler extends Thread {
             ReadPostDAO readPostDAO = new ReadPostDAO();
 
             MyBoardInfoMoreResponse myBoardInfoMoreResponse = readPostDAO.readMoreMyPost(myBoardInfoMoreRequest.selectRow(), myBoardInfoMoreRequest.uuid());
-            System.out.println(myBoardInfoMoreRequest.selectRow());
 
             if (myBoardInfoMoreResponse == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_MORE_FAILURE);
@@ -125,6 +127,24 @@ public class BoardInfoHandler extends Thread {
 
                 objectOutputStream.writeObject(myBoardInfoMoreResponse);
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    private void searchBoardInfoMethod(SearchBoardInfoRequest searchBoardInfoRequest) {
+        try {
+            // searchBoardInfoRequest안에 필터 항목은 "제목", "글쓴이" 이고 Text는 내용이야 이거 사용해서 DAO 연결해줘
+            // ResponseCode는 밑에거 활용해
+
+            objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_FAILURE);
+            objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_SUCCESS);
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {

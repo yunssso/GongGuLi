@@ -1,5 +1,6 @@
 package front.mainPage;
 
+import back.request.board.SearchBoardInfoRequest;
 import back.response.ResponseCode;
 import back.request.board.BoardInfoMoreRequest;
 import back.request.board.BoardInfoRequest;
@@ -170,26 +171,19 @@ public class MainPage extends JFrame{
         // 검색창 엔터 이벤트
         searchField.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-                System.out.println(searchField.getText());
+            public void actionPerformed(ActionEvent e) {
+                searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
             }
         });
+
         /*검색창에 입력 후 검색 버튼 누르면 텍스트 출력*/
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(searchField.getText());
+                searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
             }
         });
 
-
-        // 제목/작성자 검색 필터
-        searchField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
 
         getBoardInfoMethod();
 
@@ -293,8 +287,7 @@ public class MainPage extends JFrame{
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ){
-
+             ){
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
             BoardInfoRequest boardInfoRequest = new BoardInfoRequest(region, category, uuid);
 
@@ -307,8 +300,33 @@ public class MainPage extends JFrame{
                 List <BoardInfoResponse> boardList = (List <BoardInfoResponse>) objectInputStream.readObject();
 
                 frontSetting.setMainPageDB(boardList);
+            } else { //게시글 갱신 실패
+                showErrorDialog(responseCode.getValue());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 
-                System.out.println(frontSetting.getMainPageDB());
+    private void searchBoardInfoMethod(String searchFilter, String searchText) {
+        try (Socket clientSocket = new Socket("localhost", 1027);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+             ){
+            //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
+            SearchBoardInfoRequest searchBoardInfoRequest = new SearchBoardInfoRequest(searchFilter, searchText, uuid);
+
+            objectOutputStream.writeObject(searchBoardInfoRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.SEARCH_BOARD_INFO_SUCCESS.getKey()) { //게시글 갱신 성공
+                //boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
+                List <BoardInfoResponse> boardList = (List <BoardInfoResponse>) objectInputStream.readObject();
+
+                frontSetting.setMainPageDB(boardList);
             } else { //게시글 갱신 실패
                 showErrorDialog(responseCode.getValue());
             }

@@ -2,6 +2,8 @@ package front.myPage;
 
 import back.dao.user.CheckDAO;
 import back.UserDTO;
+import back.request.account.DeleteUserRequest;
+import back.response.ResponseCode;
 import front.*;
 import front.mainPage.MainPage;
 
@@ -9,6 +11,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class MyPage extends JFrame {
     private UserInfo userInfo;
@@ -103,19 +110,11 @@ public class MyPage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int answer = JOptionPane.showConfirmDialog(null, "회원탈퇴 하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+
                 if (answer == JOptionPane.YES_OPTION) {
-
+                    String password = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
+                    deleteUserMethod(password);
                 }
-
-                String password = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
-                System.out.println("비밀번호: " + password);
-
-                if (password.equals(userDTO.getPassword())) {
-                    System.out.println("회원탈퇴");
-                    new LogIn();
-                    dispose();
-                } else System.out.println("노 회원탈퇴");
-
                 // 로그인 화면으로 + 회원 삭제
             }
         });
@@ -148,5 +147,27 @@ public class MyPage extends JFrame {
         add(rightPanel);
     }
 
+    private void deleteUserMethod(String password) {
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ){
+            DeleteUserRequest deleteUserRequest = new DeleteUserRequest(password, uuid);
 
+            objectOutputStream.writeObject(deleteUserRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.DELETE_USER_SUCCESS.getKey()) { // 유저 삭제 성공
+                new LogIn();
+                dispose();
+            } else { // 유저 삭제 실패
+
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 }

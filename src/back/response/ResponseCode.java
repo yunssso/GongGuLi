@@ -32,7 +32,17 @@ public enum ResponseCode {
     // FIND PASSWORD
     FIND_PASSWORD_SUCCESS(240, "비밀번호 찾기가 완료되었습니다."),
 
-    // COMMON BOARD
+    // NICKNAME CHECK
+    NICKNAME_CHECK_SUCCESS(250, "해당 닉네임은 사용 가능합니다."),
+    NICKNAME_CHECK_FAILURE(251, "중복되는 닉네임이 존재합니다."),
+
+    // MODIFY USER INFO
+    MODIFY_USER_INFO_SUCCESS(260, "유저 정보 수정을 완료했습니다."),
+    MODIFY_USER_INFO_FAILURE(261, "유저 정보 수정을 실패했습니다."),
+
+    // DELETE USER
+    DELETE_USER_SUCCESS(270, "회원 탈퇴가 완료되었습니다."),
+    DELETE_USER_FAILURE(271, "회원 탈퇴가 실패하였습니다."),
 
     // POST BOARD
     POST_BOARD_SUCCESS(300, "게시글 생성이 완료되었습니다."),
@@ -61,6 +71,10 @@ public enum ResponseCode {
     // BOARD INFO MORE
     BOARD_INFO_MORE_SUCCESS(410, "게시글 자세히 보기가 완료되었습니다."),
     BOARD_INFO_MORE_FAILURE(411, "게시글 자세히 보기가 실패하였습니다."),
+
+    // SEARCH BOARD INFO
+    SEARCH_BOARD_INFO_SUCCESS(420, "게시글 검색이 완료되었습니다."),
+    SEARCH_BOARD_INFO_FAILURE(421, "게시글 검색이 실패하였습니다."),
 
     // JOIN CHATROOM
     JOIN_CHATROOM_SUCCESS(500, "채팅방 입장이 완료되었습니다."),
@@ -93,16 +107,7 @@ public enum ResponseCode {
 
     // GET MY NICKNAME
     GET_UUID_NICKNAME_SUCCESS(630, "UUID에 따른 닉네임 가져오기를 완료했습니다."),
-    GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다."),
-
-    // NICKNAME CHECK
-    NICKNAME_CHECK_POSSIBLE(700, "닉네임 변경이 가능합니다."),
-    NICKNAME_CHECK_IMPOSSIBLE(701, "닉네임 변경이 불가능합니다."),
-
-    // MODIFY USER INFO
-    MODIFY_USER_INFO_SUCCESS(800, "유저 정보 수정을 완료했습니다."),
-    MODIFY_USER_INFO_FAILURE(801, "유저 정보 수정을 실패했습니다."),
-    ;
+    GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다.");
 
     private final int code;
     private final String message;

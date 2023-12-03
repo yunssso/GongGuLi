@@ -57,6 +57,8 @@ public class AccountHandler extends Thread {
 				modifyUserInfo(modifyUserInfoRequest);
 			} else if (readObj instanceof NickNameCheckRequest nickNameCheckRequest) {
 				nickNameCheckMethod(nickNameCheckRequest);
+			} else if (readObj instanceof DeleteUserRequest deleteUserRequest) {
+				deleteUserMethod(deleteUserRequest);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -216,6 +218,7 @@ public class AccountHandler extends Thread {
 		}
 	}
 
+	/*닉네임 정보 요청 Response를 보내는 메소드*/
 	private void getNickNameMethod(GetNickNameRequest getNickNameRequest) {
 		try {
 			GetInfoDAO getInfoDAO = new GetInfoDAO();
@@ -227,35 +230,89 @@ public class AccountHandler extends Thread {
 				objectOutputStream.writeObject(ResponseCode.GET_UUID_NICKNAME_SUCCESS);
 				objectOutputStream.writeObject(getNickNameResponse);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
+	/*회원 정보 변경 Reponse를 보내는 메소드*/
 	private void modifyUserInfo(ModifyUserInfoRequest modifyUserInfoRequest) {
 		try {
 			AccountDAO accountDAO = new AccountDAO();
-			int result = accountDAO.modifyUserInfo(modifyUserInfoRequest);
-			if (result == 1) {
-				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_SUCCESS);
+
+			if (modifyUserInfoRequest.password().isBlank() || modifyUserInfoRequest.passwordCheck().isBlank())
+				objectOutputStream.writeObject(ResponseCode.PASSWORD_MISSING);
+			else if (!modifyUserInfoRequest.password().equals(modifyUserInfoRequest.passwordCheck()))
+				objectOutputStream.writeObject(ResponseCode.PASSWORD_MISMATCH);
+			else if (modifyUserInfoRequest.password().length() < 8 ||
+					!modifyUserInfoRequest.password().matches(".*[a-zA-Z].*") || // 영어 포함
+					!modifyUserInfoRequest.password().matches(".*\\d.*") ||      // 숫자 포함
+					!modifyUserInfoRequest.password().matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
+				objectOutputStream.writeObject(ResponseCode.PASSWORD_CONDITIONS_NOT_MET);
+			} else if (modifyUserInfoRequest.region().equals(" --")) {
+				objectOutputStream.writeObject(ResponseCode.REGION_NOT_SELECTED);
+			} else if (modifyUserInfoRequest.nickName().isBlank()) {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_MISSING);
 			} else {
-				objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_FAILURE);
+				int result = accountDAO.modifyUserInfo(modifyUserInfoRequest);
+				if (result == 1) {
+					objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_SUCCESS);
+				} else {
+					objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_FAILURE);
+				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 
+	/*닉네임 체크 Reponse를 보내는 메소드*/
 	private void nickNameCheckMethod(NickNameCheckRequest nickNameCheckRequest) {
 		try {
 			CheckDAO checkDAO = new CheckDAO();
+
 			if (checkDAO.nickNameCheck(nickNameCheckRequest.inpNickName())) {
-				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_POSSIBLE);
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_SUCCESS);
 			} else {
-				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_IMPOSSIBLE);
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_FAILURE);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
+	}
+
+	private void deleteUserMethod(DeleteUserRequest deleteUserRequest) {
+		try {
+			// 여기에 DeleteUserDAO 연결 시켜주면 돼
+			// 밑에 두개 가져다가 if문 안에 넣어서 연결 해줘~ !
+			objectOutputStream.writeObject(ResponseCode.DELETE_USER_SUCCESS);
+			objectOutputStream.writeObject(ResponseCode.DELETE_USER_FAILURE);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 }
