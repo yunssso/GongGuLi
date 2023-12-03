@@ -173,6 +173,7 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
+                refreshTable();
             }
         });
 
@@ -181,6 +182,7 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
+                refreshTable();
             }
         });
 
@@ -316,7 +318,7 @@ public class MainPage extends JFrame{
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
              ){
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-            SearchBoardInfoRequest searchBoardInfoRequest = new SearchBoardInfoRequest(searchFilter, searchText, uuid);
+            SearchBoardInfoRequest searchBoardInfoRequest = new SearchBoardInfoRequest(searchFilter, searchText, uuid, region, category);
 
             objectOutputStream.writeObject(searchBoardInfoRequest);
 

@@ -26,9 +26,10 @@ public class ModifyMyPost{
     private JFrame frame;
     private boolean isMainFrame;
 
-    public ModifyMyPost(JFrame myFrame, String uuid, BoardInfoMoreResponse boardInfoMoreResponse) {
+    public ModifyMyPost(JFrame myFrame, String uuid, BoardInfoMoreResponse boardInfoMoreResponse, int port) {
         this.frame = myFrame;
         this.uuid = uuid;
+        this.port = port;
         this.isMainFrame = false;
         this.boardInfoMoreResponse = boardInfoMoreResponse;
         modifyMyPost();

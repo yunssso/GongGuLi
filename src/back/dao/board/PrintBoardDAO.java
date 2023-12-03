@@ -55,11 +55,12 @@ public class PrintBoardDAO {
                 rs2.next();
 
                 BoardInfoResponse boardInfoResponse = new BoardInfoResponse(
-                        this.rs.getString("region"),
-                        this.rs.getString("category"),
-                        this.rs.getString("title"),
+                        rs.getString("region"),
+                        rs.getString("category"),
+                        rs.getString("title"),
                         rs2.getString(1),
-                        peoplenum
+                        peoplenum,
+                        rs.getTimestamp("postingTime")
                 );
                 list.add(boardInfoResponse);
 
