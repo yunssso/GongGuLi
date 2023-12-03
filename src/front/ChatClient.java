@@ -20,6 +20,9 @@ import java.util.*;
 public class ChatClient extends JFrame implements Runnable{
     private Color c1 = new Color(255, 240, 227);
     private Color c3 = new Color(255, 255, 255);
+    private Font f4 = new Font("SUITE", Font.PLAIN, 17);
+    private Font f5 = new Font("SUITE", Font.PLAIN, 15);
+
 
     private ObjectOutputStream objectOutputStream = null;
 
@@ -42,6 +45,7 @@ public class ChatClient extends JFrame implements Runnable{
     private ArrayList<String> nameList = null;
     // 사용자 uuid
     private String uuid = null;
+    private JButton leaveButton = null;
 
     // 처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
     public ChatClient(int port, String uuid) {
@@ -86,6 +90,7 @@ public class ChatClient extends JFrame implements Runnable{
         chatTextArea.setForeground(Color.BLACK);
         chatTextArea.setLineWrap(true);
         chatTextArea.setBackground(c3);
+        chatTextArea.setFont(f4);
         scrollPane = new JScrollPane(chatTextArea);
 
         tf = new JTextField("");
@@ -105,11 +110,26 @@ public class ChatClient extends JFrame implements Runnable{
         participantsButton = new JButton("참가자 : 0");
         participantsButton.setHorizontalAlignment(JButton.RIGHT);
         participantsButton.setBackground(c1);
+        participantsButton.setPreferredSize(new Dimension(300, 35));
+        participantsButton.setFont(f5);
 
         participantsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 showParticipants();
             }
+        });
+
+        // 채팅방 나가기 버튼 생성
+        JButton leaveButton = new RoundedButton("나가기");
+        leaveButton.setBounds(0, 10, 50, 50);
+        participantsButton.add(leaveButton);
+        leaveButton.setBackground(c1);
+        leaveButton.setFont(f5);
+
+
+        leaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { leaveChatRoom(); }
         });
 
         chattingListPanel.add(participantsButton, BorderLayout.NORTH);
@@ -118,6 +138,9 @@ public class ChatClient extends JFrame implements Runnable{
         add(chattingListPanel);
 
         setVisible(true);
+    }
+    private void leaveChatRoom() {
+        dispose();
     }
 
     //Participants Frame

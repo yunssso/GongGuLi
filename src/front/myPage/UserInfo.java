@@ -199,7 +199,7 @@ public class UserInfo {
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
         ) {
-            NickNameCheckRequest nickNameCheckRequest = new NickNameCheckRequest(inpNickName);
+            NickNameCheckRequest nickNameCheckRequest = new NickNameCheckRequest(uuid, inpNickName);
 
             objectOutputStream.writeObject(nickNameCheckRequest);
 
@@ -211,6 +211,9 @@ public class UserInfo {
             } else if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_FAILURE.getKey()) {
                 frontSetting.showErrorDialog(responseCode.getValue());
                 checkNickDup = false;
+            } else if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_MY_NAME.getKey()) {
+                frontSetting.showErrorDialog(responseCode.getValue());
+                checkNickDup = true;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
