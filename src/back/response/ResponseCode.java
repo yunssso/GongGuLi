@@ -19,7 +19,8 @@ public enum ResponseCode {
     RESIDENCE_AREA_NOT_SELECTED(211, "거주 지역을 선택하세요."),
     ID_DUPLICATE(212, "중복되는 아이디가 존재합니다."),
     PHONE_NUMBER_DUPLICATE(213, "중복되는 전화번호가 존재합니다."),
-    SIGNUP_FAILURE(214, "회원가입이 실패되었습니다."),
+    NICKNAME_DUPLICATE(214, "중복되는 닉네임이 존재합니다."),
+    SIGNUP_FAILURE(215, "회원가입이 실패되었습니다."),
 
     // LOGIN
     LOGIN_SUCCESS(220, "로그인이 완료되었습니다."),

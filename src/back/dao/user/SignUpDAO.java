@@ -35,11 +35,16 @@ public class SignUpDAO {
 
             pt.close();
             conn.close();
-        } catch (SQLIntegrityConstraintViolationException sqlE) {
-            if (sqlE.getErrorCode() == 40) {
-                return ResponseCode.ID_DUPLICATE;   //  닉네임 중복
-            } else if (sqlE.getErrorCode() == 41) {
+        } catch (SQLIntegrityConstraintViolationException e) {
+            int errorCode = e.getErrorCode();
+            if (errorCode == 40) {
+                return ResponseCode.ID_DUPLICATE;   //  아이디 중복
+            } else if (errorCode == 41) {
                 return ResponseCode.PHONE_NUMBER_DUPLICATE;   //  핸드폰 번호 중복
+            } else if (errorCode == 490) {
+                return ResponseCode.NICKNAME_DUPLICATE;     //  닉네임 중복
+            } else {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();

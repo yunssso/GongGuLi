@@ -185,7 +185,7 @@ public class SignUp extends JDialog{
                     String region = (String) residenceList.getSelectedItem();
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    SignUpRequest signUpDto = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
+                    SignUpRequest signUpRequest = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
                     //아이피, 포트 번호로 소켓을 연결
                     clientSocket = new Socket("localhost", 1024);
@@ -197,7 +197,7 @@ public class SignUp extends JDialog{
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    oos.writeObject(signUpDto);
+                    oos.writeObject(signUpRequest);
 
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
 
@@ -205,6 +205,15 @@ public class SignUp extends JDialog{
                         showSuccessDialog(responseCode.getValue());
                         dispose();
                         new LogIn();
+                    } else if (responseCode.getKey() == ResponseCode.ID_DUPLICATE.getKey()) {
+                        // 닉네임 중복
+                        System.out.println("아이디 중복");
+                    } else if (responseCode.getKey() == ResponseCode.PHONE_NUMBER_DUPLICATE.getKey()) {
+                        // 폰 번호 중복
+                        System.out.println("폰 번호 중복");
+                    } else if (responseCode.getKey() == ResponseCode.NICKNAME_DUPLICATE.getKey()) {
+                        //  닉네임 중복
+                        System.out.println("닉네임 중복");
                     } else { //회원가입 실패
                         showErrorDialog(responseCode.getValue());
                     }
