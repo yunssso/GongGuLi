@@ -188,7 +188,7 @@ public class ReadMorePost {
             public void actionPerformed(ActionEvent e) {
                 readMoreFrame.dispose();
                 if (isMainFrame) new ModifyMyPost(frame, uuid, port, boardInfoMoreResponse);
-                else new ModifyMyPost(frame, uuid, boardInfoMoreResponse);
+                else new ModifyMyPost(frame, uuid, boardInfoMoreResponse, port);
             }
         });
 

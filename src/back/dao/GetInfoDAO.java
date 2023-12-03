@@ -35,6 +35,30 @@ public class GetInfoDAO {
         return null;
     }
 
+    public String getUuidMethod(String nickName) {
+        try {
+            conn = DBConnector.getConnection();
+            String uuidSQL = "SELECT uuid FROM user WHERE nickName = ?;";
+            pt = conn.prepareStatement(uuidSQL);
+            pt.setString(1, nickName);
+            rs = pt.executeQuery();
+
+            if (rs.next()) {
+                String uuid = rs.getString("nickName");
+
+                rs.close();
+                pt.close();
+                conn.close();
+
+                return uuid;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
+    }
+
     public int getchatPortMethod(int selectRow) {
         selectRow++;
 

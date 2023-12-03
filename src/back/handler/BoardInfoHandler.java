@@ -1,5 +1,6 @@
 package back.handler;
 
+import back.dao.board.SearchBoardDAO;
 import back.request.board.SearchBoardInfoRequest;
 import back.response.ResponseCode;
 import back.dao.board.PrintBoardDAO;
@@ -68,7 +69,7 @@ public class BoardInfoHandler extends Thread {
         try {
             PrintBoardDAO printBoardDAO = new PrintBoardDAO();
 
-            List <BoardInfoResponse> boardList = printBoardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
+            List<BoardInfoResponse> boardList = printBoardDAO.printBoard(boardInfoRequest.region(), boardInfoRequest.category());
 
             if (boardList == null) {
                 objectOutputStream.writeObject(ResponseCode.BOARD_INFO_FAILURE);
@@ -142,9 +143,20 @@ public class BoardInfoHandler extends Thread {
         try {
             // searchBoardInfoRequest안에 필터 항목은 "제목", "글쓴이" 이고 Text는 내용이야 이거 사용해서 DAO 연결해줘
             // ResponseCode는 밑에거 활용해
+            System.out.println(searchBoardInfoRequest.searchFilter());
+            System.out.println(searchBoardInfoRequest.searchText());
+            System.out.println(searchBoardInfoRequest.uuid());
+            System.out.println(searchBoardInfoRequest.region());
+            System.out.println(searchBoardInfoRequest.category());
 
-            objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_FAILURE);
-            objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_SUCCESS);
+            SearchBoardDAO searchBoardDAO = new SearchBoardDAO();
+            List<BoardInfoResponse> list = searchBoardDAO.searchBoard(searchBoardInfoRequest);
+            if (list == null) {
+                objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_FAILURE);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.SEARCH_BOARD_INFO_SUCCESS);
+                objectOutputStream.writeObject(list);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {

@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 public class DeleteBoardDAO {
     Connection conn = null;
     PreparedStatement pt = null;
-    ResultSet rs = null;
+
     public boolean deleteBoardMethod(int port) {
         boolean isDeleted = false;
         String deleteSQL = "DELETE FROM board WHERE port = ?";
