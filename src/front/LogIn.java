@@ -48,11 +48,11 @@ public class LogIn extends JFrame {
         leftPanel.setBackground(c1);
 
         ImageIcon imageIcon = new ImageIcon("img/메인로고.png");
-        Image image = imageIcon.getImage().getScaledInstance(452, 285, Image.SCALE_SMOOTH);
+        Image image = imageIcon.getImage().getScaledInstance(361, 469, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(image);
 
         JLabel imageLabel = new JLabel(scaledImageIcon);
-        imageLabel.setBounds(40, 120, 456, 300);
+        imageLabel.setBounds(95, 90, 361, 469);
         leftPanel.add(imageLabel);
         add(leftPanel);
     }

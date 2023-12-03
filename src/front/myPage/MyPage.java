@@ -26,7 +26,7 @@ public class MyPage extends JFrame {
 
     public MyPage(String uuid) {  // 생성자
         this.uuid = uuid;
-        this.userInfo = new UserInfo(uuid);
+        this.userInfo = new UserInfo(uuid, this);
 
         setMyPage();
         setLeftPanel();

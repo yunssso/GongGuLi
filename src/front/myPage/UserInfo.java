@@ -28,9 +28,10 @@ public class UserInfo {
     private final String uuid;
     boolean checkNickDup;
     private final String[] userInfo = new String[6];
-
-    public UserInfo(String uuid) {
+    private JFrame myFrame;
+    public UserInfo(String uuid, JFrame myFrame) {
         this.uuid = uuid;
+        this.myFrame = myFrame;
         getUserInfo();
     }
 
@@ -95,7 +96,6 @@ public class UserInfo {
         NickDupBtn.setBounds(250, 84, 48, 30);
         NickDupBtn.setFont(frontSetting.f16);
 
-        checkNickDup = false;
         NickDupBtn.addActionListener(new ActionListener() {  // 닉네임 중복 확인 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,6 +125,7 @@ public class UserInfo {
         userRegionBtn.setSelectedItem("test");
         userRegionBtn.setBounds(160, 180, 95, 30);
         userRegionBtn.setFont(frontSetting.f16);
+        userRegionBtn.setSelectedItem(userInfo[3]);
 
         JLabel userPhoneNumberLabel = new JLabel("휴대폰 번호");
         userPhoneNumberLabel.setBounds(35, 212, 300, 30);
@@ -152,13 +153,16 @@ public class UserInfo {
                 String passwordCheck = String.valueOf(userPWCheckField.getPassword());
                 String region = (String) userRegionBtn.getSelectedItem();
 
-//                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;      //  기존 닉네임이랑 같은지 확인하는건가???
+                if (userNickNameField.getText().equals(userInfo[0])) checkNickDup = true;
 
                 if (checkNickDup) {
                     if (modifyUserInfoMethod(nickName, password, passwordCheck, region)) {
                         checkNickDup = false;
                         frontSetting.showCompleteDialog("수정이 완료되었습니다.");
+                        myFrame.dispose();
+                        new MyPage(uuid);
                         modifyUserInfoFrame.dispose();
+
                     }
                 } else {
                     frontSetting.showErrorDialog("닉네임 중복확인을 해주세요.");
