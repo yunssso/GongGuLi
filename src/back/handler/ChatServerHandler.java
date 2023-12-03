@@ -11,6 +11,7 @@ import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class ChatServerHandler extends Thread {
 	private ArrayList<ChatServerHandler> list = null;
 
 	private int port;
+	private InetAddress ip;
 
 	private Boolean master = false; //방장 권한
 
@@ -29,7 +31,7 @@ public class ChatServerHandler extends Thread {
 		try {
 			this.list = list;
 			port = socket.getLocalPort();
-
+			ip = socket.getLocalAddress();
 			//서버 -> 클라이언트 Output Stream
 			OutputStream outputStream = socket.getOutputStream();
 			objectOutputStream = new ObjectOutputStream(outputStream);
@@ -97,7 +99,18 @@ public class ChatServerHandler extends Thread {
 				}
 			}
 		} catch (Exception exception) {
-			exception.printStackTrace();
+
+		} finally {
+			try {
+				System.out.println("[채팅방 퇴장] PORT : " + port + " IP : " + ip);
+
+				objectInputStream.close();
+				list.remove(this);
+
+
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 	}
 

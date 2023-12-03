@@ -122,7 +122,7 @@ public class MyPageHandler extends Thread {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-        }finally {
+        } finally {
             try {
                 objectInputStream.close();
             } catch (IOException ioException) {

@@ -28,6 +28,8 @@ public class ChatServer extends Thread {
                 handler.start();
 
                 list.add(handler);
+
+                System.out.println(list.size());
             }
         } catch (Exception exception) {
             exception.printStackTrace();

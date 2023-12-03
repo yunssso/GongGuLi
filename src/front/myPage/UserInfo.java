@@ -23,13 +23,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class UserInfo {
-    private FrontSetting frontSetting = new FrontSetting();
+    private final FrontSetting frontSetting = new FrontSetting();
 
-    private String uuid;
+    private final String uuid;
     boolean checkNickDup;
     private final String[] userInfo = new String[6];
-    UserDTO userDTO = null;
-    CheckDAO checkDAO = new CheckDAO();
 
     public UserInfo(String uuid) {
         this.uuid = uuid;
@@ -101,13 +99,7 @@ public class UserInfo {
         NickDupBtn.addActionListener(new ActionListener() {  // 닉네임 중복 확인 버튼 클릭
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isCheckNickDup(userNickNameField.getText())) {
-                    // 닉네임 변경 가능.
-                    frontSetting.showCompleteDialog("해당 닉네임은 사용 가능합니다.");
-                    checkNickDup = true;
-                } else frontSetting.showErrorDialog("중복되는 닉네임이 존재합니다.");
-
-                checkNickDup = true;
+                isCheckNickDup(userNickNameField.getText());
             }
         });
 
@@ -156,39 +148,22 @@ public class UserInfo {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nickName = userNickNameField.getText();
-                char[] userPW = userPWField.getPassword();
-                char[] userPWC = userPWCheckField.getPassword();
-                String userPWStr = String.valueOf(userPW);
+                String password = String.valueOf(userPWField.getPassword());
+                String passwordCheck = String.valueOf(userPWCheckField.getPassword());
                 String region = (String) userRegionBtn.getSelectedItem();
-                boolean changeNick = false;
-                boolean checkModify = false;
 
 //                if (!userNickNameField.getText().equals(userDTO.getNickName())) changeNick = true;      //  기존 닉네임이랑 같은지 확인하는건가???
 
-                    if (userPWField.getText().isBlank() || userPWCheckField.getText().isBlank())
-                        frontSetting.showErrorDialog("비밀번호를 입력해주세요.");
-                    else if (!userPWField.getText().equals(userPWCheckField.getText()))
-                        frontSetting.showErrorDialog("비밀번호가 일치하지 않습니다.");
-                    else if (userPWStr.length() < 8 ||
-                            !userPWStr.matches(".*[a-zA-Z].*") || // 영어 포함
-                            !userPWStr.matches(".*\\d.*") ||      // 숫자 포함
-                            !userPWStr.matches(".*[@#$%^&*+_=!].*")) { // 특수문자 포함
-                        frontSetting.showErrorDialog("비밀번호는 영어, 숫자, 특수문자를 포함하고 8글자 이상이어야 합니다.");
-                    } else if (userRegionBtn.getSelectedItem().equals(" --"))
-                        frontSetting.showErrorDialog("지역을 선택해주세요.");
-                    else if (userNickNameField.getText().isBlank()) frontSetting.showErrorDialog("닉네임을 입력해주세요.");
-                    else if (changeNick && !checkNickDup) frontSetting.showErrorDialog("닉네임 중복확인을 해주세요.");
-                    else checkModify = true;
-
-                    if (checkModify) {
-                        modifyUserInfoMethod(nickName, userPWStr, region);
-                        System.out.println("수정하기");
+                if (checkNickDup) {
+                    if (modifyUserInfoMethod(nickName, password, passwordCheck, region)) {
                         checkNickDup = false;
                         frontSetting.showCompleteDialog("수정이 완료되었습니다.");
                         modifyUserInfoFrame.dispose();
-                        // DB 비밀번호, 지역 수정
                     }
+                } else {
+                    frontSetting.showErrorDialog("닉네임 중복확인을 해주세요.");
                 }
+            }
         });
 
         c.add(modifyUserInfoLabel);
@@ -213,7 +188,7 @@ public class UserInfo {
         c.add(modifyUserInfoBtn);
     }
 
-    private boolean isCheckNickDup(String inpNickName) {
+    private void isCheckNickDup(String inpNickName) {
         try (Socket clientSocket = new Socket("localhost", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -226,14 +201,16 @@ public class UserInfo {
 
             ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-            if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_POSSIBLE.getKey()) {
-                return true;    //  닉네임 변경 가능
-            } else {
+            if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_SUCCESS.getKey()) {
+                frontSetting.showCompleteDialog(responseCode.getValue());
+                checkNickDup = true;
+            } else if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_FAILURE.getKey()) {
+                frontSetting.showErrorDialog(responseCode.getValue());
+                checkNickDup = false;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return false;   //  닉네임 변경 불가능
     }
 
     /*writer, name, userId, region, phoneNum, birth를 서버에서 받아오는 메소드*/
@@ -266,26 +243,32 @@ public class UserInfo {
         }
     }
 
-    private void modifyUserInfoMethod(String nickName, String password, String region) {
+    /*유저정보 수정 Request 메소드*/
+    private boolean modifyUserInfoMethod(String nickName, String password, String passwordCheck, String region) {
         try (Socket clientSocket = new Socket("localhost", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ) {
-            ModifyUserInfoRequest modifyUserInfoRequest = new ModifyUserInfoRequest(nickName, password, region, uuid);
+        ){
+            ModifyUserInfoRequest modifyUserInfoRequest = new ModifyUserInfoRequest(nickName, password, passwordCheck, region, uuid);
 
             objectOutputStream.writeObject(modifyUserInfoRequest);
 
             ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
             if (responseCode.getKey() == ResponseCode.MODIFY_USER_INFO_SUCCESS.getKey()) { // 유저 정보 수정 성공
-
+                return true;
             } else { // 유저 정보 수정 실패
+                frontSetting.showErrorDialog(responseCode.getValue());
+
+                return false;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
+        return false;
     }
 
     public String getnickName() {
