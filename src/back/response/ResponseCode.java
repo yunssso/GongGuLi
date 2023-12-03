@@ -35,6 +35,7 @@ public enum ResponseCode {
     // NICKNAME CHECK
     NICKNAME_CHECK_SUCCESS(250, "해당 닉네임은 사용 가능합니다."),
     NICKNAME_CHECK_FAILURE(251, "중복되는 닉네임이 존재합니다."),
+    NICKNAME_CHECK_MY_NAME(252, "현재 닉네임입니다."),
 
     // MODIFY USER INFO
     MODIFY_USER_INFO_SUCCESS(260, "유저 정보 수정을 완료했습니다."),

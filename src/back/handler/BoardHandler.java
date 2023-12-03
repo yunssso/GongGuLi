@@ -131,8 +131,10 @@ public class BoardHandler extends Thread {
 
             if (!isModified) {
                 objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_FAILURE); // 게시글 수정 실패 응답을 보낸다.
+                System.out.println("수정 실패 handler");
             } else {
                 objectOutputStream.writeObject(ResponseCode.MODIFY_MY_BOARD_SUCCESS); // 게시글 수정 성공 응답을 보낸다.
+                System.out.println("수정 성공 handler");
             }
         } catch (Exception exception) {
             exception.printStackTrace();

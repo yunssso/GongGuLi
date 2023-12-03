@@ -10,21 +10,19 @@ import java.sql.ResultSet;
 public class ModifyMyPostDAO {
     Connection conn = null;
     PreparedStatement pt = null;
-    ResultSet rs = null;
 
     public boolean modifyMyPost(ModifyMyPostRequest modifyMyPostRequest) {
         boolean isModified = false;
-        String updateSQL = "UPDATE board SET title = ?, region = ?, category = ?, content = ? WHERE port = ?;";
         try {
             conn = DBConnector.getConnection();
+            String updateSQL = "UPDATE board SET title = ?, region = ?, category = ?, content = ? WHERE port = ?;";
             pt = conn.prepareStatement(updateSQL);
             pt.setString(1, modifyMyPostRequest.title());
             pt.setString(2, modifyMyPostRequest.region());
             pt.setString(3, modifyMyPostRequest.category());
             pt.setString(4, modifyMyPostRequest.content());
             pt.setInt(5, modifyMyPostRequest.port());
-
-            if (!pt.execute()) {
+            if (pt.executeUpdate() > 0) {
                 isModified = true;
                 System.out.println("게시글 수정 성공.");
             }

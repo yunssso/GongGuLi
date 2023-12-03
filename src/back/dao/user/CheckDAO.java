@@ -1,5 +1,6 @@
 package back.dao.user;
 
+import back.dao.GetInfoDAO;
 import database.DBConnector;
 
 import java.sql.Connection;
@@ -12,12 +13,17 @@ public class CheckDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-//    닉네임 중복 확인
-    public boolean nickNameCheck(String inpNickName) {
-        boolean nickNameCheck = false;
-        conn = DBConnector.getConnection();
-        String existssql = "SELECT exists(select nickName from user where nickName = ?) as cnt;";
+    //    닉네임 중복 확인
+    public int nickNameCheck(String uuid, String inpNickName) {
+        GetInfoDAO getInfoDAO = new GetInfoDAO();
+        int nickNameCheck = 0;
+        String nickName = getInfoDAO.getNickNameMethod(uuid);
+        if (inpNickName.equals(nickName)) {
+            nickNameCheck = 2;
+        }
         try {
+            conn = DBConnector.getConnection();
+            String existssql = "SELECT exists(select nickName from user where nickName = ?) as cnt;";
             pt = conn.prepareStatement(existssql);
             pt.setString(1, inpNickName);
             rs = pt.executeQuery();
@@ -25,7 +31,7 @@ public class CheckDAO {
                 int cnt = rs.getInt("cnt");
                 System.out.println(cnt);
                 if (cnt == 0) {
-                    nickNameCheck = true;   //  닉네임 변경 가능
+                    nickNameCheck = 1;   //  닉네임 변경 가능
                 }
             }
         } catch (Exception e) {

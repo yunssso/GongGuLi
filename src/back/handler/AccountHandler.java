@@ -263,7 +263,7 @@ public class AccountHandler extends Thread {
 				int result = accountDAO.modifyUserInfo(modifyUserInfoRequest);
 				if (result == 1) {
 					objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_SUCCESS);
-				} else {
+				} else if (result == 0) {
 					objectOutputStream.writeObject(ResponseCode.MODIFY_USER_INFO_FAILURE);
 				}
 			}
@@ -282,11 +282,14 @@ public class AccountHandler extends Thread {
 	private void nickNameCheckMethod(NickNameCheckRequest nickNameCheckRequest) {
 		try {
 			CheckDAO checkDAO = new CheckDAO();
+			int res = checkDAO.nickNameCheck(nickNameCheckRequest.uuid(), nickNameCheckRequest.inpNickName());
 
-			if (checkDAO.nickNameCheck(nickNameCheckRequest.inpNickName())) {
+			if (res == 1) {
 				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_SUCCESS);
-			} else {
+			} else if (res == 0) {
 				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_FAILURE);
+			} else if (res == 2) {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_MY_NAME);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -303,8 +306,12 @@ public class AccountHandler extends Thread {
 		try {
 			// 여기에 DeleteUserDAO 연결 시켜주면 돼
 			// 밑에 두개 가져다가 if문 안에 넣어서 연결 해줘~ !
-			objectOutputStream.writeObject(ResponseCode.DELETE_USER_SUCCESS);
-			objectOutputStream.writeObject(ResponseCode.DELETE_USER_FAILURE);
+			AccountDAO accountDAO = new AccountDAO();
+			if (accountDAO.deleteUser(deleteUserRequest.uuid(), deleteUserRequest.password())) {
+				objectOutputStream.writeObject(ResponseCode.DELETE_USER_SUCCESS);
+			} else {
+				objectOutputStream.writeObject(ResponseCode.DELETE_USER_FAILURE);
+			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {

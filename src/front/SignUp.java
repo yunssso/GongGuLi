@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.io.*;
 
 public class SignUp extends JDialog{
+    private FrontSetting frontSetting = new FrontSetting();
     private Color c1 = new Color(255, 240, 227);
     private Color c3 = new Color(255, 255, 255);
 
@@ -25,16 +26,19 @@ public class SignUp extends JDialog{
     private JTextField phoneNumberText;
     private JTextField nickNameText;
     private JComboBox<String> residenceList;
-
-    private boolean membershipProgress = false;
+    boolean checkNickDup;  // true면 중복확인 한거임 false면 안한거임
+    boolean checkNameDup;
 
     private Socket clientSocket = null;
 
     public SignUp() {
+        this.checkNameDup = false;
+        this.checkNickDup = false;
         setSignUp();
         setLeftPanel();
         setRightPanel();
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     private void setLeftPanel() {
@@ -77,6 +81,20 @@ public class SignUp extends JDialog{
 
         panel.add(idLabel);
         panel.add(idText);
+
+        //아이디 중복 확인 버튼
+        RoundedButtonR NameDupBtn = new RoundedButtonR("확인");
+        NameDupBtn.setBounds(910, 195, 48, 30);
+        NameDupBtn.setFont(f3);
+        panel.add(NameDupBtn);
+
+        NameDupBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkNameDup = true;
+                System.out.println("checkNameDub: " + checkNameDup);
+            }
+        });
 
 
         // 비밀번호 입력 필드
@@ -124,6 +142,21 @@ public class SignUp extends JDialog{
 
         panel.add(nickNameLabel);
         panel.add(nickNameText);
+
+        //닉네임 중복 확인 버튼
+        RoundedButtonR NickDupBtn = new RoundedButtonR("확인");
+        NickDupBtn.setBounds(910, 355, 48, 30);
+        NickDupBtn.setFont(f3);
+        panel.add(NickDupBtn);
+
+        NickDupBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkNickDup = true;
+                System.out.println("checkNickDup: " + checkNickDup);
+            }
+        });
+
 
 
         // 생일 입력 필드
