@@ -20,11 +20,11 @@ public class IsMasterDAO {
             pt.setString(2, uuid);
             rs = pt.executeQuery();
             if (rs.next() && rs.getBoolean("cnt")) {
-                return true;
+                return true;    //  방장
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return false;   //  방장 X
     }
 }

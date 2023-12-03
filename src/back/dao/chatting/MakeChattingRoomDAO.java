@@ -31,7 +31,7 @@ public class MakeChattingRoomDAO {
             LocalDateTime lastUpdatedTime = LocalDateTime.now();
 
             conn = DBConnector.getConnection();
-            String insertSQL = "INSERT INTO chattingroom (port, masteruuid, title, region, category, maxpeoplenum, nowpeoplenum, lastupdatedtime)" +
+            String insertSQL = "INSERT INTO chattingRoom (port, masteruuid, title, region, category, maxpeoplenum, nowpeoplenum, lastupdatedtime)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             pt = conn.prepareStatement(insertSQL);

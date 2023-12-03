@@ -1,16 +1,16 @@
 package back.dao.board;
 
 import back.dao.GetInfoDAO;
+import back.dao.chatting.IsMasterDAO;
 import back.response.mypage.MyBoardInfoResponse;
 import back.response.mypage.MyHistoryInfoResponse;
 import database.DBConnector;
 import back.response.board.BoardInfoResponse;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PrintBoardDAO {
@@ -138,7 +138,8 @@ public class PrintBoardDAO {
                                 rs.getString("category"),
                                 rs.getString("title"),
                                 writer,
-                                peoplenum
+                                peoplenum,
+                                rs.getTimestamp("postingTime")
                         );
 
                         list.add(myHistoryInfoResponse);
@@ -150,22 +151,28 @@ public class PrintBoardDAO {
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("내 글 ArrayList 저장 중 오류 발생.");
+                System.out.println("내가 참여한 글 ArrayList 저장 중 오류 발생.");
             }
         }
+        Collections.sort(list, Comparator.comparing(MyHistoryInfoResponse::postingTime).reversed());
         return list;
     }
 
     public ArrayList<Integer> getMyHistoryPort(String uuid) {
+        IsMasterDAO isMasterDAO = new IsMasterDAO();
         ArrayList<Integer> portList = new ArrayList<Integer>();
         try {
-            String getPortSQL = "SELECT port FROM chattingmember WHERE memberUuid = ?";
+            String getPortSQL = "SELECT port FROM chattingmember WHERE memberUuid = ?;";
             pt = conn.prepareStatement(getPortSQL);
             pt.setString(1, uuid);
             rs = pt.executeQuery();
             while (rs.next()) {
                 int port = rs.getInt(1);
-                portList.add(port);
+                if (isMasterDAO.isMaster(port, uuid)) {
+                    continue;
+                } else {
+                    portList.add(port);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
