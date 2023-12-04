@@ -24,7 +24,7 @@ public class FrontSetting extends JFrame{
     public Font f18 = new Font("SUITE", Font.PLAIN, 18);
 
     public String regionArr[] = {" --", "서울", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"};
-    public String categoryArr[] = {" --", "음식", "생활용품", "OTT"};
+    public String categoryArr[] = {" --", "음식", "생활용품", "OTT", "강의/예매"};
 
     public String mainPageHeader[] = {"지역", "카테고리", "제목", "작성자", "현황"};
     public String mmmDB[][] = {{"경기도", "생활용품", "같이 살사람ㅋ", "윤경쓰", "1/4"},

@@ -34,7 +34,7 @@ public class GetChatRoomListDAO {
                             this.rs.getString("region"),
                             this.rs.getString("category"),
                             this.rs.getString("title"),
-                            this.rs.getString("writerUuid"),
+                            this.rs.getString("masterUuid"),
                             this.rs.getString("lastUpdatedTime")
                     );
                     list.add(getChattingRoomResponse);
