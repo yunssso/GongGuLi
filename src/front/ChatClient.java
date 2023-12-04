@@ -97,6 +97,7 @@ public class ChatClient extends JFrame implements Runnable{
         tf.setPreferredSize(new Dimension(300, 50));
         tf.setBackground(c1);
         tf.setBorder(BorderFactory.createLineBorder(new Color(200,200,200)));
+        tf.setFont(f4);
 
         //Enter를 입력할 경우에 sendMessage 실행
         tf.addActionListener(new ActionListener() {

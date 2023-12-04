@@ -2,8 +2,6 @@ package front.myPage;
 
 import back.request.account.NickNameCheckRequest;
 import back.response.ResponseCode;
-import back.UserDTO;
-import back.dao.user.CheckDAO;
 import back.request.account.ModifyUserInfoRequest;
 import back.request.mypage.UserInfoRequest;
 import back.response.mypage.UserInfoResponse;
