@@ -203,7 +203,7 @@ public class MainPage extends JFrame{
         postTable.addMouseListener(new MouseAdapter() {  // 테이블 값 더블 클릭 시
             @Override
             public void mouseClicked(MouseEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1027);
+                try (Socket clientSocket = new Socket("43.200.49.16", 1027);
                      OutputStream outputStream = clientSocket.getOutputStream();
                      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                      InputStream inputStream = clientSocket.getInputStream();
@@ -284,7 +284,7 @@ public class MainPage extends JFrame{
 
     /*게시글 정보 불러오는 함수*/
     private void getBoardInfoMethod() {
-        try (Socket clientSocket = new Socket("localhost", 1027);
+        try (Socket clientSocket = new Socket("43.200.49.16", 1027);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
@@ -311,7 +311,7 @@ public class MainPage extends JFrame{
     }
 
     private void searchBoardInfoMethod(String searchFilter, String searchText) {
-        try (Socket clientSocket = new Socket("localhost", 1027);
+        try (Socket clientSocket = new Socket("43.200.49.16", 1027);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();

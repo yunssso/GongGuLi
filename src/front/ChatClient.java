@@ -55,7 +55,7 @@ public class ChatClient extends JFrame implements Runnable{
 
             createAndShowGUI();
 
-            Socket socket = new Socket("localhost", port);
+            Socket socket = new Socket("43.200.49.16", port);
             //43.200.49.16
 
             //서버 -> 클라이언트 Output Stream

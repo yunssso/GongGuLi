@@ -57,7 +57,7 @@ public class MyPost extends JFrame{
         postTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1027);
+                try (Socket clientSocket = new Socket("43.200.49.16", 1027);
                      OutputStream outputStream = clientSocket.getOutputStream();
                      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                      InputStream inputStream = clientSocket.getInputStream();
@@ -98,7 +98,7 @@ public class MyPost extends JFrame{
 
     /*내가 쓴 글을 서버에서 받아오는 메소드*/
     private void getMyPostInfoMethod() {
-        try (Socket clientSocket = new Socket("localhost", 1028);
+        try (Socket clientSocket = new Socket("43.200.49.16", 1028);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();

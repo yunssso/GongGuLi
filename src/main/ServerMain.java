@@ -11,5 +11,3 @@ public class ServerMain {
         new MyPage().start();
     }
 }
-
-//  12-03 05:30

@@ -92,7 +92,7 @@ public class NewPost extends JFrame{
         postBtn.addActionListener(new ActionListener() {  // 올리기 버튼 클릭 시
             @Override
             public void actionPerformed(ActionEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1025);
+                try (Socket clientSocket = new Socket("43.200.49.16", 1025);
                      OutputStream outputStream = clientSocket.getOutputStream();
                      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                      InputStream inputStream = clientSocket.getInputStream();
