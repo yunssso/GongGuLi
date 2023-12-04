@@ -17,8 +17,8 @@ public class MakeChattingRoomDAO {
     PreparedStatement pt = null;
     ResultSet rs = null;
 
-    private static final int MIN_PORT = 1029; //1029 ~ 49151에서 채팅방 서버가 생성됨
-    private static final int MAX_PORT = 49151;
+    private static final int MIN_PORT = 7000; //1029 ~ 49151에서 채팅방 서버가 생성됨
+    private static final int MAX_PORT = 9000;
 
     public int makeChattingRoom(int port, PostBoardRequest postBoardRequest) {
         try {
