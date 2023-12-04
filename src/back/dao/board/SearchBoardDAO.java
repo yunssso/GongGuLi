@@ -56,14 +56,14 @@ public class SearchBoardDAO {
                 String nickName = getInfoDAO.getUuidMethod(searchText);
                 String uuidSQL = "SELECT uuid FROM user WHERE nickName LIKE CONCAT('%', ?, '%');";
                 pt = conn.prepareStatement(uuidSQL);
-                pt.setString(1, nickName);
+                pt.setString(1, searchText);
                 rs = pt.executeQuery();
 
                 List<BoardInfoResponse> filteredList = new ArrayList<>();
                 while (rs.next()) {
-                    String title = rs.getString("title");
+                    String uuid = rs.getString("uuid");
                     for (BoardInfoResponse board : boardList) {
-                        if (board.title().equals(title)) {
+                        if (board.writer().equals(uuid)) {
                             filteredList.add(board);
                         }
                     }

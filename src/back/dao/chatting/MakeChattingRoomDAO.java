@@ -27,7 +27,7 @@ public class MakeChattingRoomDAO {
             String region = postBoardRequest.region();
             String category = postBoardRequest.category();
             String maxPeopleNum = postBoardRequest.maxPeopleNum();
-            String nowPeopleNum = "1";
+            String nowPeopleNum = "0";
             LocalDateTime lastUpdatedTime = LocalDateTime.now();
 
             conn = DBConnector.getConnection();

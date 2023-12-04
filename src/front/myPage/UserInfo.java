@@ -122,22 +122,22 @@ public class UserInfo {
         userRegionLabel.setFont(frontSetting.f16);
 
         JComboBox userRegionBtn = new JComboBox(frontSetting.regionArr);
-        userRegionBtn.setSelectedItem("test");
+        userRegionBtn.setSelectedItem(userInfo[3]);
         userRegionBtn.setBounds(160, 180, 95, 30);
         userRegionBtn.setFont(frontSetting.f16);
-        userRegionBtn.setSelectedItem(userInfo[3]);
+
 
         JLabel userPhoneNumberLabel = new JLabel("휴대폰 번호");
         userPhoneNumberLabel.setBounds(35, 212, 300, 30);
         userPhoneNumberLabel.setFont(frontSetting.f16);
-        JLabel userPhoneNumber = new JLabel("test");
+        JLabel userPhoneNumber = new JLabel(userInfo[4]);
         userPhoneNumber.setBounds(160, 212, 300, 30);
         userPhoneNumber.setFont(frontSetting.f16);
 
         JLabel userBirthLabel = new JLabel("생년월일");
         userBirthLabel.setBounds(35, 244, 300, 30);
         userBirthLabel.setFont(frontSetting.f16);
-        JLabel userBirth = new JLabel("test");
+        JLabel userBirth = new JLabel(userInfo[5]);
         userBirth.setBounds(160, 244, 300, 30);
         userBirth.setFont(frontSetting.f16);
 

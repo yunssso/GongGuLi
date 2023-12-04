@@ -173,7 +173,9 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
-                refreshTable();
+                model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+                postTable.setModel(model);
+                frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
             }
         });
 
@@ -182,7 +184,9 @@ public class MainPage extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchBoardInfoMethod(searchFilterBox.getSelectedItem().toString(), searchField.getText());
-                refreshTable();
+                model = new DefaultTableModel(frontSetting.mainPageDB, frontSetting.mainPageHeader);
+                postTable.setModel(model);
+                frontSetting.tableSetting(postTable, frontSetting.mainTableWidths);
             }
         });
 
@@ -289,7 +293,7 @@ public class MainPage extends JFrame{
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
+        ){
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
             BoardInfoRequest boardInfoRequest = new BoardInfoRequest(region, category, uuid);
 
@@ -316,7 +320,7 @@ public class MainPage extends JFrame{
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-             ){
+        ){
             //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
             SearchBoardInfoRequest searchBoardInfoRequest = new SearchBoardInfoRequest(searchFilter, searchText, uuid, region, category);
 
