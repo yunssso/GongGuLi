@@ -46,6 +46,7 @@ public class ChatClient extends JFrame implements Runnable{
     // 사용자 uuid
     private String uuid = null;
     private JButton leaveButton = null;
+    private TimecheckWindow timecheckWindow;
 
     // 처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
     public ChatClient(int port, String uuid) {
@@ -54,6 +55,10 @@ public class ChatClient extends JFrame implements Runnable{
             this.uuid = uuid;
 
             createAndShowGUI();
+
+            // 채팅방이 닫힌 시간을 표시할 창 생성
+            timecheckWindow = new TimecheckWindow();
+
 
             Socket socket = new Socket("localhost", port);
             //43.200.49.16
@@ -71,6 +76,7 @@ public class ChatClient extends JFrame implements Runnable{
 
             Thread thread = new Thread(this);
             thread.start();
+            setVisible(true);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
