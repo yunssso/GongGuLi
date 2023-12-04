@@ -44,7 +44,7 @@ public class GetInfoDAO {
             rs = pt.executeQuery();
 
             if (rs.next()) {
-                String uuid = rs.getString("nickName");
+                String uuid = rs.getString("uuid");
 
                 rs.close();
                 pt.close();

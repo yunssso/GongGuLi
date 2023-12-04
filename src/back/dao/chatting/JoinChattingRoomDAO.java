@@ -30,17 +30,31 @@ public class JoinChattingRoomDAO {
             if (isJoinedChat(port, uuid)) {
                 try {
                     conn = DBConnector.getConnection();
+
                     String insertSQL = "INSERT INTO chattingMember (port, memberUuid) VALUES (?, ?);";
                     pt = conn.prepareStatement(insertSQL);
                     pt.setInt(1, port);
                     pt.setString(2, uuid);
-
                     if (!pt.execute()) {
-                        pt.close();
-                        conn.close();
-                        System.out.println("입장 성공");
-                        return 1;   //  채팅방 입장 성공
+                        System.out.println("채팅방 입장 성공");
                     }
+
+                    String updateSQL = "UPDATE board SET nowPeopleNum = nowPeopleNum +1 WHERE port = ?";
+                    pt = conn.prepareStatement(updateSQL);
+                    pt.setInt(1, port);
+                    if (!pt.execute()) {
+                        System.out.println("게시글 인원 증가 성공");
+                    }
+
+                    updateSQL = "UPDATE chattingRoom SET nowPeopleNum = nowPeopleNum +1 WHERE port = ?";
+                    pt = conn.prepareStatement(updateSQL);
+                    pt.setInt(1, port);
+                    if (!pt.execute()) {
+                        System.out.println("채팅방 인원 증가 성공");
+                    }
+                    pt.close();
+                    conn.close();
+                    return 1;   //  채팅방 입장 성공
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

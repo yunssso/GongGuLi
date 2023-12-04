@@ -10,15 +10,15 @@ public class DBConnector {
 //    private static String url = "jdbc:mariadb://43.200.49.16:3306/GongGuLi";      // DB 서버 주소 ( 이 주소는 로컬 주소 )
         private static String url = "jdbc:mariadb://gongguli.c5bclsnfmtbe.ap-northeast-2.rds.amazonaws.com:3306/GongGuLi";      // RDS DB 서버 주소
 //    private static String password = "123456";     // 서버 비밀번호
-    private static String password = "root1234";     // RDS 서버 비밀번호
+        private static String password = "root1234";     // RDS 서버 비밀번호
 
-    public static Connection getConnection() {
-        Connection con = null;
-        try {
-            Class.forName(driver);
-            con = DriverManager.getConnection(url, user, password);
-        } catch (Exception e) {
-            e.printStackTrace();
+     public static Connection getConnection() {
+         Connection con = null;
+         try {
+             Class.forName(driver);
+             con = DriverManager.getConnection(url, user, password);
+         } catch (Exception e) {
+        e.printStackTrace();
         }
         return con;
     }

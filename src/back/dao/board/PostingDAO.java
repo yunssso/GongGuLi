@@ -25,7 +25,7 @@ public class PostingDAO {
             pt.setString(5, postBoardRequest.content());
             pt.setString(6, postBoardRequest.uuid());
             pt.setInt(7, 0);
-            pt.setInt(8, 1);
+            pt.setInt(8, 0);
             pt.setInt(9, port);
 
             if (!pt.execute()) {

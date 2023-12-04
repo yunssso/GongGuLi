@@ -121,6 +121,7 @@ public class NewPost extends JFrame{
 
                         newPostFrame.dispose();
 
+                        objectInputStream.close();
                         new ChatClient(postBoardResponse.port(), uuid);
                     }
 

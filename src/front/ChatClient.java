@@ -52,25 +52,26 @@ public class ChatClient extends JFrame implements Runnable{
         try {
             //포트 정보
             this.uuid = uuid;
-
-            createAndShowGUI();
-
+            System.out.println("0");
             Socket socket = new Socket("43.200.49.16", port);
             //43.200.49.16
-
+            System.out.println("1");
             //서버 -> 클라이언트 Output Stream
             //통신 관련
             OutputStream outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
-
+            System.out.println("2");
             //서버 <- 클라이언트 Input Stream
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
-
+            System.out.println("3");
+            createAndShowGUI();
+            System.out.println("4");
             objectOutputStream.writeObject(new JoinMessageChatRoomRequest(uuid));
-
+            System.out.println("5");
             Thread thread = new Thread(this);
             thread.start();
+            System.out.println("6");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
