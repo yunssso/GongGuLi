@@ -40,24 +40,23 @@ public class ChatClient extends JFrame implements Runnable{
     private JList<String> participantsList = null;
     private DefaultListModel<String> participantListModel;
     private JScrollPane participantsscrollPane = null;
+    private TimecheckWindow timecheckWindow = new TimecheckWindow(this);
 
     // 서버에서 각 클라이언트 이름을 받아오는 리스트
     private ArrayList<String> nameList = null;
+    private int port;
     // 사용자 uuid
     private String uuid = null;
     private JButton leaveButton = null;
-    private TimecheckWindow timecheckWindow;
 
     // 처음 클라이언트가 생성되면 자동으로 로그인 메소드부터 실행 되도록 구현
     public ChatClient(int port, String uuid) {
         try {
             //포트 정보
+            this.port = port;
             this.uuid = uuid;
 
             createAndShowGUI();
-
-            // 채팅방이 닫힌 시간을 표시할 창 생성
-            timecheckWindow = new TimecheckWindow();
 
 
             Socket socket = new Socket("localhost", port);
@@ -77,6 +76,15 @@ public class ChatClient extends JFrame implements Runnable{
             Thread thread = new Thread(this);
             thread.start();
             setVisible(true);
+
+            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    dispose();
+                }
+            });
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -136,7 +144,7 @@ public class ChatClient extends JFrame implements Runnable{
 
         leaveButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { leaveChatRoom(); }
+            public void actionPerformed(ActionEvent e) { dispose();}
         });
 
         chattingListPanel.add(participantsButton, BorderLayout.NORTH);
@@ -145,9 +153,6 @@ public class ChatClient extends JFrame implements Runnable{
         add(chattingListPanel);
 
         setVisible(true);
-    }
-    private void leaveChatRoom() {
-        dispose();
     }
 
     //Participants Frame
@@ -266,11 +271,25 @@ public class ChatClient extends JFrame implements Runnable{
     /*채팅방 참여자 명단 Request를 보내는 메소드*/
     private void getParticipants() {
         try {
+            System.out.println(objectOutputStream);
             if (objectOutputStream != null) {
-                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest());
+                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest(port));
+
+                ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+                System.out.println(responseCode.getKey());
+                if (responseCode.getKey() == ResponseCode.GET_PARTICIPANTS_SUCCESS.getKey()) {
+                    GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = (GetParticipantsChatRoomResponse) objectInputStream.readObject();
+                    nameList = getParticipantsChatRoomResponse.list();
+                } else {
+                    showErrorDialog(responseCode.getValue());
+                }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 }

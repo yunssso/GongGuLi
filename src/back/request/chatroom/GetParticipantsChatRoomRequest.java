@@ -1,3 +1,3 @@
 package back.request.chatroom;
 
-public record GetParticipantsChatRoomRequest() {}
+public record GetParticipantsChatRoomRequest(int port) {}

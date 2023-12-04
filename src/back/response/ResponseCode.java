@@ -113,6 +113,10 @@ public enum ResponseCode {
     // READ MORE MY HISTORY
     READ_MORE_MY_HISTORY_SUCCESS(700, "내 공구 내역 자세히 보기를 성공했습니다."),
     READ_MORE_MY_HISTORY_FAILURE(701, "내 공구 내역 자세히 보기를 실패했습니다."),
+
+    // GET PARTICIPANTS
+    GET_PARTICIPANTS_SUCCESS(800, "참여자 명단 불러오기에 성공했습니다."),
+    GET_PARTICIPANTS_FAILURE(801, "참여자 명단 불러오기에 실패했습니다."),
     ;
 
     private final int code;

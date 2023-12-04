@@ -85,14 +85,14 @@ public class MainPage extends JFrame{
 
 // 이미지 크기 조절
         int newWidth = 170; // 새로운 너비
-        int newHeight = 50; // 새로운 높이
+        int newHeight = 55; // 새로운 높이
         Image image = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
         ImageIcon originalIcon = new ImageIcon(image);
 
 // 채팅 목록 버튼 생성
         JButton chattingListBtn = new JButton(originalIcon);  // 채팅 목록 버튼
-        chattingListBtn.setBounds(105, 35, 170, 50);
+        chattingListBtn.setBounds(105, 35, 170, 55);
         chattingListBtn.setFont(frontSetting.fb16);
         chattingListBtn.setBorderPainted(false);
 
