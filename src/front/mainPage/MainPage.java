@@ -80,17 +80,48 @@ public class MainPage extends JFrame{
             }
         });
 
-        RoundedButton chattingListBtn = new RoundedButton("채팅 목록");  // 채팅 목록 버튼
-        chattingListBtn.setBounds(120, 35, 130, 40);
-        chattingListBtn.setFont(frontSetting.fb16);
+        // 이미지 아이콘 생성
+        final ImageIcon[] chatListIcon = {new ImageIcon("img/채팅목록.png")};
 
-        /*채팅 목록 버튼 클릭 시*/
+// 이미지 크기 조절
+        int newWidth = 170; // 새로운 너비
+        int newHeight = 50; // 새로운 높이
+        Image image = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+
+        ImageIcon originalIcon = new ImageIcon(image);
+
+// 채팅 목록 버튼 생성
+        JButton chattingListBtn = new JButton(originalIcon);  // 채팅 목록 버튼
+        chattingListBtn.setBounds(105, 35, 170, 50);
+        chattingListBtn.setFont(frontSetting.fb16);
+        chattingListBtn.setBorderPainted(false);
+
+        //채팅알림 왔을 때 채팅목록2로 이미지 변경
+        chatListIcon[0] = new ImageIcon("img/채팅목록2.png");
+        Image resizedImage = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        chattingListBtn.setIcon(resizedIcon);
+
+        //알림을 읽었을 때 다시 채팅목록 이미지로 변경
+        //chatListIcon[0] = new ImageIcon("img/채팅목록.png");
+        //resizedImage = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        //resizedIcon = new ImageIcon(resizedImage);
+        //chattingListBtn.setIcon(resizedIcon);
+
+// 채팅 목록 버튼 클릭 시
         chattingListBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ChattingList(uuid);
+                // 클릭 시 알림이 읽혔다고 가정하고 아이콘 변경(일단 해둠)
+                chatListIcon[0] = new ImageIcon("img/채팅목록.png");
+                Image resizedImage = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+                ImageIcon resizedIcon = new ImageIcon(resizedImage);
+                chattingListBtn.setIcon(resizedIcon);
             }
         });
+
+
 
         JLabel regionLabel = new JLabel("지역 필터");  // 지역 필터 레이블
         regionLabel.setBounds(72, 170, 120, 30);
