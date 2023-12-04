@@ -1,5 +1,6 @@
 package back.handler;
 
+import back.dao.chatting.GetParticipantsChatRoomDAO;
 import back.response.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.chatting.IsMasterDAO;
@@ -7,6 +8,7 @@ import back.request.chatroom.GetParticipantsChatRoomRequest;
 import back.request.chatroom.JoinMessageChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
 import back.request.chatroom.MessageChatRoomRequest;
+import back.response.chatroom.GetParticipantsChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
 
@@ -88,14 +90,21 @@ public class ChatServerHandler extends Thread {
 								break;
 							}
 						}
-
 						objectOutputStream.writeObject(ResponseCode.KICK_CHATROOM_SUCCESS);
 					} else {
 						objectOutputStream.writeObject(ResponseCode.KICK_CHATROOM_FAILURE);
 					}
 				} else if (readObj instanceof GetParticipantsChatRoomRequest getParticipantsChatRoomRequest) {
 					// 채팅방 참여자 명단을 가져오는 작업을 수행해야함.
-
+					GetParticipantsChatRoomDAO getParticipantsChatRoomDAO = new GetParticipantsChatRoomDAO();
+					ArrayList<String> participantsNickNameList = getParticipantsChatRoomDAO.getParticipantsChatRoom(port);
+					if (participantsNickNameList != null) {
+						objectOutputStream.writeObject(ResponseCode.GET_PARTICIPANTS_SUCCESS);
+						GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = new GetParticipantsChatRoomResponse(participantsNickNameList);
+						objectOutputStream.writeObject(getParticipantsChatRoomResponse);
+					} else {
+						objectOutputStream.writeObject(ResponseCode.GET_PARTICIPANTS_FAILURE);
+					}
 				}
 			}
 		} catch (Exception exception) {
