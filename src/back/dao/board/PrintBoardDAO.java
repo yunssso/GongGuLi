@@ -163,7 +163,7 @@ public class PrintBoardDAO {
         IsMasterDAO isMasterDAO = new IsMasterDAO();
         ArrayList<Integer> portList = new ArrayList<Integer>();
         try {
-            String getPortSQL = "SELECT port FROM chattingmember WHERE memberUuid = ?;";
+            String getPortSQL = "SELECT port FROM chattingMember WHERE memberUuid = ?;";
             pt = conn.prepareStatement(getPortSQL);
             pt.setString(1, uuid);
             rs = pt.executeQuery();

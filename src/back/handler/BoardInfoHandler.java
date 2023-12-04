@@ -1,6 +1,7 @@
 package back.handler;
 
 import back.dao.board.SearchBoardDAO;
+import back.request.board.ReadMoreMyHistoryRequest;
 import back.request.board.SearchBoardInfoRequest;
 import back.response.ResponseCode;
 import back.dao.board.PrintBoardDAO;
@@ -52,6 +53,8 @@ public class BoardInfoHandler extends Thread {
                 myBoardInfoMoreMethod(myBoardInfoMoreRequest);
             } else if (readObj instanceof SearchBoardInfoRequest searchBoardInfoRequest) {
                 searchBoardInfoMethod(searchBoardInfoRequest);
+            } else if (readObj instanceof ReadMoreMyHistoryRequest readMoreMyHistoryRequest) {
+                readMoreMyHistoryMethod(readMoreMyHistoryRequest);
             }
         } catch (Exception exception) {
             //exception.printStackTrace();
@@ -165,6 +168,14 @@ public class BoardInfoHandler extends Thread {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+        }
+    }
+
+    private void readMoreMyHistoryMethod(ReadMoreMyHistoryRequest readMoreMyHistoryRequest) {
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

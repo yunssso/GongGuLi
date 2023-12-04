@@ -108,7 +108,12 @@ public enum ResponseCode {
 
     // GET MY NICKNAME
     GET_UUID_NICKNAME_SUCCESS(630, "UUID에 따른 닉네임 가져오기를 완료했습니다."),
-    GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다.");
+    GET_UUID_NICKNAME_FAILURE(631, "UUID에 따른 닉네임 가져오기를 실패했습니다."),
+
+    // READ MORE MY HISTORY
+    READ_MORE_MY_HISTORY_SUCCESS(700, "내 공구 내역 자세히 보기를 성공했습니다."),
+    READ_MORE_MY_HISTORY_FAILURE(701, "내 공구 내역 자세히 보기를 실패했습니다."),
+    ;
 
     private final int code;
     private final String message;
