@@ -121,7 +121,7 @@ public class LogIn extends JFrame {
 
         // 비밀번호 찾기 버튼
         JButton pwSearchButton = new JButton("  비밀번호 찾기");
-        pwSearchButton.setBounds(800, 485, 100, 30);
+        pwSearchButton.setBounds(775, 485, 150, 30);
         pwSearchButton.setFont(f3);
         pwSearchButton.setOpaque(false);
         pwSearchButton.setContentAreaFilled(false);
