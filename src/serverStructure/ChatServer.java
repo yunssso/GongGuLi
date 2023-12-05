@@ -21,7 +21,11 @@ public class ChatServer extends Thread {
             System.out.println("[채팅방 서버 열림] PORT : " + serversocket.getLocalPort());
 
             while (true) {
+                System.out.println(serversocket.getInetAddress());
+                System.out.println(serversocket.getLocalSocketAddress());
+                System.out.println(serversocket.getLocalPort());
                 Socket socket = serversocket.accept();
+                System.out.println("테스트 2");
                 System.out.println("[채팅방 입장] PORT : " + serversocket.getLocalPort() + " IP : " + socket.getLocalAddress());
 
                 ChatServerHandler handler = new ChatServerHandler(socket, list);
@@ -29,7 +33,7 @@ public class ChatServer extends Thread {
 
                 list.add(handler);
 
-                System.out.println(list.size());
+                System.out.println(list.size() + "이거 되는거냐??");
             }
         } catch (Exception exception) {
             exception.printStackTrace();

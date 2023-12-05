@@ -41,9 +41,10 @@ public class SignUpDAO {
             } else if (sqlE.getErrorCode() == 41) {
                 return ResponseCode.PHONE_NUMBER_DUPLICATE;   //  핸드폰 번호 중복
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return ResponseCode.SIGNUP_FAILURE;
     }
 }

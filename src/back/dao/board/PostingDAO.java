@@ -14,6 +14,7 @@ public class PostingDAO {
 
     public boolean posting(PostBoardRequest postBoardRequest, int port) {
         boolean isPosted = false;
+
         String insertSQL = "INSERT INTO board(title, region, category, maxPeopleNum, content, uuid, view, nowPeopleNum, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = DBConnector.getConnection();
@@ -30,7 +31,6 @@ public class PostingDAO {
 
             if (!pt.execute()) {
                 isPosted = true;
-                System.out.println("게시 성공.");
             }
 
             JoinChattingRoomDAO joinChattingRoomDAO = new JoinChattingRoomDAO();
@@ -38,9 +38,8 @@ public class PostingDAO {
 
             pt.close();
             conn.close();
-        } catch (Exception e) {
-            System.out.println("게시 실패.");
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return isPosted;

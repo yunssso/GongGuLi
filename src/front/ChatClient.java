@@ -56,29 +56,24 @@ public class ChatClient extends JFrame implements Runnable{
             this.port = port;
             this.uuid = uuid;
 
+            Socket socket = new Socket("43.200.49.16", port);
+
             createAndShowGUI();
-
-
-            Socket socket = new Socket("localhost", port);
-            //43.200.49.16
 
             //서버 -> 클라이언트 Output Stream
             //통신 관련
             OutputStream outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
-
+            System.out.println("2");
             //서버 <- 클라이언트 Input Stream
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
-
+            createAndShowGUI();
             objectOutputStream.writeObject(new JoinMessageChatRoomRequest(uuid));
-
             Thread thread = new Thread(this);
             thread.start();
             setVisible(true);
-
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {

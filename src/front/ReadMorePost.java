@@ -104,12 +104,14 @@ public class ReadMorePost {
         joinChatRoomBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try (Socket clientSocket = new Socket("localhost", 1026);
-                     OutputStream outputStream = clientSocket.getOutputStream();
-                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-                     InputStream inputStream = clientSocket.getInputStream();
-                     ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-                ){
+                try {
+                    Socket clientSocket = new Socket("43.200.49.16", 1026);
+
+                    OutputStream outputStream = clientSocket.getOutputStream();
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                    InputStream inputStream = clientSocket.getInputStream();
+                    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
                     JoinChatRoomRequest joinChatroomRequest = new JoinChatRoomRequest(port, uuid);
 
                     objectOutputStream.writeObject(joinChatroomRequest);
@@ -117,6 +119,8 @@ public class ReadMorePost {
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) {
+                        System.out.println(port);
+                        clientSocket.close();
                         new ChatClient(port, uuid);
                     } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) {
                         showErrorDialog(responseCode.getValue());
@@ -206,7 +210,7 @@ public class ReadMorePost {
             public void actionPerformed(ActionEvent e) {
                 int answer = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
-                    try (Socket clientSocket = new Socket("localhost", 1025);
+                    try (Socket clientSocket = new Socket("43.200.49.16", 1025);
                          OutputStream outputStream = clientSocket.getOutputStream();
                          ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                          InputStream inputStream = clientSocket.getInputStream();
@@ -248,7 +252,7 @@ public class ReadMorePost {
 
     private String getNickNameMethod(String uuid) {
         String nickName = "";
-        try (Socket clientSocket = new Socket("localhost", 1024);
+        try (Socket clientSocket = new Socket("43.200.49.16", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();

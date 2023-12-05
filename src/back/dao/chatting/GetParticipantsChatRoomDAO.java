@@ -25,9 +25,10 @@ public class GetParticipantsChatRoomDAO {
                 String nickName = getInfoDAO.getNickNameMethod(rs.getString("uuid"));
                 list.add(nickName);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return list;
     }
 }

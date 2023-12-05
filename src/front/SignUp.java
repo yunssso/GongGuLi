@@ -221,7 +221,7 @@ public class SignUp extends JDialog{
                     SignUpRequest signUpDto = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
                     //아이피, 포트 번호로 소켓을 연결
-                    clientSocket = new Socket("localhost", 1024);
+                    clientSocket = new Socket("43.200.49.16", 1024);
 
                     //서버와 정보를 주고 받기 위한 스트림 생성
                     OutputStream os = clientSocket.getOutputStream();
