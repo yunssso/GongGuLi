@@ -1,3 +1,5 @@
 package back.request.chatroom;
 
-public record GetParticipantsChatRoomRequest(int port) {}
+import java.io.Serializable;
+
+public record GetParticipantsChatRoomRequest (int port) implements Serializable {}

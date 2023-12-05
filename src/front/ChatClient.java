@@ -126,6 +126,7 @@ public class ChatClient extends JFrame implements Runnable{
 
         participantsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                getParticipants();
                 showParticipants();
             }
         });
@@ -267,18 +268,15 @@ public class ChatClient extends JFrame implements Runnable{
     /*채팅방 참여자 명단 Request를 보내는 메소드*/
     private void getParticipants() {
         try {
-            System.out.println(objectOutputStream);
-            if (objectOutputStream != null) {
-                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest(port));
+            objectOutputStream.writeObject(new GetParticipantsChatRoomRequest(port));
 
-                ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
-                System.out.println(responseCode.getKey());
-                if (responseCode.getKey() == ResponseCode.GET_PARTICIPANTS_SUCCESS.getKey()) {
-                    GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = (GetParticipantsChatRoomResponse) objectInputStream.readObject();
-                    nameList = getParticipantsChatRoomResponse.list();
-                } else {
-                    showErrorDialog(responseCode.getValue());
-                }
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+            System.out.println(responseCode.getKey());
+            if (responseCode.getKey() == ResponseCode.GET_PARTICIPANTS_SUCCESS.getKey()) {
+                GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = (GetParticipantsChatRoomResponse) objectInputStream.readObject();
+                nameList = getParticipantsChatRoomResponse.list();
+            } else {
+                showErrorDialog(responseCode.getValue());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
