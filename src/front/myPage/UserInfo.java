@@ -191,7 +191,7 @@ public class UserInfo {
     }
 
     private void isCheckNickDup(String inpNickName) {
-        try (Socket clientSocket = new Socket("43.200.49.16", 1024);
+        try (Socket clientSocket = new Socket("localhost", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
@@ -220,7 +220,7 @@ public class UserInfo {
 
     /*writer, name, userId, region, phoneNum, birth를 서버에서 받아오는 메소드*/
     private void getUserInfo() {
-        try (Socket clientSocket = new Socket("43.200.49.16", 1028);
+        try (Socket clientSocket = new Socket("localhost", 1028);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
@@ -250,7 +250,7 @@ public class UserInfo {
 
     /*유저정보 수정 Request 메소드*/
     private boolean modifyUserInfoMethod(String nickName, String password, String passwordCheck, String region) {
-        try (Socket clientSocket = new Socket("43.200.49.16", 1024);
+        try (Socket clientSocket = new Socket("localhost", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();

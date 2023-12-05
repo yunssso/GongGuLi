@@ -119,7 +119,7 @@ public class ModifyMyPost{
                 if(modifyErrorCheck(title, region, category, content)) { // 오류 검출 후 DB 넘기기
                     System.out.println("수정: [" + title + ", " + region + ", " + category + ", " + content + "]");
 
-                    try (Socket clientSocket = new Socket("43.200.49.16", 1025);
+                    try (Socket clientSocket = new Socket("localhost", 1025);
                          OutputStream outputStream = clientSocket.getOutputStream();
                          ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                          InputStream inputStream = clientSocket.getInputStream();

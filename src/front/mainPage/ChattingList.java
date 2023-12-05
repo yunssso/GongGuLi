@@ -54,7 +54,7 @@ public class ChattingList {
     }
 
     private void getChattingRoomMethod() {
-        try (Socket clientSocket = new Socket("43.200.49.16", 1026);
+        try (Socket clientSocket = new Socket("localhost", 1026);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();

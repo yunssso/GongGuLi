@@ -144,7 +144,7 @@ public class MyPage extends JFrame {
     }
 
     private void deleteUserMethod(String password) {
-        try (Socket clientSocket = new Socket("43.200.49.16", 1024);
+        try (Socket clientSocket = new Socket("localhost", 1024);
              OutputStream outputStream = clientSocket.getOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
