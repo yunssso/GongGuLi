@@ -119,7 +119,6 @@ public class ReadMorePost {
                     ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
                     if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) {
-                        System.out.println(port);
                         clientSocket.close();
                         new ChatClient(port, uuid);
                     } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) {
