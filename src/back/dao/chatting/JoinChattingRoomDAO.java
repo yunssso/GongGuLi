@@ -33,14 +33,17 @@ public class JoinChattingRoomDAO {
                     pt = conn.prepareStatement(insertSQL);
                     pt.setInt(1, port);
                     pt.setString(2, uuid);
+                    pt.execute();
 
-                    String updateSQL = "UPDATE board SET nowPeopleNum = nowPeopleNum +1 WHERE port = ?";
+                    String updateSQL = "UPDATE board SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
                     pt = conn.prepareStatement(updateSQL);
                     pt.setInt(1, port);
+                    pt.execute();
 
-                    updateSQL = "UPDATE chattingRoom SET nowPeopleNum = nowPeopleNum +1 WHERE port = ?";
+                    updateSQL = "UPDATE chattingRoom SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
                     pt = conn.prepareStatement(updateSQL);
                     pt.setInt(1, port);
+                    pt.execute();
 
                     pt.close();
                     conn.close();
