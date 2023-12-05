@@ -1,5 +1,7 @@
 package front;
 
+import back.request.account.SignUpIDCheckRequest;
+import back.request.account.SignUpNickNameCheckRequest;
 import back.request.account.SignUpRequest;
 import back.response.ResponseCode;
 
@@ -27,10 +29,10 @@ public class SignUp extends JDialog{
     private JTextField nickNameText;
     private JComboBox<String> residenceList;
     boolean checkNickDup;  // true면 중복확인 한거임 false면 안한거임
-    boolean checkIdDup;
+    boolean checkIDDup;
 
     public SignUp() {
-        this.checkIdDup = false;
+        this.checkIDDup = false;
         this.checkNickDup = false;
         setSignUp();
         setLeftPanel();
@@ -89,8 +91,8 @@ public class SignUp extends JDialog{
         IdDupBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                checkIdDup = true;
-                System.out.println("checkNameDub: " + checkIdDup);
+                signUpIDCheck(idLabel.getText());
+                System.out.println("checkNameDub: " + checkIDDup);
             }
         });
 
@@ -150,7 +152,7 @@ public class SignUp extends JDialog{
         NickDupBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                checkNickDup = true;
+                signUpNickNameCheck(nickNameLabel.getText());
                 System.out.println("checkNickDup: " + checkNickDup);
             }
         });
@@ -222,11 +224,11 @@ public class SignUp extends JDialog{
                     String region = (String) residenceList.getSelectedItem();
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
-                    SignUpRequest signUpDto = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
+                    SignUpRequest signUpRequest = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
-                    if (checkIdDup) {
+                    if (checkIDDup) {
                         if (checkNickDup) {
-                            objectOutputStream.writeObject(signUpDto);
+                            objectOutputStream.writeObject(signUpRequest);
 
                             ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
@@ -242,7 +244,7 @@ public class SignUp extends JDialog{
                         showErrorDialog("아이디 중복 확인을 하세요");
                     }
 
-                    checkIdDup = false;
+                    checkIDDup = false;
                     checkNickDup = false;
                     objectInputStream.close();
                 } catch (Exception exception) {
@@ -281,6 +283,56 @@ public class SignUp extends JDialog{
                 new LogIn();
             }
         });
+    }
+
+    private void signUpNickNameCheck(String inpNickName) {
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ) {
+            SignUpNickNameCheckRequest signUpNickNameCheckRequest = new SignUpNickNameCheckRequest(inpNickName);
+
+            objectOutputStream.writeObject(signUpNickNameCheckRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_SUCCESS.getKey()) {
+                frontSetting.showCompleteDialog(responseCode.getValue());
+                checkNickDup = true;
+            } else if (responseCode.getKey() == ResponseCode.NICKNAME_CHECK_FAILURE.getKey()) {
+                frontSetting.showErrorDialog(responseCode.getValue());
+                checkNickDup = false;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void signUpIDCheck(String inpID) {
+        try (Socket clientSocket = new Socket("localhost", 1024);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ) {
+            SignUpIDCheckRequest signUpIDCheckRequest = new SignUpIDCheckRequest(inpID);
+
+            objectOutputStream.writeObject(signUpIDCheckRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.ID_NOT_DUPLICATE.getKey()) {
+                frontSetting.showCompleteDialog(responseCode.getValue());
+                checkIDDup = true;
+            } else if (responseCode.getKey() == ResponseCode.ID_DUPLICATE.getKey()) {
+                frontSetting.showErrorDialog(responseCode.getValue());
+                checkIDDup = false;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void showErrorDialog(String message) {

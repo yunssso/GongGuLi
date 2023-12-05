@@ -59,6 +59,10 @@ public class AccountHandler extends Thread {
 				nickNameCheckMethod(nickNameCheckRequest);
 			} else if (readObj instanceof DeleteUserRequest deleteUserRequest) {
 				deleteUserMethod(deleteUserRequest);
+			} else if (readObj instanceof SignUpNickNameCheckRequest signUpNickNameCheckRequest) {
+				signUpNickNameCheckMethod(signUpNickNameCheckRequest);
+			} else if (readObj instanceof SignUpIDCheckRequest signUpIDCheckRequest) {
+				signUpIDCheckMethod(signUpIDCheckRequest);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -304,8 +308,6 @@ public class AccountHandler extends Thread {
 
 	private void deleteUserMethod(DeleteUserRequest deleteUserRequest) {
 		try {
-			// 여기에 DeleteUserDAO 연결 시켜주면 돼
-			// 밑에 두개 가져다가 if문 안에 넣어서 연결 해줘~ !
 			AccountDAO accountDAO = new AccountDAO();
 			if (accountDAO.deleteUser(deleteUserRequest.uuid(), deleteUserRequest.password())) {
 				objectOutputStream.writeObject(ResponseCode.DELETE_USER_SUCCESS);
@@ -315,6 +317,49 @@ public class AccountHandler extends Thread {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
+	}
+
+	private void signUpNickNameCheckMethod(SignUpNickNameCheckRequest signUpNickNameCheckRequest) {
+		try {
+			CheckDAO checkDAO = new CheckDAO();
+			int res = checkDAO.nickNameCheck(signUpNickNameCheckRequest.inpNickName());
+
+			if (res == 1) {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_SUCCESS);
+			} else if (res == 0) {
+				objectOutputStream.writeObject(ResponseCode.NICKNAME_CHECK_FAILURE);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				objectInputStream.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
+	}
+
+	private void signUpIDCheckMethod(SignUpIDCheckRequest signUpIDCheckRequest) {
+		try {
+
+			CheckDAO checkDAO = new CheckDAO();
+			int res = checkDAO.IDCheck(signUpIDCheckRequest.inpID());
+
+			if (res == 1) {
+				objectOutputStream.writeObject(ResponseCode.ID_NOT_DUPLICATE);
+			} else {
+				objectOutputStream.writeObject(ResponseCode.ID_DUPLICATE);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
 			try {
 				objectInputStream.close();
 			} catch (IOException ioException) {

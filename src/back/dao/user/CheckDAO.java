@@ -40,6 +40,28 @@ public class CheckDAO {
         return nickNameCheck;
     }
 
+    public int nickNameCheck(String inpNickName) {
+        GetInfoDAO getInfoDAO = new GetInfoDAO();
+        int nickNameCheck = 0;
+        try {
+            conn = DBConnector.getConnection();
+            String existssql = "SELECT exists(select nickName from user where nickName = ?) as cnt;";
+            pt = conn.prepareStatement(existssql);
+            pt.setString(1, inpNickName);
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                int cnt = rs.getInt("cnt");
+                if (cnt == 0) {
+                    nickNameCheck = 1;   //  닉네임 변경 가능
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return nickNameCheck;
+    }
+
 //    로그인 확인
     public int logInCheck(String inpId, String inpPassword) {
         int result = 0;
@@ -66,5 +88,27 @@ public class CheckDAO {
         }
 
         return result;        // ?
+    }
+
+    public int IDCheck(String inpID) {
+        GetInfoDAO getInfoDAO = new GetInfoDAO();
+        int nickNameCheck = 0;
+        try {
+            conn = DBConnector.getConnection();
+            String existssql = "SELECT exists(select userId from user where userId = ?) as cnt;";
+            pt = conn.prepareStatement(existssql);
+            pt.setString(1, inpID);
+            rs = pt.executeQuery();
+            if (rs.next()) {
+                int cnt = rs.getInt("cnt");
+                if (cnt == 0) {
+                    nickNameCheck = 1;   //  닉네임 변경 가능
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return nickNameCheck;
     }
 }
