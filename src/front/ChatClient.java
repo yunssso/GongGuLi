@@ -1,10 +1,7 @@
 package front;
 
+import back.request.chatroom.*;
 import back.response.ResponseCode;
-import back.request.chatroom.GetParticipantsChatRoomRequest;
-import back.request.chatroom.JoinMessageChatRoomRequest;
-import back.request.chatroom.KickChatRoomRequest;
-import back.request.chatroom.MessageChatRoomRequest;
 import back.response.chatroom.ChattingMessageResponse;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
@@ -145,9 +142,30 @@ public class ChatClient extends JFrame implements Runnable{
         leaveButton.setFont(f5);
 
 
+
+
         leaveButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { dispose();}
+            public void actionPerformed(ActionEvent e) {
+                try (Socket clientSocket = new Socket("localhost", 1026);
+                     OutputStream outputStream = clientSocket.getOutputStream();
+                     ObjectOutputStream objectOutputStream2 = new ObjectOutputStream(outputStream);
+                     InputStream inputStream = clientSocket.getInputStream();
+                     ObjectInputStream objectInputStream2 = new ObjectInputStream(inputStream);
+                ){
+                    int choice = JOptionPane.showConfirmDialog(ChatClient.this,
+                            "정말 나가시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+
+                    if (choice == JOptionPane.YES_OPTION) {
+                        LeaveChatRoomRequest leaveChatRoomRequest = new LeaveChatRoomRequest(port, uuid);
+                        objectOutputStream.writeObject(leaveChatRoomRequest); // 채팅 서버와 연결 끊기
+                        objectOutputStream2.writeObject(leaveChatRoomRequest);
+                        showExitDialog();
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
         });
 
         chattingListPanel.add(participantsButton, BorderLayout.NORTH);
@@ -157,6 +175,7 @@ public class ChatClient extends JFrame implements Runnable{
 
         setVisible(true);
     }
+    private void showExitDialog() {dispose();}
 
     //Participants Frame
     private void showParticipants() {
@@ -281,10 +300,11 @@ public class ChatClient extends JFrame implements Runnable{
             objectOutputStream.writeObject(new GetParticipantsChatRoomRequest(port));
 
             ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
-            System.out.println(responseCode.getKey());
+
             if (responseCode.getKey() == ResponseCode.GET_PARTICIPANTS_SUCCESS.getKey()) {
                 GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = (GetParticipantsChatRoomResponse) objectInputStream.readObject();
                 nameList = getParticipantsChatRoomResponse.list();
+                System.out.println(nameList.size());
             } else {
                 showErrorDialog(responseCode.getValue());
             }

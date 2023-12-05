@@ -231,6 +231,8 @@ public class SignUp extends JDialog{
 
                             if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) {
                                 showSuccessDialog(responseCode.getValue());
+                                dispose();
+                                new LogIn();
                             } else {
                                 showErrorDialog(responseCode.getValue());
                             }
@@ -243,7 +245,6 @@ public class SignUp extends JDialog{
 
                     checkIDDup = false;
                     checkNickDup = false;
-                    objectInputStream.close();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

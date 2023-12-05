@@ -7,10 +7,7 @@ import back.request.chatroom.*;
 import back.response.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.chatting.IsMasterDAO;
-import back.response.chatroom.ChattingMessageResponse;
-import back.response.chatroom.GetParticipantsChatRoomResponse;
-import back.response.chatroom.JoinMessageChatRoomResponse;
-import back.response.chatroom.MessageChatRoomResponse;
+import back.response.chatroom.*;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -115,6 +112,9 @@ public class ChatServerHandler extends Thread {
 					} else {
 						objectOutputStream.writeObject(ResponseCode.GET_PARTICIPANTS_FAILURE);
 					}
+				} else if (readObj instanceof LeaveChatRoomRequest leaveChatRoomRequest) {
+					sendAll(new JoinMessageChatRoomResponse(nickName, "이(가) 퇴장했습니다.\n"));
+					break;
 				}
 			}
 		} catch (Exception exception) {

@@ -175,7 +175,7 @@ public class LogIn extends JFrame {
                 }
             }
         });
-        idText.addActionListener(new ActionListener() {
+        passwordText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 loginButton.doClick();

@@ -97,7 +97,7 @@ public class MainPage extends JFrame{
         chattingListBtn.setBorderPainted(false);
 
         //채팅알림 왔을 때 채팅목록2로 이미지 변경
-        chatListIcon[0] = new ImageIcon("img/채팅목록2.png");
+        chatListIcon[0] = new ImageIcon("img/채팅목록.png");
         Image resizedImage = chatListIcon[0].getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
         chattingListBtn.setIcon(resizedIcon);

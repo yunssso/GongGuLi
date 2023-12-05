@@ -1,11 +1,15 @@
 package back.handler;
 
+import back.dao.chatting.LeaveChatRoomDAO;
+import back.request.chatroom.JoinChatRoomListRequest;
+import back.request.chatroom.LeaveChatRoomRequest;
 import back.response.ResponseCode;
 import back.dao.chatting.GetChatRoomListDAO;
 import back.dao.chatting.JoinChattingRoomDAO;
 import back.request.chatroom.GetChattingRoomRequest;
 import back.request.chatroom.JoinChatRoomRequest;
 import back.response.chatroom.GetChattingRoomResponse;
+import back.response.chatroom.JoinChatRoomListResponse;
 
 import java.io.*;
 import java.net.Socket;
@@ -43,6 +47,10 @@ public class ChatRoomHandler extends Thread {
                 joinChatRoomMethod(joinChatRoomRequest);
             } else if (readObj instanceof GetChattingRoomRequest getChattingRoomRequest) {
                 getChattingRoomMethod(getChattingRoomRequest);
+            } else if (readObj instanceof LeaveChatRoomRequest leaveChatRoomRequest) {
+                leaveChatRoomMethod(leaveChatRoomRequest);
+            } else if (readObj instanceof JoinChatRoomListRequest joinChatRoomListRequest) {
+                joinChatRoomListMethod(joinChatRoomListRequest);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -92,6 +100,55 @@ public class ChatRoomHandler extends Thread {
 
                 objectOutputStream.writeObject(chattingRoomList);
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    /*채팅방 나가기 Response를 보내는 메소드*/
+    private void leaveChatRoomMethod(LeaveChatRoomRequest leaveChatRoomRequest) {
+        try {
+            // 여기에 넘어온 port와 uuid 이용해서 DB에서 제거 해주면 돼 <= 여기에 DAO 이용해서 제거 해줘
+            LeaveChatRoomDAO leaveChatRoomDAO = new LeaveChatRoomDAO();
+            boolean res = leaveChatRoomDAO.leaveChatRoom(leaveChatRoomRequest.port(), leaveChatRoomRequest.uuid());
+            if (res) {
+                objectOutputStream.writeObject(ResponseCode.LEAVE_CHATROOM_SUCCESS);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.LEAVE_CHATROOM_FAILURE);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    /*채팅방 참여 리스트 Response를 보내는 메소드*/
+    private void joinChatRoomListMethod(JoinChatRoomListRequest joinChatRoomListRequest) {
+        try {
+            GetChatRoomListDAO getChatRoomListDAO = new GetChatRoomListDAO();
+
+            int port = getChatRoomListDAO.getInChattingroom(joinChatRoomListRequest.selectRow(), joinChatRoomListRequest.uuid());
+
+            JoinChatRoomListResponse joinChatRoomListResponse = new JoinChatRoomListResponse(port);
+
+            if (port != -1) {
+                objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_SUCCESS);
+                objectOutputStream.writeObject(joinChatRoomListResponse);
+            } else {
+                objectOutputStream.writeObject(ResponseCode.JOIN_CHATROOM_FAILURE);
+            }
+
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {
