@@ -137,7 +137,7 @@ public class LogIn extends JFrame {
                     String password = String.valueOf(passwordText.getPassword());
 
                     //아이피, 포트 번호로 소켓을 연결
-                    clientSocket = new Socket("43.200.49.16", 1024);
+                    clientSocket = new Socket("localhost", 1024);
 
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
                     LoginRequest loginRequest = new LoginRequest(id, password);
