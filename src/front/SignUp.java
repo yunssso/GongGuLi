@@ -91,11 +91,10 @@ public class SignUp extends JDialog{
         IdDupBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                signUpIDCheck(idLabel.getText());
+                signUpIDCheck(idText.getText());
                 System.out.println("checkNameDub: " + checkIDDup);
             }
         });
-
 
         // 비밀번호 입력 필드
         JLabel passwordLabel = new JLabel("비밀번호");
@@ -152,12 +151,10 @@ public class SignUp extends JDialog{
         NickDupBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                signUpNickNameCheck(nickNameLabel.getText());
+                signUpNickNameCheck(nickNameText.getText());
                 System.out.println("checkNickDup: " + checkNickDup);
             }
         });
-
-
 
         // 생일 입력 필드
         JLabel birthLabel = new JLabel("생년월일");
