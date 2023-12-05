@@ -81,6 +81,7 @@ public class GetInfoDAO {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
         return -1; // chatPort를 가져오지 못했을 때의 반환값, 적절한 값으로 변경 필요
     }
 
@@ -101,9 +102,10 @@ public class GetInfoDAO {
 
                 return nowPeopleNum;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return -1;
     }
     public int getMaxPeopleNum(int port) {
@@ -122,9 +124,10 @@ public class GetInfoDAO {
 
                 return maxPeopleNum;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return -1;
     }
 }

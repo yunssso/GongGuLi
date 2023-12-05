@@ -93,7 +93,6 @@ public class ReadPostDAO {
                     pt = conn.prepareStatement(updateSQL);
                     pt.setInt(1, myBoardInfoMoreResponse.port());
                     pt.execute();
-                    System.out.println("자세히 보기 성공.");
 
                     rs.close();
                     pt.close();
@@ -101,17 +100,23 @@ public class ReadPostDAO {
 
                     return myBoardInfoMoreResponse;
                 } else {
-                    System.out.println("자세히 보기 실패.");
+                    rs.close();
+                    pt.close();
+                    conn.close();
+
+                    throw new Exception("자세히 보기 실패");
                 }
             } else {
-                System.out.println("VIEW 업데이트 실패");
+                rs.close();
+                pt.close();
+                conn.close();
+
+                throw new Exception("VIEW 업데이트 실패");
             }
-            rs.close();
-            pt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return null;
     }
 }

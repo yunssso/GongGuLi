@@ -29,13 +29,12 @@ public class CheckDAO {
             rs = pt.executeQuery();
             if (rs.next()) {
                 int cnt = rs.getInt("cnt");
-                System.out.println(cnt);
                 if (cnt == 0) {
                     nickNameCheck = 1;   //  닉네임 변경 가능
                 }
             }
-        } catch (Exception e) {
-            System.out.println("nickNameCheck Error");
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return nickNameCheck;
@@ -62,9 +61,10 @@ public class CheckDAO {
             rs.close();
             pt.close();
             conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return result;        // ?
     }
 }

@@ -22,9 +22,10 @@ public class IsMasterDAO {
             if (rs.next() && rs.getBoolean("cnt")) {
                 return true;    //  방장
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return false;   //  방장 X
     }
 }

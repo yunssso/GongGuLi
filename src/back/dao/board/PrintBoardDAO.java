@@ -106,9 +106,11 @@ public class PrintBoardDAO {
             rs.close();
             pt.close();
             conn.close();
+
             return list;
         } catch (Exception exception) {
             exception.printStackTrace();
+
             return null;
         }
     }
@@ -150,12 +152,12 @@ public class PrintBoardDAO {
                 rs.close();
                 pt.close();
                 conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("내가 참여한 글 ArrayList 저장 중 오류 발생.");
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
         }
         Collections.sort(list, Comparator.comparing(MyHistoryInfoResponse::postingTime).reversed());
+
         return list;
     }
 
@@ -175,8 +177,9 @@ public class PrintBoardDAO {
                     portList.add(port);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+
             portList = null;
         }
         return portList;

@@ -41,6 +41,7 @@ public class AccountDAO {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
         return null;
     }
 
@@ -59,10 +60,10 @@ public class AccountDAO {
             if (!pt.execute()) {
                 return 1;   //  닉네임 수정 성공
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("정보 수정 DB 오류");
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return 0;   //  실패
     }
 
@@ -75,15 +76,16 @@ public class AccountDAO {
                 pt = conn.prepareStatement(deleteSQL);
                 pt.setString(1, uuid);
                 if (!pt.execute()) {
-                    System.out.println("DAO에서 회원 탈퇴 성공");
                     pt.close();
                     conn.close();
+
                     return true;
                 }
+
                 pt.close();
                 conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
         return false;
@@ -100,14 +102,17 @@ public class AccountDAO {
                 rs.close();
                 pt.close();
                 conn.close();
+
                 return true;
             }
+
             rs.close();
             pt.close();
             conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return false;
     }
 }

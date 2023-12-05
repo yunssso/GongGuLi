@@ -32,9 +32,10 @@ public class LogInDAO {
             } else if (logInCheckResult == 3) {
                 logInResult = "Id Does Not Exist";      // 아이디가 존재하지 않음
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return logInResult;
     }
 }

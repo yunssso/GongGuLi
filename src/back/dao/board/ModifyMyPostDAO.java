@@ -5,7 +5,6 @@ import database.DBConnector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class ModifyMyPostDAO {
     Connection conn = null;
@@ -13,6 +12,7 @@ public class ModifyMyPostDAO {
 
     public boolean modifyMyPost(ModifyMyPostRequest modifyMyPostRequest) {
         boolean isModified = false;
+
         try {
             conn = DBConnector.getConnection();
             String updateSQL = "UPDATE board SET title = ?, region = ?, category = ?, content = ? WHERE port = ?;";
@@ -24,13 +24,13 @@ public class ModifyMyPostDAO {
             pt.setInt(5, modifyMyPostRequest.port());
             if (pt.executeUpdate() > 0) {
                 isModified = true;
-                System.out.println("게시글 수정 성공.");
             }
             pt.close();
             conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
         return isModified;
     }
 }
