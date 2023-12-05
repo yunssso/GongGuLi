@@ -1,6 +1,6 @@
 package back.dao.chatting;
 
-import back.request.chatroom.MessageSet;
+import back.request.chatroom.ChattingMessageRequest;
 import database.DBConnector;
 
 import java.sql.Connection;
@@ -10,16 +10,16 @@ public class InsertChattingMessageDAO {
     Connection conn = null;
     PreparedStatement pt = null;
 
-    public void insertChattingMessage(MessageSet messageSet) {
+    public void insertChattingMessage(ChattingMessageRequest chattingMessageRequest) {
         String insertSQL = "INSERT INTO chattingMessage (port, uuid, message, time) VALUES (?, ?, ?, CURRENT_TIMESTAMP);";
 
         try {
             conn = DBConnector.getConnection();
             pt = conn.prepareStatement(insertSQL);
 
-            pt.setInt(1, messageSet.port());
-            pt.setString(2, messageSet.uuid());
-            pt.setString(3, messageSet.message());
+            pt.setInt(1, chattingMessageRequest.port());
+            pt.setString(2, chattingMessageRequest.uuid());
+            pt.setString(3, chattingMessageRequest.message());
 
             pt.executeUpdate();
 

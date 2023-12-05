@@ -1,11 +1,13 @@
 package back.handler;
 
+import back.dao.chatting.GetChattingMessagesDAO;
 import back.dao.chatting.GetParticipantsChatRoomDAO;
 import back.dao.chatting.InsertChattingMessageDAO;
 import back.request.chatroom.*;
 import back.response.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.chatting.IsMasterDAO;
+import back.response.chatroom.ChattingMessageResponse;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
@@ -14,6 +16,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatServerHandler extends Thread {
 	private ObjectOutputStream objectOutputStream = null;
@@ -53,6 +56,7 @@ public class ChatServerHandler extends Thread {
 			GetInfoDAO getInfoDAO = new GetInfoDAO();
 			String nickName = getInfoDAO.getNickNameMethod(joinMessageChatRoomRequest.uuid());
 
+			getchattingMessage();
 			sendAll(new JoinMessageChatRoomResponse(nickName, "이(가) 입장했습니다.\n"));
 
 			if (isMasterDAO.isMaster(port, joinMessageChatRoomRequest.uuid())) {	//	해당 채팅방의 방장인지 판단하는 DAO
@@ -63,10 +67,10 @@ public class ChatServerHandler extends Thread {
 				Object readObj = objectInputStream.readObject();
 
 				if (readObj instanceof MessageChatRoomRequest messageChatRoomRequest) { //클라이언트 -> 서버 메세지 요청
-					MessageSet messageSet = new MessageSet(messageChatRoomRequest.message(), messageChatRoomRequest.uuid(), port); //DB에 넣을 메세지 정보
-					new InsertChattingMessageDAO().insertChattingMessage(messageSet);
-
 					if (master) { // 방장이 메세지를 보냈을 때
+						ChattingMessageRequest chattingMessageRequest = new ChattingMessageRequest(messageChatRoomRequest.message(), messageChatRoomRequest.uuid() + "*", port);
+						new InsertChattingMessageDAO().insertChattingMessage(chattingMessageRequest);
+
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
 								nickName + "(방장)",
 								messageChatRoomRequest.message() + "\n"
@@ -74,6 +78,9 @@ public class ChatServerHandler extends Thread {
 
 						sendAll(messageChatRoomResponse);
 					} else { // 이외 사용자가 메세지를 보냈을 때
+						ChattingMessageRequest chattingMessageRequest = new ChattingMessageRequest(messageChatRoomRequest.message(), messageChatRoomRequest.uuid(), port);
+						new InsertChattingMessageDAO().insertChattingMessage(chattingMessageRequest);
+
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
 								nickName,
 								messageChatRoomRequest.message() + "\n"
@@ -100,6 +107,7 @@ public class ChatServerHandler extends Thread {
 					// 채팅방 참여자 명단을 가져오는 작업을 수행해야함.
 					GetParticipantsChatRoomDAO getParticipantsChatRoomDAO = new GetParticipantsChatRoomDAO();
 					ArrayList<String> participantsNickNameList = getParticipantsChatRoomDAO.getParticipantsChatRoom(port);
+
 					if (participantsNickNameList != null) {
 						objectOutputStream.writeObject(ResponseCode.GET_PARTICIPANTS_SUCCESS);
 						GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = new GetParticipantsChatRoomResponse(participantsNickNameList);
@@ -140,6 +148,33 @@ public class ChatServerHandler extends Thread {
 			for (ChatServerHandler handler : list) {
 				handler.objectOutputStream.writeObject(joinMessageChatRoomResponse);
 			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	private void getchattingMessage() {
+		try {
+			List<ChattingMessageRequest> chattingMessageRequests = new GetChattingMessagesDAO().getChattingMessages(port);
+			List<ChattingMessageResponse> chattingMessageResponses = new ArrayList<>();
+
+			for (ChattingMessageRequest chattingMessageRequest : chattingMessageRequests) {
+				String uuid = chattingMessageRequest.uuid();
+
+				if (uuid.endsWith("*")) { // 방장이 작성한 메세지일 경우
+					String nickName = new GetInfoDAO().getNickNameMethod(uuid.substring(0, uuid.length() - 1));
+
+					ChattingMessageResponse chattingMessageResponse = new ChattingMessageResponse(chattingMessageRequest.message(), nickName + "(방장)");
+					chattingMessageResponses.add(chattingMessageResponse);
+				} else { // 이외에 경우
+					String nickName = new GetInfoDAO().getNickNameMethod(uuid);
+
+					ChattingMessageResponse chattingMessageResponse = new ChattingMessageResponse(chattingMessageRequest.message(), nickName);
+					chattingMessageResponses.add(chattingMessageResponse);
+				}
+			}
+
+			objectOutputStream.writeObject(chattingMessageResponses);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

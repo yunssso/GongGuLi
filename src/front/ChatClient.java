@@ -5,6 +5,7 @@ import back.request.chatroom.GetParticipantsChatRoomRequest;
 import back.request.chatroom.JoinMessageChatRoomRequest;
 import back.request.chatroom.KickChatRoomRequest;
 import back.request.chatroom.MessageChatRoomRequest;
+import back.response.chatroom.ChattingMessageResponse;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
@@ -16,6 +17,7 @@ import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class ChatClient extends JFrame implements Runnable{
     private Color c1 = new Color(255, 240, 227);
@@ -69,6 +71,10 @@ public class ChatClient extends JFrame implements Runnable{
             createAndShowGUI();
 
             objectOutputStream.writeObject(new JoinMessageChatRoomRequest(uuid));
+            List<ChattingMessageResponse> chattingMessageResponses = (List<ChattingMessageResponse>) objectInputStream.readObject();
+            for (ChattingMessageResponse chattingMessageResponse : chattingMessageResponses) {
+                getMessage(chattingMessageResponse);
+            }
 
             Thread thread = new Thread(this);
             thread.start();
@@ -242,6 +248,10 @@ public class ChatClient extends JFrame implements Runnable{
     /*새로운 참여자 관련 메소드*/
     private void getMessage(JoinMessageChatRoomResponse joinMessageChatRoomResponse) {
         chatTextArea.append(joinMessageChatRoomResponse.nickName() + joinMessageChatRoomResponse.message());
+    }
+
+    private void getMessage(ChattingMessageResponse chattingMessageResponse) {
+        chatTextArea.append(chattingMessageResponse.nickName() + " : " + chattingMessageResponse.message() + "\n");
     }
 
     /*강퇴 Request를 보내는 메소드*/
