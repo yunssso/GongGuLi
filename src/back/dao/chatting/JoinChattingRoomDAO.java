@@ -22,38 +22,37 @@ public class JoinChattingRoomDAO {
 
         if (nowPeopleNum == -1 || maxPeopleNum == -1) {
             System.out.println("DB 오류?");
-        } else if (nowPeopleNum >= maxPeopleNum) {
-            return 0;   //  채팅방 인원이 가득 참
-        } else {
-            if (isJoinedChat(port, uuid)) {
-                try {
-                    conn = DBConnector.getConnection();
-
-                    String insertSQL = "INSERT INTO chattingMember (port, memberUuid) VALUES (?, ?);";
-                    pt = conn.prepareStatement(insertSQL);
-                    pt.setInt(1, port);
-                    pt.setString(2, uuid);
-                    pt.execute();
-
-                    String updateSQL = "UPDATE board SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
-                    pt = conn.prepareStatement(updateSQL);
-                    pt.setInt(1, port);
-                    pt.execute();
-
-                    updateSQL = "UPDATE chattingRoom SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
-                    pt = conn.prepareStatement(updateSQL);
-                    pt.setInt(1, port);
-                    pt.execute();
-
-                    pt.close();
-                    conn.close();
-                    return 1;   //  채팅방 입장 성공
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            } else {
-                return 1;
+        } else if (isJoinedChat(port, uuid)) {
+            if (nowPeopleNum >= maxPeopleNum) {
+                return 0;   //  채팅방 인원이 가득 참
             }
+            try {
+                conn = DBConnector.getConnection();
+
+                String insertSQL = "INSERT INTO chattingMember (port, memberUuid) VALUES (?, ?);";
+                pt = conn.prepareStatement(insertSQL);
+                pt.setInt(1, port);
+                pt.setString(2, uuid);
+                pt.execute();
+
+                String updateSQL = "UPDATE board SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
+                pt = conn.prepareStatement(updateSQL);
+                pt.setInt(1, port);
+                pt.execute();
+
+                updateSQL = "UPDATE chattingRoom SET nowPeopleNum = nowPeopleNum + 1 WHERE port = ?";
+                pt = conn.prepareStatement(updateSQL);
+                pt.setInt(1, port);
+                pt.execute();
+
+                pt.close();
+                conn.close();
+                return 1;   //  채팅방 입장 성공
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            return 1;
         }
 
         return -1;  //  에러

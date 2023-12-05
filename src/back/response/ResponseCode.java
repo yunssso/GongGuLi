@@ -20,6 +20,7 @@ public enum ResponseCode {
     ID_DUPLICATE(212, "중복되는 아이디가 존재합니다."),
     PHONE_NUMBER_DUPLICATE(213, "중복되는 전화번호가 존재합니다."),
     SIGNUP_FAILURE(214, "회원가입이 실패되었습니다."),
+    ID_NOT_DUPLICATE(215, "사용 가능한 아이디입니다."),
 
     // LOGIN
     LOGIN_SUCCESS(220, "로그인이 완료되었습니다."),
