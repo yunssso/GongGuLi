@@ -222,7 +222,6 @@ public class ReadMorePost {
 
                         if (responseCode.getKey() == ResponseCode.DELETE_MY_BOARD_SUCCESS.getKey()) {
 //                            삭제 완료 GUI
-                            System.out.println("삭제완");
                             readMoreFrame.dispose();
                             frame.dispose();
                             if(isMainFrame)  new MainPage(uuid);
@@ -233,7 +232,7 @@ public class ReadMorePost {
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
-                } else System.out.println("삭제 안함");
+                }
             }
         });
 
