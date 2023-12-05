@@ -261,8 +261,8 @@ public class SignUp extends JDialog{
         JLabel backButtonLabel = new JLabel(backButtonIcon);
 
         // 이미지 크기 조절
-        int newWidth = 50; // 새로운 너비
-        int newHeight = 50; // 새로운 높이
+        int newWidth = 80; // 새로운 너비
+        int newHeight = 80; // 새로운 높이
         Image image = backButtonIcon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
         ImageIcon resizedIcon = new ImageIcon(image);

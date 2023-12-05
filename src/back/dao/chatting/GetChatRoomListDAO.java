@@ -1,5 +1,6 @@
 package back.dao.chatting;
 
+import back.dao.GetInfoDAO;
 import back.response.chatroom.GetChattingRoomResponse;
 import database.DBConnector;
 
@@ -19,6 +20,7 @@ public class GetChatRoomListDAO {
     public List<GetChattingRoomResponse> getChattingRoomList(String uuid) {
         List portList = getPortMethod(uuid);
         List<GetChattingRoomResponse> list = new ArrayList<>();
+        GetInfoDAO getInfoDAO = new GetInfoDAO();
         try {
             conn = DBConnector.getConnection();
             String selectSQL = "SELECT * FROM chattingRoom WHERE port = ?";
@@ -35,7 +37,7 @@ public class GetChatRoomListDAO {
                             this.rs.getString("region"),
                             this.rs.getString("category"),
                             this.rs.getString("title"),
-                            this.rs.getString("masterUuid"),
+                            getInfoDAO.getNickNameMethod(rs.getString("masterUuid")),
                             this.rs.getString("lastUpdatedTime")
                     );
                     list.add(getChattingRoomResponse);

@@ -121,7 +121,7 @@ public class ChatClient extends JFrame implements Runnable{
         });
 
         // 참가자 문구 생성
-        participantsButton = new JButton("참가자 : 0");
+        participantsButton = new JButton("참가자 : 2");
         participantsButton.setHorizontalAlignment(JButton.RIGHT);
         participantsButton.setBackground(c1);
         participantsButton.setPreferredSize(new Dimension(300, 35));
