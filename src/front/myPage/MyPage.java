@@ -107,10 +107,7 @@ public class MyPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int answer = JOptionPane.showConfirmDialog(null, "회원탈퇴 하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
 
-                if (answer == JOptionPane.YES_OPTION) {
-                    String password = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
-                    deleteUserMethod(password);
-                }
+                if (answer == JOptionPane.YES_OPTION) deleteUserCheckPassword();
                 // 로그인 화면으로 + 회원 삭제
             }
         });
@@ -142,6 +139,38 @@ public class MyPage extends JFrame {
 
         add(rightPanel);
     }
+
+    private void deleteUserCheckPassword() {
+        JFrame checkPasswordFrame = new JFrame("계정 탈퇴");
+        checkPasswordFrame.setLayout(null);
+        checkPasswordFrame.setSize(280, 150);
+        fs.FrameSetting(checkPasswordFrame);
+
+        JLabel message = new JLabel("비밀번호를 입력하세요.");
+        message.setBounds(75, 10, 200, 30);
+        message.setFont(fs.f13);
+
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setBounds(45, 40, 180, 25);
+
+        JButton checkBtn = new JButton("확인");
+        checkBtn.setBounds(100, 73, 60, 30);
+        checkBtn.setFont(fs.f11);
+
+        checkBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String password = String.valueOf(passwordField.getPassword());
+                deleteUserMethod(password);
+            }
+        });
+        checkPasswordFrame.add(message);
+        checkPasswordFrame.add(passwordField);
+        checkPasswordFrame.add(checkBtn);
+
+        checkPasswordFrame.setVisible(true);
+    }
+
 
     private void deleteUserMethod(String password) {
         try (Socket clientSocket = new Socket("localhost", 1024);

@@ -59,12 +59,12 @@ public enum ResponseCode {
     PEOPLE_NUM_NOT_NUMBER(309, "인원은 숫자만 입력 가능합니다."),
 
     // DELETE BOARD
-    DELETE_MY_BOARD_SUCCESS(1, "게시글 삭제가 완료되었습니다."),
-    DELETE_MY_BOARD_FAILURE(2, "게시글 삭제에 실패하였습니다."),
+    DELETE_MY_BOARD_SUCCESS(310, "게시글 삭제가 완료되었습니다."),
+    DELETE_MY_BOARD_FAILURE(311, "게시글 삭제에 실패하였습니다."),
 
     // MODIFY BOARD
-    MODIFY_MY_BOARD_SUCCESS(3, "게시글 수정이 완료되었습니다."),
-    MODIFY_MY_BOARD_FAILURE(4, "게시글 수정에 실패하였습니다."),
+    MODIFY_MY_BOARD_SUCCESS(320, "게시글 수정이 완료되었습니다."),
+    MODIFY_MY_BOARD_FAILURE(321, "게시글 수정에 실패하였습니다."),
 
     // BOARD INFO
     BOARD_INFO_SUCCESS(400, "게시판 갱신이 완료되었습니다."),

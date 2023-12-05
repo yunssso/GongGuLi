@@ -104,7 +104,7 @@ class FindUserId extends JDialog {
 
                     if (responseCode.getKey() == 230) { //아이디 찾기 성공
                         FindUserIdResponse findUserIdResponse = (FindUserIdResponse) ois.readObject();
-                        showSuccessDialog(findUserIdResponse.userId());
+                        showSuccessDialog("아이디는 " + findUserIdResponse.userId() + "입니다.");
                     } else { //아이디 찾기 실패
                         showErrorDialog(responseCode.getValue());
                     }

@@ -1,12 +1,19 @@
 package front.mainPage;
 
+import back.request.chatroom.JoinChatRoomListRequest;
+import back.request.chatroom.JoinChatRoomRequest;
 import back.response.ResponseCode;
 import back.request.chatroom.GetChattingRoomRequest;
 import back.response.chatroom.GetChattingRoomResponse;
+import back.response.chatroom.JoinChatRoomListResponse;
+import front.ChatClient;
 import front.FrontSetting;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -37,20 +44,69 @@ public class ChattingList {
 
         JLabel chattingListLabel = new JLabel("채팅 목록");  // 채팅 목록 레이블
         chattingListLabel.setFont(new Font("SUITE", Font.BOLD, 20));
-        chattingListPanel.setBounds(10, 10, 100, 60);
+        chattingListLabel.setBounds(10, 10, 100, 60);
 
         getChattingRoomMethod();
-        JTable listTable = new JTable(chattingRoomListDB, fs.chattinglistHeader);
+
+        DefaultTableModel model = new DefaultTableModel(chattingRoomListDB, fs.chattinglistHeader);
+        JTable listTable = new JTable(model) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 모든 셀을 수정 불가능으로 설정
+            }
+        };
+        fs.tableSetting(listTable,fs.chattingListWidths);
+
+        listTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // 더블 클릭 감지
+                    int selectedRow = listTable.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // chattingRoomListDB[selectedRow]에서 정보를 사용하여 채팅방 열기
+                        openChatRoom(selectedRow);
+                    }
+                }
+            }
+        });
+
+        // 행 정렬기 자동 생성 비활성화
+        listTable.setAutoCreateRowSorter(false);
 
         JScrollPane listScrollPane = new JScrollPane(listTable);
         listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         listScrollPane.setBounds(30, 80, 340, 430);
 
-        chattingListFrame.add(chattingListPanel);
         chattingListPanel.add(chattingListLabel);
         chattingListPanel.add(listScrollPane);
-
+        chattingListFrame.add(chattingListPanel);
         chattingListFrame.setVisible(true);
+    }
+
+    private void openChatRoom(int selectRow) {
+        try (Socket clientSocket = new Socket("localhost", 1026);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ){
+            JoinChatRoomListRequest joinChatRoomListRequest = new JoinChatRoomListRequest(selectRow, uuid);
+
+            objectOutputStream.writeObject(joinChatRoomListRequest);
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+
+            if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_SUCCESS.getKey()) {
+                JoinChatRoomListResponse joinChatRoomListResponse = (JoinChatRoomListResponse) objectInputStream.readObject();
+
+                new ChatClient(joinChatRoomListResponse.port(), uuid);
+                // 채팅 목록에서 클릭시 채팅방 열림
+            } else if (responseCode.getKey() == ResponseCode.JOIN_CHATROOM_FAILURE.getKey()) {
+                fs.showErrorDialog(responseCode.getValue());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void getChattingRoomMethod() {
@@ -69,7 +125,7 @@ public class ChattingList {
 
             if (responseCode.getKey() == ResponseCode.GET_CHATROOM_SUCCESS.getKey()) { // 채팅방 목록 갱신 성공
                 //  boardList안에 레코드 형태에 게시글 정보가 다 들어있음.
-                java.util.List<GetChattingRoomResponse> getChattingRoomResponse = (List<GetChattingRoomResponse>) objectInputStream.readObject();
+                List<GetChattingRoomResponse> getChattingRoomResponse = (List<GetChattingRoomResponse>) objectInputStream.readObject();
 
                 setChattingRoomListDB(getChattingRoomResponse);
             } else { // 채팅방 목록 갱신 실패

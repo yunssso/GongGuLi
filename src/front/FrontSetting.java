@@ -19,6 +19,8 @@ public class FrontSetting extends JFrame{
     public Font fb14 = new Font("SUITE", Font.BOLD, 14);
     public Font fb16 = new Font("SUITE", Font.BOLD, 16);
     public Font fb20 = new Font("SUITE", Font.BOLD, 20);
+    public Font f11 = new Font("SUITE", Font.PLAIN, 11);
+    public Font f13 = new Font("SUITE", Font.PLAIN, 13);
     public Font f14 = new Font("SUITE", Font.PLAIN, 14);
     public Font f16 = new Font("SUITE", Font.PLAIN, 16);
     public Font f18 = new Font("SUITE", Font.PLAIN, 18);
@@ -45,6 +47,7 @@ public class FrontSetting extends JFrame{
     public int mainTableWidths[] = {30, 30, 300, 30, 10};  // 열 사이즈 크기 -> 비율로 적용되는 듯
     public int myPostingTableWidths[] = {20, 20, 120, 1};
     public int myHistoryTableWidths[] = {20, 20, 90, 2, 1};
+    public int chattingListWidths[] = {20,20,20,20,20};
 
     public void tableCellCenter(JTable t) {  // 모든 열의 텍스트 가운데 지정
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();

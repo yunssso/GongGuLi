@@ -31,6 +31,7 @@ public class GetChatRoomListDAO {
                 rs = pt.executeQuery();
                 while (rs.next()) {
                     GetChattingRoomResponse getChattingRoomResponse = new GetChattingRoomResponse(
+                            port,
                             this.rs.getString("region"),
                             this.rs.getString("category"),
                             this.rs.getString("title"),
@@ -48,8 +49,19 @@ public class GetChatRoomListDAO {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
         return null;
+    }
+
+    public int getInChattingroom(int selectRow, String uuid) {
+        try {
+            List<GetChattingRoomResponse> chattingRoomList = getChattingRoomList(uuid);
+            GetChattingRoomResponse getChattingRoomResponse = chattingRoomList.get(selectRow);
+            return getChattingRoomResponse.port();
+        } catch (Exception exception ) {
+            exception.printStackTrace();
+        }
+
+        return -1;
     }
 
     /*내가 참여해 있는 채팅방의 포트를 저장*/

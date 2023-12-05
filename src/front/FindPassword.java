@@ -117,10 +117,12 @@ class FindPassword extends JDialog {
                     ResponseCode responseCode = (ResponseCode) ois.readObject();
                     System.out.println("1");
                     if (responseCode.getKey() == 240) { //비밀번호 찾기 성공
+                        dispose();
                         System.out.println("2");
                         FindUserPasswordResponse findUserPasswordResponse = (FindUserPasswordResponse) ois.readObject();
                         System.out.println("3");
-                        showSuccessDialog(findUserPasswordResponse.password());
+                        //showSuccessDialog(findUserPasswordResponse.password());
+                        setChangePassword();  // 비밀번호 변경 창 호출
                     } else { //비밀번호 찾기 실패
                         showErrorDialog(responseCode.getValue());
                     }
@@ -140,6 +142,57 @@ class FindPassword extends JDialog {
 
         add(panel);
         setVisible(true);
+    }
+
+    private void setChangePassword() {
+        JFrame changePWFrame = new JFrame("비밀번호 변경");
+        changePWFrame.setSize(400, 250);
+        changePWFrame.setResizable(false);
+        changePWFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        changePWFrame.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        panel.setBackground(c1);
+
+        JLabel pwLabel = new JLabel("비밀번호");
+        pwLabel.setBounds(30, 50, 100, 30);
+        pwLabel.setFont(f1);
+        pwLabel.setHorizontalAlignment(JLabel.RIGHT);
+
+        JPasswordField pwField = new JPasswordField(20);
+        pwField.setBounds(160, 50, 180, 30);
+
+        JLabel pwCheckLabel = new JLabel("비밀번호 확인");
+        pwCheckLabel.setBounds(30, 90, 100, 30);
+
+        pwCheckLabel.setFont(f1);
+        pwCheckLabel.setHorizontalAlignment(JLabel.RIGHT);
+
+        JPasswordField pwCheckField = new JPasswordField(20);
+        pwCheckField.setBounds(160, 90, 180, 30);
+
+        RoundedButton btn = new RoundedButton("비밀번호 변경");
+        btn.setBounds(208, 150, 130, 30);
+        btn.setFont(f1);
+
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 비밀번호 변경 버튼 클릭 시
+                changePWFrame.dispose();
+                showSuccessDialog("비밀번호 변경이 완료되었습니다.");
+            }
+        });
+
+        changePWFrame.add(panel);
+        panel.add(pwLabel);
+        panel.add(pwField);
+        panel.add(pwCheckLabel);
+        panel.add(pwCheckField);
+        panel.add(btn);
+
+        changePWFrame.setVisible(true);
     }
 
     private void showErrorDialog(String message) {
