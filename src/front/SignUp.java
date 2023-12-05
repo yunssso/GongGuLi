@@ -76,7 +76,7 @@ public class SignUp extends JDialog{
         idLabel.setFont(f1);
         idLabel.setHorizontalAlignment(JLabel.RIGHT);
         idText = new JTextField(20);
-        idText.setBounds(758, 195, 200, 30);
+        idText.setBounds(758, 195, 148, 30);
         idText.setFont(f3);
 
         panel.add(idLabel);
@@ -137,7 +137,7 @@ public class SignUp extends JDialog{
         nickNameLabel.setHorizontalAlignment(JLabel.RIGHT);
         nickNameLabel.setFont(f1);
         nickNameText = new JTextField(20);
-        nickNameText.setBounds(758, 355, 200, 30);
+        nickNameText.setBounds(758, 355, 148, 30);
         nickNameText.setFont(f3);
 
         panel.add(nickNameLabel);

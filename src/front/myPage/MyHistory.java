@@ -1,5 +1,6 @@
 package front.myPage;
 
+import back.request.board.ReadMoreMyHistoryRequest;
 import back.response.ResponseCode;
 import back.request.mypage.MyHistoryInfoRequest;
 import back.response.board.BoardInfoMoreResponse;
@@ -52,10 +53,10 @@ public class MyHistory {
         myHistoryTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2) {
+                if (e.getClickCount() == 2) {
                     int selectRow = myHistoryTable.getSelectedRow();
-                    //Board_Info_More_Response boardInfoMoreResponse = boardDAO.readMorePost(port, uuid);
-                    //readMoreMyHistory(myHistoryTable, port, boardInfoMoreResponse);
+
+//                    readMoreMyHistory(myHistoryTable, selectRow, readMoreMyHistory(selectRow, uuid));
                 }
             }
         });
@@ -124,7 +125,7 @@ public class MyHistory {
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
              InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ){
+        ) {
             MyHistoryInfoRequest myHistoryInfoRequest = new MyHistoryInfoRequest(uuid); // uuid를 Request 객체로 만듦
 
             objectOutputStream.writeObject(myHistoryInfoRequest); // uuid를 서버에 보내서 내가 쓴 글 요청
@@ -140,5 +141,28 @@ public class MyHistory {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    private BoardInfoMoreResponse readMoreMyHistory(int selectRow, String uuid) {
+        try (Socket clientSocket = new Socket("localhost", 1027);
+             OutputStream outputStream = clientSocket.getOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+             InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ) {
+            ReadMoreMyHistoryRequest readMoreMyHistoryRequest = new ReadMoreMyHistoryRequest(selectRow, uuid);
+
+            objectOutputStream.writeObject(readMoreMyHistoryRequest); // uuid를 서버에 보내서 내가 쓴 글 요청
+
+            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject(); // 서버에서 응답 코드를 받아옴
+
+            if (responseCode.getKey() == ResponseCode.READ_MORE_MY_HISTORY_SUCCESS.getKey()) { // 내가 쓴 글 갱신 성공
+//                return responseCode;
+            } else { // 내가 쓴 글 갱신 실패
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return null;
     }
 }

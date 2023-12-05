@@ -1,7 +1,5 @@
 package front.myPage;
 
-import back.dao.user.CheckDAO;
-import back.UserDTO;
 import back.request.account.DeleteUserRequest;
 import back.response.ResponseCode;
 import front.*;
@@ -20,8 +18,6 @@ import java.net.Socket;
 public class MyPage extends JFrame {
     private UserInfo userInfo;
     String uuid;
-    UserDTO userDTO = null;
-    CheckDAO checkDAO = new CheckDAO();
     FrontSetting fs = new FrontSetting();
 
     public MyPage(String uuid) {  // 생성자

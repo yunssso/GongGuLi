@@ -40,9 +40,11 @@ public class ChatClient extends JFrame implements Runnable{
     private JList<String> participantsList = null;
     private DefaultListModel<String> participantListModel;
     private JScrollPane participantsscrollPane = null;
+    private TimecheckWindow timecheckWindow = new TimecheckWindow(this);
 
     // 서버에서 각 클라이언트 이름을 받아오는 리스트
     private ArrayList<String> nameList = null;
+    private int port;
     // 사용자 uuid
     private String uuid = null;
     private JButton leaveButton = null;
@@ -51,11 +53,13 @@ public class ChatClient extends JFrame implements Runnable{
     public ChatClient(int port, String uuid) {
         try {
             //포트 정보
+            this.port = port;
             this.uuid = uuid;
-            System.out.println("0");
+
             Socket socket = new Socket("43.200.49.16", port);
-            //43.200.49.16
-            System.out.println("1");
+
+            createAndShowGUI();
+
             //서버 -> 클라이언트 Output Stream
             //통신 관련
             OutputStream outputStream = socket.getOutputStream();
@@ -64,14 +68,18 @@ public class ChatClient extends JFrame implements Runnable{
             //서버 <- 클라이언트 Input Stream
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
-            System.out.println("3");
             createAndShowGUI();
-            System.out.println("4");
             objectOutputStream.writeObject(new JoinMessageChatRoomRequest(uuid));
-            System.out.println("5");
             Thread thread = new Thread(this);
             thread.start();
-            System.out.println("6");
+            setVisible(true);
+            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    dispose();
+                }
+            });
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -98,6 +106,7 @@ public class ChatClient extends JFrame implements Runnable{
         tf.setPreferredSize(new Dimension(300, 50));
         tf.setBackground(c1);
         tf.setBorder(BorderFactory.createLineBorder(new Color(200,200,200)));
+        tf.setFont(f4);
 
         //Enter를 입력할 경우에 sendMessage 실행
         tf.addActionListener(new ActionListener() {
@@ -130,7 +139,7 @@ public class ChatClient extends JFrame implements Runnable{
 
         leaveButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { leaveChatRoom(); }
+            public void actionPerformed(ActionEvent e) { dispose();}
         });
 
         chattingListPanel.add(participantsButton, BorderLayout.NORTH);
@@ -139,9 +148,6 @@ public class ChatClient extends JFrame implements Runnable{
         add(chattingListPanel);
 
         setVisible(true);
-    }
-    private void leaveChatRoom() {
-        dispose();
     }
 
     //Participants Frame
@@ -260,11 +266,25 @@ public class ChatClient extends JFrame implements Runnable{
     /*채팅방 참여자 명단 Request를 보내는 메소드*/
     private void getParticipants() {
         try {
+            System.out.println(objectOutputStream);
             if (objectOutputStream != null) {
-                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest());
+                objectOutputStream.writeObject(new GetParticipantsChatRoomRequest(port));
+
+                ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
+                System.out.println(responseCode.getKey());
+                if (responseCode.getKey() == ResponseCode.GET_PARTICIPANTS_SUCCESS.getKey()) {
+                    GetParticipantsChatRoomResponse getParticipantsChatRoomResponse = (GetParticipantsChatRoomResponse) objectInputStream.readObject();
+                    nameList = getParticipantsChatRoomResponse.list();
+                } else {
+                    showErrorDialog(responseCode.getValue());
+                }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "안내", JOptionPane.ERROR_MESSAGE);
     }
 }
