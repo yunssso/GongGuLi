@@ -1,13 +1,11 @@
 package back.handler;
 
 import back.dao.chatting.GetParticipantsChatRoomDAO;
+import back.dao.chatting.InsertChattingMessageDAO;
+import back.request.chatroom.*;
 import back.response.ResponseCode;
 import back.dao.GetInfoDAO;
 import back.dao.chatting.IsMasterDAO;
-import back.request.chatroom.GetParticipantsChatRoomRequest;
-import back.request.chatroom.JoinMessageChatRoomRequest;
-import back.request.chatroom.KickChatRoomRequest;
-import back.request.chatroom.MessageChatRoomRequest;
 import back.response.chatroom.GetParticipantsChatRoomResponse;
 import back.response.chatroom.JoinMessageChatRoomResponse;
 import back.response.chatroom.MessageChatRoomResponse;
@@ -34,6 +32,7 @@ public class ChatServerHandler extends Thread {
 			this.list = list;
 			port = socket.getLocalPort();
 			ip = socket.getLocalAddress();
+
 			//서버 -> 클라이언트 Output Stream
 			OutputStream outputStream = socket.getOutputStream();
 			objectOutputStream = new ObjectOutputStream(outputStream);
@@ -64,6 +63,9 @@ public class ChatServerHandler extends Thread {
 				Object readObj = objectInputStream.readObject();
 
 				if (readObj instanceof MessageChatRoomRequest messageChatRoomRequest) { //클라이언트 -> 서버 메세지 요청
+					MessageSet messageSet = new MessageSet(messageChatRoomRequest.message(), messageChatRoomRequest.uuid(), port); //DB에 넣을 메세지 정보
+					new InsertChattingMessageDAO().insertChattingMessage(messageSet);
+
 					if (master) { // 방장이 메세지를 보냈을 때
 						MessageChatRoomResponse messageChatRoomResponse = new MessageChatRoomResponse(
 								nickName + "(방장)",
@@ -108,15 +110,13 @@ public class ChatServerHandler extends Thread {
 				}
 			}
 		} catch (Exception exception) {
-
+			exception.printStackTrace();
 		} finally {
 			try {
 				System.out.println("[채팅방 퇴장] PORT : " + port + " IP : " + ip);
 
 				objectInputStream.close();
 				list.remove(this);
-
-
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
 			}

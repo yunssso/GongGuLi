@@ -27,12 +27,10 @@ public class SignUp extends JDialog{
     private JTextField nickNameText;
     private JComboBox<String> residenceList;
     boolean checkNickDup;  // true면 중복확인 한거임 false면 안한거임
-    boolean checkNameDup;
-
-    private Socket clientSocket = null;
+    boolean checkIdDup;
 
     public SignUp() {
-        this.checkNameDup = false;
+        this.checkIdDup = false;
         this.checkNickDup = false;
         setSignUp();
         setLeftPanel();
@@ -83,16 +81,16 @@ public class SignUp extends JDialog{
         panel.add(idText);
 
         //아이디 중복 확인 버튼
-        RoundedButtonR NameDupBtn = new RoundedButtonR("확인");
-        NameDupBtn.setBounds(910, 195, 48, 30);
-        NameDupBtn.setFont(f3);
-        panel.add(NameDupBtn);
+        RoundedButtonR IdDupBtn = new RoundedButtonR("확인");
+        IdDupBtn.setBounds(910, 195, 48, 30);
+        IdDupBtn.setFont(f3);
+        panel.add(IdDupBtn);
 
-        NameDupBtn.addActionListener(new ActionListener() {
+        IdDupBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                checkNameDup = true;
-                System.out.println("checkNameDub: " + checkNameDup);
+                checkIdDup = true;
+                System.out.println("checkNameDub: " + checkIdDup);
             }
         });
 
@@ -207,7 +205,13 @@ public class SignUp extends JDialog{
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+                try (Socket clientSocket = new Socket("localhost", 1024);
+                    OutputStream outputStream = clientSocket.getOutputStream();
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+                    InputStream inputStream = clientSocket.getInputStream();
+                    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+                    ){
                     String userId = idText.getText();
                     String password = String.valueOf(passwordText.getPassword()) ;
                     String passwordCheck = String.valueOf(pwCheckText.getPassword());
@@ -220,35 +224,27 @@ public class SignUp extends JDialog{
                     //서버로 정보를 전달 해주기 위해서 객체 형식으로 변환
                     SignUpRequest signUpDto = new SignUpRequest(userId, password, passwordCheck, name, birth, phoneNum, nickName, region);
 
-                    //아이피, 포트 번호로 소켓을 연결
-                    clientSocket = new Socket("localhost", 1024);
+                    if (checkIdDup) {
+                        if (checkNickDup) {
+                            objectOutputStream.writeObject(signUpDto);
 
-                    //서버와 정보를 주고 받기 위한 스트림 생성
-                    OutputStream os = clientSocket.getOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(os);
+                            ResponseCode responseCode = (ResponseCode) objectInputStream.readObject();
 
-                    InputStream is = clientSocket.getInputStream();
-                    ObjectInputStream ois = new ObjectInputStream(is);
-
-                    oos.writeObject(signUpDto);
-
-                    ResponseCode responseCode = (ResponseCode) ois.readObject();
-
-                    if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) { //회원가입 성공
-                        showSuccessDialog(responseCode.getValue());
-                        dispose();
-                        new LogIn();
-                    } else { //회원가입 실패
-                        showErrorDialog(responseCode.getValue());
+                            if (responseCode.getKey() == ResponseCode.SIGNUP_SUCCESS.getKey()) {
+                                showSuccessDialog(responseCode.getValue());
+                            } else {
+                                showErrorDialog(responseCode.getValue());
+                            }
+                        } else { // 닉네임 중복 안한 경우
+                            showErrorDialog("닉네임 중복 확인을 하세요");
+                        }
+                    } else { // 아이디 중복 안한 경우
+                        showErrorDialog("아이디 중복 확인을 하세요");
                     }
 
-                    oos.close();
-                    os.close();
-
-                    ois.close();
-                    is.close();
-
-                    clientSocket.close();
+                    checkIdDup = false;
+                    checkNickDup = false;
+                    objectInputStream.close();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
